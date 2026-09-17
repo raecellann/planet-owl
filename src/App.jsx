@@ -125,7 +125,7 @@ export default function App() {
         {entered ? 'Skip to content' : 'Skip to the entry button'}
       </a>
 
-      <Nav entered={entered} />
+      {entered && <Nav entered={entered} />}
 
       <main>
         {!introGone && <Intro onEnter={enter} onDone={dropIntro} />}

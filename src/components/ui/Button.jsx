@@ -24,6 +24,16 @@ export function GoldButton({
   iconSrc,
   iconFit = 'contain',
   iconBg = 'bg-plum-700',
+  // Set when `iconSrc` is a fully-composed badge (the plum disc already baked
+  // in), not just the owl. Skips the `iconBg` wrapper — otherwise the composed
+  // image lands inside a second plum disc and reads as a mark inset in a ring.
+  iconAsBadge = false,
+  // Renders an invisible copy of the label pre-set in Luckiest Guy (the wider
+  // hover face) alongside the real one, so `.btn-type:hover`'s font swap can
+  // fire without the pill resizing. The pill's resting width becomes the
+  // WIDEST state's width, not the narrower Momo Trust Sans measurement — used
+  // sparingly, only where the button sits in a row that a growth would shove.
+  reserveHoverWidth = false,
   className = '',
   ...rest
 }) {
@@ -54,7 +64,9 @@ export function GoldButton({
       // prop this component was quietly dropping on the floor.
       {...rest}
     >
-      {withOwl && iconFit === 'cover' ? (
+      {withOwl && iconAsBadge ? (
+        <img src={iconSrc} alt="" className="size-7 shrink-0 rounded-full object-contain" />
+      ) : withOwl && iconFit === 'cover' ? (
         // A `background-image` rather than an `<img>` with `object-fit`:
         // `cover` alone was only cropping to the container's own aspect
         // ratio, not zooming — on a photo where the subject's face is a
@@ -73,7 +85,21 @@ export function GoldButton({
           </span>
         )
       )}
-      <span>{children}</span>
+      {reserveHoverWidth ? (
+        <span className="relative inline-flex items-center justify-center">
+          <span
+            aria-hidden
+            className="invisible font-[family-name:var(--font-pop)] font-normal"
+          >
+            {children}
+          </span>
+          <span className="absolute inset-0 flex items-center justify-center whitespace-nowrap">
+            {children}
+          </span>
+        </span>
+      ) : (
+        <span>{children}</span>
+      )}
     </motion.a>
   )
 }

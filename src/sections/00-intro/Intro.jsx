@@ -233,7 +233,7 @@ export default function Intro({ onEnter, onDone }) {
           initial={reduce ? false : { opacity: 0, y: 22 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="text-shadow-soft font-ui text-[clamp(1.5rem,3vw,3.5rem)] font-bold tracking-tight text-plum-800"
+          className="text-shadow-soft font-['Momo_Trust_Display'] text-[clamp(1.5rem,3vw,3.5rem)] font-normal tracking-tight text-plum-800"
         >
           Are you ready to fly?
         </motion.h1>

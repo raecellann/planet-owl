@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { AnimatePresence, motion } from 'motion/react'
+import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'motion/react'
 import { A, NAV_LINKS } from '../lib/assets'
 import { GoldButton } from './ui/Button'
 
@@ -10,29 +10,38 @@ import { GoldButton } from './ui/Button'
  */
 export default function Nav({ entered = true }) {
   const [open, setOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  // Initialised synchronously from `matchMedia` so the collapsed pill is
+  // painted on the first frame at desktop widths — otherwise the full pill
+  // flashes for a tick before the effect below runs and collapses it.
+  const [isDesktop, setIsDesktop] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(min-width: 1024px)').matches
+  )
 
-  // While the intro still gates the page there is nothing below to jump to, so
-  // the links go inert rather than becoming a way around the button.
   const gate = entered ? '' : 'pointer-events-none'
 
-  /**
-   * On the landing screen the bar is the logo and NOTHING else, at every width
-   * — no link row, no gold CTA, and no menu button either.
-   *
-   * The screen has exactly one instruction on it ("Hold the button"), and
-   * everything else the bar could offer is inert until that is done: the links
-   * have nowhere to go yet (see `gate` above), so a control that opens onto
-   * them is a control that does nothing. The bar earns its full self the
-   * moment the page does.
-   *
-   * Keyed on `entered`, the same flag the gating uses, so the two can never
-   * disagree about which state they are in — nothing here watches scroll.
-   */
-  const collapsed = !entered
+  // Desktop only: the pill starts as a logo-only capsule at the very top of
+  // the hero and expands into the full logo + links + CTA once the visitor has
+  // scrolled roughly 40% of a viewport down. Mobile keeps the full pill at
+  // every scroll position — the burger button is the only way into the menu on
+  // a phone, and collapsing it away would leave the page unnavigable.
+  const { scrollY } = useScroll()
+  useMotionValueEvent(scrollY, 'change', (v) => {
+    const h = typeof window !== 'undefined' ? window.innerHeight : 800
+    setScrolled(v > h * 0.4)
+  })
 
-  // Shut the panel on the way through. Opening the menu on the landing screen
-  // and then holding the button would otherwise leave it hanging open over the
-  // hero — where, past `lg`, it is not even the right control any more.
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)')
+    const update = () => setIsDesktop(mq.matches)
+    update()
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [])
+
+  const collapsed = isDesktop && !scrolled
+  const expanded = !collapsed
+
   useEffect(() => {
     if (entered) setOpen(false)
   }, [entered])
@@ -46,7 +55,9 @@ export default function Nav({ entered = true }) {
       // side, so 4.22vw of inset and 91.6vw wide.
       className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-[17.8vw] sm:pt-[2.92vw]"
     >
-      <nav
+      <motion.nav
+        layout
+        transition={{ layout: { duration: 0.9, ease: [0.4, 0, 0.2, 1] } }}
         // `pr-3` and the taller padding are what stop the gold CTA colliding
         // with the pill: the button carries a 10px hard drop shadow, and at the
         // old `pr-2`/`py-2` that shadow punched straight through the white.
@@ -97,7 +108,18 @@ export default function Nav({ entered = true }) {
         // ENTERED bar's own height at each breakpoint: below `sm` the tallest
         // child is the 44px menu button (44 + 28 = 72), from `sm` up it is the
         // 52px CTA (52 + 28 = 80).
-        className="mx-auto flex min-h-[72px] max-w-[1758px] items-center rounded-full bg-white py-3.5 pl-4 pr-3 shadow-[0_12px_34px_-24px_rgba(54,14,57,0.45)] sm:min-h-[max(3.25rem,4.4vw)] sm:py-[0.4vw] sm:pl-7 sm:pr-4"
+        className={`mx-auto flex min-h-[72px] items-center rounded-full bg-white shadow-[0_12px_34px_-24px_rgba(54,14,57,0.45)] sm:min-h-[max(3.25rem,4.4vw)] sm:py-[0.4vw] ${
+          collapsed
+            ? // Logo-only capsule centred at the top of the hero. Mobile never
+              // reaches this branch (collapse only fires at lg+), so the padding
+              // here is scoped to `lg`. `lg:pl-*` and `lg:pr-*` are set
+              // separately rather than as a single `lg:px-*` to guarantee they
+              // override the asymmetric `sm:pl-7 sm:pr-4` above regardless of
+              // Tailwind's utility source order.
+              'py-3.5 pl-4 pr-3 sm:pl-7 sm:pr-4 lg:w-fit lg:pl-[max(1.2rem,1.4vw)] lg:pr-[max(1.2rem,1.4vw)]'
+            : // Full pill: logo + links + CTA, capped at the reference width.
+              'w-full max-w-[1758px] py-3.5 pl-4 pr-3 sm:pl-7 sm:pr-4'
+        }`}
       >
         {/* On the landing screen the bar shows the MARK alone; the full
             lockup arrives with everything else on entry.
@@ -111,16 +133,21 @@ export default function Nav({ entered = true }) {
             height: the mark is taller than it is wide where the lockup is
             much wider than tall, so matching heights keeps the pill exactly
             as it was and only the width of this one child changes. */}
-        <a href="#home" className="flex shrink-0 items-center" aria-label="Planet Owl — home">
+        <motion.a
+          layout
+          href="#home"
+          className="flex shrink-0 items-center"
+          aria-label="Planet Owl — home"
+        >
           <img
-            src={entered ? A.logo : A.mark}
+            src={A.logo}
             alt="Planet Owl"
             className="h-8 w-auto sm:h-[max(1.5rem,2vw)]"
           />
-        </a>
+        </motion.a>
 
         <ul
-          className={`ml-auto hidden items-center gap-[max(1rem,2vw)] ${collapsed ? '' : 'lg:flex'} ${gate}`}
+          className={`ml-auto hidden items-center gap-[max(1rem,2vw)] ${expanded ? 'lg:flex' : ''} ${gate}`}
         >
           {NAV_LINKS.map((l) => (
             <li key={l.href}>
@@ -173,7 +200,7 @@ export default function Nav({ entered = true }) {
           ))}
         </ul>
 
-        <div className="ml-auto flex items-center gap-2 lg:ml-9">
+        <div className={`ml-auto flex items-center gap-2 lg:ml-9 ${collapsed ? 'hidden' : ''}`}>
           {/* `translate-y-[-3px]`: the box itself sat dead centre (14px
               above, 14px below) with no offset, but the hard shadow paints
               only BELOW the box — so the shadow needs some of that bottom
@@ -193,6 +220,19 @@ export default function Nav({ entered = true }) {
             <GoldButton
               href="#start"
               withOwl
+              iconSrc={A.buttonOwl}
+              iconAsBadge
+              // Empty `whileHover` overrides `GoldButton`'s default `{ y: -3 }`
+              // lift via the component's `{...rest}` spread (last-write-wins),
+              // so this pill no longer rises under the pointer. `whileTap` is
+              // untouched — the click travel still reads.
+              whileHover={{}}
+              // `reserveHoverWidth` pre-books Luckiest Guy's wider box in an
+              // invisible copy of the label, so `.btn-type:hover`'s font swap
+              // can fire without the pill widening around it. Without this
+              // reservation the label grew on hover (Luckiest Guy is a wider,
+              // uppercase-only face) and shoved the nav links left.
+              reserveHoverWidth
               className="h-[max(2.5rem,3.3vw)] whitespace-nowrap text-[max(0.8rem,1.05vw)] !shadow-[0_6px_0_-2px_var(--color-plum-900),0_16px_28px_-16px_rgba(20,12,10,0.55)]"
             >
               Start a Project
@@ -224,7 +264,7 @@ export default function Nav({ entered = true }) {
             </span>
           </button>
         </div>
-      </nav>
+      </motion.nav>
 
       <AnimatePresence>
         {open && !collapsed && (
@@ -255,7 +295,13 @@ export default function Nav({ entered = true }) {
               ))}
             </ul>
             <div className={`mt-2 sm:hidden ${gate}`}>
-              <GoldButton href="#start" withOwl className="w-full justify-center">
+              <GoldButton
+                href="#start"
+                withOwl
+                iconSrc={A.buttonOwl}
+                iconAsBadge
+                className="w-full justify-center"
+              >
                 Start a Project
               </GoldButton>
             </div>

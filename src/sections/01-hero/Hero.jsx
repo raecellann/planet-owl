@@ -476,20 +476,20 @@ export default function Hero() {
               initial={frozen ? false : { opacity: 0, y: 34 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              className="text-shadow-soft font-ui text-[clamp(1.9rem,4.6vw,3.35rem)] font-bold leading-[1.1] text-plum-700"
+              className="text-shadow-soft font-['Momo_Trust_Display'] text-[clamp(1.9rem,4.6vw,3.35rem)] font-normal leading-[1.1] text-plum-700"
             >
-              Building Worlds for Brands to Rise Above the Ordinary
+              Your Creative Work, Handled by a System of Geniuses.
             </motion.h1>
 
             <motion.p
               initial={frozen ? false : { opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.9, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
-              className="text-shadow-soft mt-[min(1rem,1.8svh)] max-w-xl text-[clamp(0.85rem,min(1.1vw,1.8svh),1.05rem)] font-semibold leading-relaxed text-plum-600"
+              className="text-shadow-soft mt-[min(1rem,1.8svh)] max-w-xl font-ui text-[clamp(0.85rem,min(1.1vw,1.8svh),1.05rem)] font-normal leading-relaxed text-plum-600"
             >
-              Planet Owl is the creative studio behind world-class brands, building identities,
-              websites, apps, AI solutions, and immersive experiences that capture attention, earn
-              trust, and fuel growth.
+              Every design is refined before it reaches you — so you get
+              <br />
+              faster output, cleaner results, and zero chaos.
             </motion.p>
 
             {/* `pointer-events-auto`, and it is load-bearing. The headline
@@ -519,7 +519,7 @@ export default function Hero() {
               className="pointer-events-auto relative z-[60] mt-[min(1.25rem,2.2svh)]"
             >
               <GoldButton href="#what-we-do" className="h-[52px]">
-                Build My World
+                Peek Inside the Nest
               </GoldButton>
             </motion.div>
           </div>

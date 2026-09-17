@@ -75,6 +75,13 @@ export const A = {
    */
   logo: asset('logo-alpha.png'),
   mark: asset('owl-mark.png'),
+  /**
+   * The owl already composed onto its plum disc, at the exact framing used
+   * inside the "Start a Project" pill. Kept separate from `mark` because that
+   * one is the bare navbar crop — dropped into `GoldButton`'s own plum badge
+   * it read as an owl inset into a slightly-off ring; this asset IS the badge.
+   */
+  buttonOwl: asset('owl-button.png'),
   /** The brand owl at lockup size — `mark` is a navbar crop and far too small. */
   markLg: asset('owl-mark-lg.webp'),
   /** The full owl + ring + wordmark lockup, as one flat image, for the footer. */
@@ -146,8 +153,8 @@ export const A = {
 export const NAV_LINKS = [
   { label: 'Portfolio', href: '#portfolio' },
   { label: 'What We Do', href: '#what-we-do' },
-  { label: 'The Nest', href: '#the-nest' },
   { label: 'The Flock', href: '#the-flock' },
+  { label: 'The Nest', href: '#the-nest' },
 ]
 
 /** The footer's own row, per the section 9 export — not the same set as the nav. */
