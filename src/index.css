@@ -1,0 +1,315 @@
+@import 'tailwindcss';
+
+/**
+ * Self-hosted, and deliberately outside `@theme` — `@font-face` is a plain
+ * at-rule, not a theme value. The files live in `src/fonts/` rather than
+ * `public/` so Vite fingerprints them and rewrites these URLs against whatever
+ * base the site is deployed under; an absolute `/fonts/...` would break the
+ * moment it ships anywhere other than a domain root.
+ */
+@font-face {
+  font-family: 'Momo Trust Sans';
+  src: url('./fonts/momo-trust-sans.woff2') format('woff2');
+  /* the file's own wght axis — 200 to 800, default 400 */
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Luckiest Guy';
+  src: url('./fonts/luckiest-guy.woff2') format('woff2');
+  /* one static weight; declaring only 400 stops the browser faux-bolding it */
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --font-display: 'Fredoka', 'Segoe UI Rounded', ui-rounded, system-ui, sans-serif;
+  --font-body: 'Nunito', ui-rounded, system-ui, sans-serif;
+
+  /* The button pair: resting face, and the one it snaps to while pressed. */
+  --font-ui: 'Momo Trust Sans', 'Fredoka', ui-rounded, system-ui, sans-serif;
+  --font-pop: 'Luckiest Guy', 'Fredoka', ui-rounded, system-ui, sans-serif;
+
+  /* Brand palette sampled from the Planet Owl assets */
+  --color-plum-950: #24051f;
+  --color-plum-900: #360e39;
+  --color-plum-800: #451647;
+  --color-plum-700: #562354;
+  --color-plum-600: #6b3f69;
+  --color-plum-500: #8a5c88;
+  --color-plum-300: #bfadbf;
+  --color-plum-100: #ece4ec;
+
+  --color-gold-600: #c28e39;
+  --color-gold-500: #f0b939;
+  --color-gold-400: #f4cb6b;
+  --color-gold-200: #fcf2da;
+
+  /*
+   * The muted brown/grey the closing design sets its supporting copy in. `500`
+   * is the palette value as given; `300` is the lighter step body copy actually
+   * uses, because #876767 on the near-black ground measures 4.2:1 — under AA
+   * for text at this size, where the lighter tone clears 6:1 and still reads as
+   * the same muted warm grey rather than as the lavender it replaces.
+   */
+  --color-umber-500: #876767;
+  --color-umber-300: #a68585;
+
+  /* Sampled from the "Join the Flock" pill in the section 3 export */
+  --color-teal-600: #2f7d74;
+  --color-teal-500: #3f9f94;
+  --color-teal-400: #5cb8ad;
+
+  --color-dusk-500: #6d4f8e;
+  --color-dusk-300: #a9a8e0;
+  --color-sky-200: #cdd8f4;
+  --color-sky-100: #dfe7fa;
+  --color-sky-50: #eef3fb;
+
+  --shadow-float: 0 30px 60px -25px rgb(54 14 57 / 0.45);
+  --shadow-card: 0 24px 48px -22px rgb(54 14 57 / 0.35);
+
+  --animate-marquee: marquee 32s linear infinite;
+  --animate-bob: bob 6s ease-in-out infinite;
+  --animate-sway: sway 9s ease-in-out infinite;
+
+  /**
+   * -25%, not -50%: the track carries FOUR copies of the ribbon, so a quarter
+   * of it is exactly one copy and the loop lands on identical pixels.
+   *
+   * Two copies at -50% is the usual way to write this and it is wrong here.
+   * It only holds while a single copy is at least as wide as the window —
+   * otherwise, by the time the track has travelled one copy's width, the
+   * second copy has run out and the tail of the strip is blank. One copy of
+   * this ribbon measures roughly 1350px, so on any window wider than that the
+   * phrases ran out mid-scroll and the jump back to 0 happened in plain
+   * sight. Four copies cover any viewport up to ~4000px with the same seam.
+   */
+  @keyframes marquee {
+    to {
+      transform: translateX(-25%);
+    }
+  }
+  @keyframes bob {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-14px);
+    }
+  }
+  @keyframes sway {
+    0%,
+    100% {
+      transform: translateX(0) rotate(0deg);
+    }
+    50% {
+      transform: translateX(10px) rotate(1.5deg);
+    }
+  }
+}
+
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    /* No `scrollbar-gutter` here — see `.has-classic-scrollbars` below. */
+    /* Without this, mobile WebKit/Chrome flash their own translucent grey-blue
+       overlay over whatever's tapped — on the gold buttons that mixes to a
+       dull green for the split second before the release. Every press effect
+       on the site is already hand-drawn (`.btn-type:active`, `whileTap`), so
+       the browser's own highlight is a bug here, not a fallback. */
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-plum-950);
+    color: var(--color-plum-900);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  img {
+    -webkit-user-drag: none;
+    user-select: none;
+  }
+
+  ::selection {
+    background: var(--color-gold-500);
+    color: var(--color-plum-900);
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-gold-500);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}
+
+@layer utilities {
+  /* Keeps every floating layer on its own compositor layer so scroll stays smooth */
+  .layer {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
+  .owl-shadow {
+    filter: drop-shadow(0 24px 22px rgb(54 14 57 / 0.28));
+  }
+
+  .text-shadow-soft {
+    text-shadow: 0 2px 24px rgb(255 255 255 / 0.65);
+  }
+
+  /**
+   * Every button's type. Momo Trust Sans at rest, snapping to Luckiest Guy for
+   * as long as the press is held.
+   *
+   * A single class rather than `font-ui active:font-pop` so the pair can never
+   * drift apart, and so `:active` also covers keyboard activation and touch,
+   * which a JS press handler would have to reimplement.
+   *
+   * Luckiest Guy is a single-weight display face — the explicit `400` stops the
+   * browser synthesising a bold from it, which smears its already-heavy stems.
+   * It is also markedly wider than Momo at the same size, so a pressed button
+   * grows a little. That is the effect, not a bug; `will-change` keeps the
+   * repaint off the main layout path.
+   */
+  .btn-type {
+    font-family: var(--font-ui);
+  }
+
+  /**
+   * Hover swap: Momo Trust Sans at rest, Luckiest Guy while the pointer sits
+   * over the button. Explicit `400` for the same reason as the `@font-face`
+   * above — Luckiest Guy is single-weight, and without this the browser
+   * synthesises a bold that smears its already-heavy stems.
+   *
+   * Luckiest Guy is markedly wider than Momo at the same size, so the label
+   * (and the button around it) grows a little under the cursor. That is the
+   * requested effect here, not a bug — see the `:active` comment below for
+   * the same trade-off previously rejected for the *press* state.
+   */
+  .btn-type:hover {
+    font-family: var(--font-pop);
+    font-weight: 400;
+  }
+
+  .btn-type:active {
+    /* No face swap. This used to switch to `--font-pop` (Luckiest Guy) for the
+       duration of a press — a deliberate flourish, but Luckiest Guy is markedly
+       wider than Momo at the same size, so the label grew and the button
+       resized under the pointer. Reported as the font changing on hover, which
+       is what a press on the way to a click looks like. The press now reads
+       through the ledge and the 2px travel alone. */
+    /* The ledge stays the BUTTON's own colour while pressed — gold under a gold
+       pill, teal under a teal one — rather than every button in the page going
+       plum the moment it is touched.
+     *
+     * It was a flat `var(--color-plum-900)` here. Setting it centrally is right,
+     * because `.btn-type:active` outranks the single-class shadow utilities the
+     * buttons carry and so lands without `!important` — but a single colour
+     * meant the press threw away the one thing that told you which button you
+     * were on. Each variant now declares `--btn-ledge` next to its resting
+     * shadow, and this reads it; the plum is only the fallback for anything
+     * that has not.
+     *
+     * Shallower than the 10px resting ledge because the button also drops 2px
+     * under the tap — the two together read as travel.
+     *
+     * The soft drop under it is a warm near-black now, not plum. Plum is the
+     * page's shadow colour and reads as a neutral shadow on the light sections
+     * — but the final CTA's ground is near-black, and a plum shadow on that
+     * renders as a visible purple glow under the button rather than as shade.
+     * rgb(20 12 10) is the same tone as that ground, so it darkens on every
+     * section instead of tinting on one. */
+    box-shadow:
+      0 6px 0 -2px var(--btn-ledge, var(--color-plum-900)),
+      0 18px 30px -16px rgb(20 12 10 / 0.7);
+  }
+}
+
+/**
+ * Reserving the scrollbar's width, but ONLY where the scrollbar actually takes
+ * width. `main.jsx` measures a probe element at startup and sets this class.
+ *
+ * The gate toggles `overflow: hidden` on <html>. Without a reserved gutter,
+ * releasing it makes a classic scrollbar appear and narrows the viewport by
+ * ~15px mid-flight — every `vw`-sized layer reflows at once, which read as the
+ * page glitching just as the jet left. That is what `scrollbar-gutter: stable`
+ * was on <html> for.
+ *
+ * Unconditionally, though, it is wrong. Windows 11 paints OVERLAY scrollbars by
+ * default, which float over the content and take no width — but `stable` still
+ * cuts the gutter out of the content box, so <body> ends up 15px narrower than
+ * the viewport and pinned to the left. Measured: 1288 of viewport against 1258
+ * of body, every in-flow element — hero text, nav pill, the lot — centred on
+ * 636.5 against a visual centre of 644. That 7.5px was the entire page sitting
+ * off centre, and no amount of centring INSIDE a section can correct it, since
+ * the box it centres in is itself the thing that is short.
+ *
+ * `stable both-edges` centres it again but is worse to look at: it reserves the
+ * gutter on the left as well, and with nothing to fill it the plum <body> shows
+ * as a dark 15px band down the side of the sky.
+ *
+ * So it is applied only on the systems it was written for, where the scrollbar
+ * fills the gutter and there is no band and no off-centre page either way.
+ */
+.has-classic-scrollbars {
+  scrollbar-gutter: stable;
+}
+
+/**
+ * The intro gates the page. While `is-gated` is on <html> nothing below the
+ * landing screen can be reached — `overflow: hidden` on both elements, since
+ * either one alone still leaves the other scrollable in some browsers.
+ */
+.is-gated,
+.is-gated body {
+  overflow: hidden;
+}
+
+/**
+ * The dive locks the page the same way: while `is-diving` is on <html>,
+ * scrolling away mid-flight would leave the plane's own animation running
+ * against a section no longer in view — the visitor is meant to watch it
+ * land, not wander off partway through. Lifted the instant the dive ends
+ * (`NestView.jsx`), same as `is-gated` lifts the moment the intro releases.
+ */
+.is-diving,
+.is-diving body {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
