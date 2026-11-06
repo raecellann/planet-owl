@@ -270,7 +270,7 @@ export default function NestTeaser() {
           11. Every pixel this block takes off the top is a pixel off the owl's
           height cap below it; the 7.5rem floor is the part that actually clears
           the navbar, and that is untouched. */}
-      <div className="relative z-20 mx-auto mt-[clamp(3.25rem,7.5svh,5.5rem)] w-full max-w-4xl px-5 text-center sm:px-8">
+      <div className="relative z-20 mx-auto mt-[clamp(6rem,12svh,7rem)] w-full max-w-4xl sm:mt-[clamp(3.25rem,7.5svh,5.5rem)] px-5 text-center sm:px-8">
         <Reveal y={36}>
           {/* `max-w-4xl` above and a smaller cap here, and the pair of them
               is one fix for one bug: the heading was rendering in THREE lines

@@ -6,6 +6,22 @@ stays responsive and reacts to scroll and cursor.
 
 ---
 
+## Email sign-ups
+
+Both sign-up pills — the footer band and the "Start a Project" popup behind the navbar's gold
+button — go through `src/lib/signup.js`. Where the email ends up is decided by `.env` (copy
+`.env.example`):
+
+| Variable               | Effect                                                                                              |
+| ---------------------- | --------------------------------------------------------------------------------------------------- |
+| `VITE_FORM_ENDPOINT`   | Set: the email is POSTed there as JSON (`{ email, source, page }`). Written for Formspree — create a form at formspree.io, paste its `https://formspree.io/f/…` URL. Any JSON-accepting form backend works. |
+| `VITE_FORM_ACCESS_KEY` | Optional, Web3Forms only — sent as `access_key`.                                                     |
+| `VITE_CONTACT_EMAIL`   | Inbox for the fallback and for the final CTA's mail link. Defaults to `hello@planetowl.studio`.      |
+
+With no endpoint set the pill still works: it opens the visitor's mail client with a message to
+`VITE_CONTACT_EMAIL` that already carries their address. The variables are read at build time, so
+set them in the host's environment (Vercel/Netlify) as well as locally, and rebuild after changing them.
+
 ## Stack
 
 | Concern | Choice |

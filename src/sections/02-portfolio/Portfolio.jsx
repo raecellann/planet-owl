@@ -91,7 +91,7 @@ export default function Portfolio() {
       // island's underside still in frame, so the heading needs a beat of
       // clearance under them — but `sm:pt-44`, tried first, bought so much of
       // it that the gap became the feature.
-      className="relative overflow-hidden bg-[linear-gradient(180deg,#eef3fb_0%,#e3ebfb_55%,#dfe7fa_100%)] pb-24 pt-20 sm:pb-32 sm:pt-28"
+      className="relative overflow-hidden bg-[linear-gradient(180deg,#eef3fb_0%,#e3ebfb_55%,#dfe7fa_100%)] pb-20 pt-10 sm:pb-32 sm:pt-28"
     >
       {/* 1616 of the frame's 1920 — the design's own content column */}
       <div className="mx-auto max-w-[1616px] px-5 sm:px-8">

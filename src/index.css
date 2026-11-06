@@ -314,3 +314,12 @@
     transition-duration: 0.001ms !important;
   }
 }
+
+/**
+ * The "Start a Project" popup locks the page the same way the intro's gate
+ * does: while it is open the only thing that scrolls is the popup itself.
+ */
+.is-modal,
+.is-modal body {
+  overflow: hidden;
+}

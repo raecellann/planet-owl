@@ -530,7 +530,7 @@ export default function NestView({ onReveal }) {
         // city layer inside, which has its own `scale` and its own
         // `transformOrigin` on the window in the tower.
         style={{ opacity: shot, x: '-50%', y: panelY, transformOrigin: `${HOLE.x} ${HOLE.y}` }}
-        className={`absolute left-1/2 top-1/2 w-full bg-[#140c0a] ${CAVE_RATIO}`}
+        className={`absolute left-1/2 top-1/2 w-[max(100%,calc(100svh*1057/1192))] bg-[#140c0a] ${CAVE_RATIO}`}
       >
         {/* INNER CLIPPED CONTAINER FOR BACKGROUNDS */}
         {/* The cave does NOT scale. It is the window the camera looks

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'motion/react'
 import { A, NAV_LINKS } from '../lib/assets'
 import { GoldButton } from './ui/Button'
+import StartProjectModal from './StartProjectModal'
 
 /**
  * Proportions follow the `Frame 21` export: a white pill roughly 85px tall on a
@@ -11,6 +12,15 @@ import { GoldButton } from './ui/Button'
 export default function Nav({ entered = true }) {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  // The "Start a Project" popup. Both pills below (desktop row and the
+  // phone drawer) open the same one; it lives here because this is the one
+  // component both of them are rendered from.
+  const [projectOpen, setProjectOpen] = useState(false)
+  const openProject = (e) => {
+    e.preventDefault()
+    setOpen(false)
+    setProjectOpen(true)
+  }
   // Initialised synchronously from `matchMedia` so the collapsed pill is
   // painted on the first frame at desktop widths — otherwise the full pill
   // flashes for a tick before the effect below runs and collapses it.
@@ -227,6 +237,7 @@ export default function Nav({ entered = true }) {
               // so this pill no longer rises under the pointer. `whileTap` is
               // untouched — the click travel still reads.
               whileHover={{}}
+              onClick={openProject}
               // `reserveHoverWidth` pre-books Luckiest Guy's wider box in an
               // invisible copy of the label, so `.btn-type:hover`'s font swap
               // can fire without the pill widening around it. Without this
@@ -300,6 +311,7 @@ export default function Nav({ entered = true }) {
                 withOwl
                 iconSrc={A.buttonOwl}
                 iconAsBadge
+                onClick={openProject}
                 className="w-full justify-center"
               >
                 Start a Project
@@ -308,6 +320,8 @@ export default function Nav({ entered = true }) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <StartProjectModal open={projectOpen} onClose={() => setProjectOpen(false)} />
     </motion.header>
   )
 }

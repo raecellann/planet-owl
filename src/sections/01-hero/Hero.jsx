@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   motion,
   useMotionTemplate,
@@ -135,6 +135,21 @@ const HERO_OWLS = [
     rise: 0, drift: 4, spin: 2, depth: 3,
   },
 ]
+
+/** True below Tailwind's `lg` (1024px) — the phone/tablet layouts. */
+function useNarrowViewport() {
+  const [narrow, setNarrow] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(max-width: 1023px)').matches,
+  )
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 1023px)')
+    const update = () => setNarrow(mq.matches)
+    update()
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [])
+  return narrow
+}
 
 export default function Hero() {
   const sectionRef = useRef(null)
@@ -326,7 +341,14 @@ export default function Hero() {
    * Bringing a 2.4x owl into frame would have meant pulling it left, back
    * toward the middle - the exact move that read wrong before.
    */
-  const broomScale = useTransform(p, P_BROOM, to(0.8, 1.15, 1.75, 1.75, 3, 3.5))
+  // Smaller fly-past on phones: at 3.5x the broom owl filled a 390px screen
+  // edge to edge and hid the island for most of the scroll.
+  const narrow = useNarrowViewport()
+  const broomScale = useTransform(
+    p,
+    P_BROOM,
+    narrow ? to(0.8, 1.05, 1.35, 1.35, 1.9, 2.2) : to(0.8, 1.15, 1.75, 1.75, 3, 3.5),
+  )
 
   /**
    * Vertical travel, ending far past the window rather than easing to a stop.
@@ -488,7 +510,7 @@ export default function Hero() {
               className="text-shadow-soft mt-[min(1rem,1.8svh)] max-w-xl font-ui text-[clamp(0.85rem,min(1.1vw,1.8svh),1.05rem)] font-normal leading-relaxed text-plum-600"
             >
               Every design is refined before it reaches you — so you get
-              <br />
+              <br className="hidden sm:block" />
               faster output, cleaner results, and zero chaos.
             </motion.p>
 

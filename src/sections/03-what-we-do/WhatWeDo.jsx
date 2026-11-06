@@ -208,7 +208,7 @@ export default function WhatWeDo() {
     // a little to spare, and does it here — on the section the plane
     // reaches INTO — rather than by shortening that reach and undercutting
     // the "crossing the gold band" effect its own placement is built for.
-    <section id="what-we-do" className="relative overflow-hidden bg-white pb-[11vw] pt-24 sm:pt-32">
+    <section id="what-we-do" className="relative overflow-hidden bg-white pb-[11vw] pt-12 sm:pt-32">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[linear-gradient(180deg,#dfe7fa_0%,rgba(255,255,255,0)_100%)]" />
 
       {/* The puff, on the section's own right edge with exactly half of it
@@ -368,7 +368,7 @@ export default function WhatWeDo() {
             measured at 1440 the real stack is 0.4724 of the column against
             the formula's 0.4778, about 5% of slack - so this clears all four
             crafts at every width rather than the one it was checked at. */}
-        <div className="relative mt-1 h-[max(12rem,48vw)] overflow-hidden sm:h-[max(19rem,41vw)] lg:-mt-[3%] lg:h-[calc(min(1594px,100vw-4rem)*0.41)]">
+        <div className="relative mt-1 overflow-hidden lg:-mt-[3%] lg:h-[calc(min(1594px,100vw-4rem)*0.41)]">
           <AnimatePresence initial={false} custom={dir} mode="popLayout">
             <motion.div
               key={craft.title}
@@ -389,7 +389,7 @@ export default function WhatWeDo() {
                  It was `1.05fr 1fr`, which handed the list 47% of the row where
                  the design gives it 17%. That is what opened the "dead gap" the
                  old comment blamed on the column being too wide. */
-              className="absolute inset-0 grid content-start gap-6 lg:grid-cols-[minmax(0,1232fr)_minmax(0,277fr)] lg:items-start lg:gap-[5.33%]"
+              className="relative grid content-start gap-6 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end lg:absolute lg:inset-0 lg:grid-cols-[minmax(0,1232fr)_minmax(0,277fr)] lg:items-start lg:gap-[5.33%]"
             >
               {/* `--word` is the craft's own type size, published here so the
                   OWL can be placed against it. See its `marginTop`. */}
@@ -547,7 +547,7 @@ export default function WhatWeDo() {
                 initial={reduce ? false : { opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.45, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
-                className="lg:pt-10"
+                className="sm:pb-4 lg:pb-0 lg:pt-10"
               >
                 {craft.items.map((item) => (
                   <li
@@ -607,7 +607,7 @@ export default function WhatWeDo() {
             {/* `mt-12` (~half an inch) drops the pair lower against the rail
                 without touching the lift math above — that negative margin is
                 sized off the rail/owl and shifting it would move both. */}
-            <div className="relative mt-12 flex items-center gap-[clamp(0.75rem,1.25vw,1.5rem)]">
+            <div className="relative mt-6 flex items-center gap-[clamp(0.75rem,1.25vw,1.5rem)] lg:mt-12">
               <Arrow
                 label={`Previous craft, ${CRAFTS[(i - 1 + CRAFTS.length) % CRAFTS.length].title}`}
                 onClick={() => go(-1)}

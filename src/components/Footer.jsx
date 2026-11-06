@@ -1,7 +1,6 @@
-import { useState } from 'react'
-import { motion } from 'motion/react'
 import { A, FOOTER_LINKS } from '../lib/assets'
 import Reveal from './ui/Reveal'
+import SignupForm from './SignupForm'
 
 /**
  * The gold footer band, per the section 9 exports.
@@ -154,7 +153,7 @@ export default function Footer() {
           </Reveal>
 
           <Reveal y={28} delay={0.12}>
-            <Signup />
+            <SignupForm source="footer" className="mt-12 sm:mt-16" />
           </Reveal>
 
           {/* ---------------------------------------------- the lockup ----
@@ -222,136 +221,5 @@ export default function Footer() {
         </div>
       </div>
     </footer>
-  )
-}
-
-/**
- * The sign-up pill. Front-end only — there is no endpoint behind it.
- *
- * The button lives INSIDE the input's pill in the design, so the outer element
- * is the bordered pill and the field inside it is borderless.
- */
-function Signup() {
-  const [email, setEmail] = useState('')
-  const [sent, setSent] = useState(false)
-
-  return (
-    <div className="mt-12 sm:mt-16">
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          setSent(true)
-        }}
-        // Sized to match the navbar's own pill (`Nav.jsx`'s `py-3.5` bar) rather
-        // than the taller ~12%-of-column figure the Figma layer gave — the two
-        // pills sit far enough apart on the page that "12% tall to the design"
-        // read as inconsistent against the one at the top of the same site.
-        //
-        // Sized by its ASPECT against the reference, in `vw`, so the shape
-        // holds at every width instead of only at the one it was checked at.
-        //
-        // The reference draws this pill at 12.5:1. The bar's width is set by
-        // the band's own `4.22vw` inset, so it is always about 91.6% of the
-        // window - which makes the height that holds 12.5:1 a fixed 7.3vw,
-        // whatever the window is. A pixel height could only be right at one
-        // size: 88px was 14.1:1 at 1266 and would have been 20:1 at 1920.
-        //
-        // `max()` not `min()`, so the 4.5rem is a FLOOR for phones (7.3vw of
-        // 390px is 28px, too short to set a label in) and can never cap the
-        // bar the way a ceiling would.
-        //
-        // For scale: this started at 216/240px, which was 5:1 - a pill mostly
-        // full of empty white. It was floored at the navbar's own 72/80 after being cut
-        // down from 216/240, and at 80px against a 1240px-wide bar that is
-        // 17.5:1 - the reference draws it at 14.5:1, which is why it read as
-        // too thin. 88px puts it at 14.1:1. (The original 240px was 5:1, a
-        // pill mostly full of empty white.)
-        //
-        // It was floored at 216 and 240 - three times the navbar - and that is
-        // what made the footer read as oversized: a 240px-tall pill holding one
-        // line of text and a 52px button is mostly empty white, and it pushed
-        // everything below it down by the surplus. In the reference this is a
-        // single-line input bar, about the same height as the bar at the top of
-        // the page. It stays a `min-h` rather than a fixed height so it can
-        // still grow if its contents ever need more (it wraps to two rows below
-        // `sm`), and `justify-center` keeps the input and the button on the
-        // middle line.
-        //
-        // The two children still measure 52px each — the input from `sm:py-3`
-        // around a `text-xl` line box (24 + 28), the button from its own
-        // padding and badge — so neither can quietly set the height between
-        // them. Width needs no work: this sits inside the footer band, which
-        // already carries the header's own `max-w-[1758px]` and `4.22vw`
-        // inset.
-        className="flex min-h-[76px] flex-col justify-center gap-4 rounded-[2.5rem] border-[3px] border-plum-900 bg-white p-2 shadow-[0_7px_0_0_var(--color-plum-900)] sm:min-h-[max(4.5rem,7.3vw)] sm:flex-row sm:items-center sm:rounded-full sm:p-[max(0.5rem,0.85vw)]"
-      >
-        <label className="sr-only" htmlFor="signup-email">
-          Email address
-        </label>
-        <input
-          id="signup-email"
-          type="email"
-          required
-          value={email}
-          onChange={(e) => {
-            setEmail(e.target.value)
-            setSent(false)
-          }}
-          placeholder="Enter your email here!"
-          className="min-w-0 flex-1 bg-transparent px-5 py-2.5 font-display text-base font-semibold text-plum-900 placeholder:text-plum-900/70 focus:outline-none sm:px-7 sm:py-3 sm:text-xl"
-        />
-        <motion.button
-          type="submit"
-          whileHover={{ y: -3 }}
-          whileTap={{ y: 2 }}
-          transition={{ type: 'spring', stiffness: 420, damping: 24 }}
-          // `sm:py-2` and a `size-9` badge at every width, not `py-2.5` and
-          // `size-10`. This button is the tallest thing in the pill, so it is
-          // what sets the pill's height, and at 60px (20 of padding around a
-          // 40px badge) it pushed the bar to 86 against the navbar's 80 —
-          // enough to read as a different, chunkier component at the other
-          // end of the same page. 16 + 36 = 52 matches `GoldButton`'s own
-          // `h-[52px]`, which is what the nav's CTA stands at, and brings the
-          // pill to 78: 3px of border either side, 10 of padding, 52 of
-          // button.
-          // Sized OFF THE PILL, not off its own contents.
-          //
-          // It was content-height - `py-2` around a `text-lg` line and a
-          // `size-9` badge, about 52px - which was fine while the bar was
-          // 80px, and stopped being fine the moment the bar went to 7.3vw:
-          // at 1920 that is a 140px pill with a 52px button floating in the
-          // middle of it and white space above and below. The reference has
-          // the button nearly filling the bar.
-          //
-          // 5.6vw against the pill's 7.3vw, with the pill's own 0.85vw
-          // padding on each side, adds back to exactly 7.3 - so the button
-          // fills the bar at every width by construction rather than by a
-          // figure that happens to fit at one size. The label, the badge and
-          // its arrow all follow in the same unit; left in `rem` they would
-          // have stayed small inside a growing button, which is the same bug
-          // one level down.
-          //
-          // Every `max()` here is a FLOOR for phones, never a ceiling.
-          className="btn-type group inline-flex shrink-0 items-center justify-center gap-3 rounded-full bg-teal-500 py-2 pl-6 pr-1.5 text-base font-semibold text-white shadow-[0_6px_0_-2px_var(--color-plum-900)] transition-colors hover:bg-teal-400 sm:h-[max(3rem,5.6vw)] sm:py-0 sm:pl-[max(1.5rem,2.2vw)] sm:pr-[max(0.375rem,0.5vw)] sm:text-[max(0.95rem,1.3vw)]"
-        >
-          Get Free 2-Week Trial
-          <span className="grid size-9 shrink-0 place-items-center rounded-full bg-gold-500 text-plum-900 shadow-[0_3px_0_0_var(--color-plum-900)] transition-transform duration-300 group-hover:translate-x-0.5 sm:size-[max(2.25rem,4.2vw)]">
-            <svg viewBox="0 0 24 24" className="size-5 sm:size-[max(1.25rem,2.2vw)]" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M4 12h15M13 6l6 6-6 6" />
-            </svg>
-          </span>
-        </motion.button>
-      </form>
-
-      <p
-        role="status"
-        aria-live="polite"
-        className={`mt-3 px-2 font-display text-sm font-semibold text-plum-900 transition-opacity duration-300 ${
-          sent ? 'opacity-100' : 'opacity-0'
-        }`}
-      >
-        {sent ? `Thanks — we will be in touch at ${email}.` : ' '}
-      </p>
-    </div>
   )
 }

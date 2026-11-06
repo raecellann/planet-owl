@@ -178,7 +178,7 @@ export default function TheFlock() {
         whileInView={{ opacity: 1, x: 0, y: 0, rotate: 0 }}
         viewport={{ once: true, margin: '-10% 0px' }}
         transition={{ duration: 1.1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-        className="owl-shadow pointer-events-none absolute -top-[12.5rem] right-[-4%] z-10 w-[52%] select-none sm:-top-[20vw] sm:right-[0vw] sm:w-[28%]"
+        className="owl-shadow pointer-events-none absolute -top-[5.5rem] right-[-6%] z-10 w-[42%] select-none sm:-top-[20vw] sm:right-[0vw] sm:w-[28%]"
       />
 
 
@@ -267,7 +267,7 @@ export default function TheFlock() {
         // `-bottom-28`, down from `-bottom-16` — pushed an extra half inch
         // (48px, `-16`→`-28` on Tailwind's 4px scale) further below the
         // band, per direct feedback that it sat too high.
-        className="owl-shadow pointer-events-none absolute -bottom-28 left-[-11%] z-10 w-[48%] max-w-[540px] select-none sm:left-[-9%] sm:w-[38%]"
+        className="owl-shadow pointer-events-none absolute -bottom-10 left-[-11%] z-10 w-[44%] max-w-[540px] select-none sm:-bottom-28 sm:left-[-9%] sm:w-[38%]"
       />
     </section>
   )

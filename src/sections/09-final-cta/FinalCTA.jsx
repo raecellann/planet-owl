@@ -2,6 +2,7 @@ import { motion, useReducedMotion } from 'motion/react'
 import { A } from '../../lib/assets'
 import Reveal from '../../components/ui/Reveal'
 import { GoldButton } from '../../components/ui/Button'
+import { CONTACT_EMAIL } from '../../lib/signup'
 
 // Fixed positions so the sky never reshuffles between renders.
 const STARS = [
@@ -134,7 +135,7 @@ export default function FinalCTA() {
               into his face rather than letterbox the whole plane inside the
               circle. */}
           <GoldButton
-            href="mailto:hello@planetowl.studio"
+            href={`mailto:${CONTACT_EMAIL}`}
             withOwl
             iconSrc={A.owl.pilot}
             iconFit="cover"
