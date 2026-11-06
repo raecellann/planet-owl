@@ -602,7 +602,7 @@ export default function WhatWeDo() {
               fully inside the rail; something was being drawn on top of it.
               Giving back the same distance below leaves the group lifted and
               the section the height it had. */}
-          <div className="relative z-20 mt-2 grid gap-6 lg:-mt-[min(28vw,31rem)] lg:mb-[min(28vw,31rem)] lg:grid-cols-[minmax(0,1232fr)_minmax(0,277fr)] lg:gap-[5.33%]">
+          <div className="relative z-20 mt-2 grid gap-6 lg:-mt-[calc(min(1594px,100vw-4rem)*0.21-2rem)] lg:mb-[calc(min(1594px,100vw-4rem)*0.21-2rem)] lg:grid-cols-[minmax(0,1232fr)_minmax(0,277fr)] lg:gap-[5.33%]">
             <div className="hidden lg:block" />
             {/* `mt-12` (~half an inch) drops the pair lower against the rail
                 without touching the lift math above — that negative margin is
