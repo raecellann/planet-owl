@@ -32,11 +32,11 @@ const HERO_MOTION = true
  */
 const ISLAND_BOX =
   'absolute left-1/2 aspect-[1400/1322] ' +
-  'top-[74svh] sm:top-[70svh] w-[min(207vw,calc(115svh_*_1.059))] ' +
+  'top-[66svh] w-[min(150vw,calc(100svh_*_1.059))] sm:top-[70svh] sm:w-[min(207vw,calc(115svh_*_1.059))] ' +
   'lg:top-[clamp(34rem,40vw,38rem)] lg:w-[min(115vw,calc(104svh_*_1.059))]'
 
 // Height for the full sticky scroll sequence
-const HERO_HEIGHT = 'h-[300svh] lg:h-[300svh]'
+const HERO_HEIGHT = 'h-[220svh] lg:h-[300svh]'
 
 /**
  * How far a click into the island pushes in. 2.6 is about as far as the plate
@@ -268,9 +268,13 @@ export default function Hero() {
   const skyScale = useTransform(p, [0, 1], to(1, 1.18))
 
   // FIXED: Increased scale to 1.5 to fit the screen, and massive pull-up (-110vh) to clear the mist completely.
+  const narrow = useNarrowViewport()
   const islandYNum = useTransform(p, [0, 0.5, 1], to(0, -45, -110))
   const islandY = useMotionTemplate`${islandYNum}vh`
-  const islandScale = useTransform(p, [0, 0.5, 1], to(0.75, 1.1, 1.5))
+  // Phones: the island is already most of the screen at rest, so the push-in
+  // is gentler — at 1.5x it became a crop of the building with the owl's
+  // wing filling the frame.
+  const islandScale = useTransform(p, [0, 0.5, 1], narrow ? to(0.9, 1.05, 1.2) : to(0.75, 1.1, 1.5))
   const islandRotate = useTransform(p, [0, 1], to(0, -1.2))
   
   const islandMx = useTransform(px, (v) => v * 18)
@@ -343,11 +347,10 @@ export default function Hero() {
    */
   // Smaller fly-past on phones: at 3.5x the broom owl filled a 390px screen
   // edge to edge and hid the island for most of the scroll.
-  const narrow = useNarrowViewport()
   const broomScale = useTransform(
     p,
     P_BROOM,
-    narrow ? to(0.8, 1.05, 1.35, 1.35, 1.9, 2.2) : to(0.8, 1.15, 1.75, 1.75, 3, 3.5),
+    narrow ? to(0.8, 1.0, 1.2, 1.2, 1.5, 1.7) : to(0.8, 1.15, 1.75, 1.75, 3, 3.5),
   )
 
   /**
@@ -509,7 +512,7 @@ export default function Hero() {
               transition={{ duration: 0.9, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
               className="text-shadow-soft mt-[min(1rem,1.8svh)] max-w-xl font-ui text-[clamp(0.85rem,min(1.1vw,1.8svh),1.05rem)] font-normal leading-relaxed text-plum-600"
             >
-              Every design is refined before it reaches you — so you get
+              Every design is refined before it reaches you — so you get{' '}
               <br className="hidden sm:block" />
               faster output, cleaner results, and zero chaos.
             </motion.p>
