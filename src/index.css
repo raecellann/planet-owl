@@ -126,6 +126,8 @@
        on the site is already hand-drawn (`.btn-type:active`, `whileTap`), so
        the browser's own highlight is a bug here, not a fallback. */
     -webkit-tap-highlight-color: transparent;
+    /* `clip`, not `hidden`, on BOTH elements — see `body` below. */
+    overflow-x: clip;
   }
 
   body {
@@ -135,7 +137,19 @@
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-    overflow-x: hidden;
+    /* Keeps the sections' off-canvas art (planes, clouds, the hero island)
+       from giving the page a sideways scroll.
+
+       `clip`, not `hidden`. `overflow-x: hidden` makes <body> a scroll
+       container, and on iOS Safari that has two visible consequences: every
+       `position: sticky` inside it stops sticking — the hero's sky scrolled
+       away with the page and left the plum body showing under the island —
+       and the layout viewport is allowed to grow to the widest child, so the
+       fixed navbar spilled off the right edge of the screen. `clip` only
+       clips; it creates no scroll container, so sticky keeps working and the
+       viewport stays the width of the screen. Set on <html> as well because
+       on mobile the root is what the viewport is sized from. */
+    overflow-x: clip;
   }
 
   h1,
