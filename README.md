@@ -14,13 +14,13 @@ button — go through `src/lib/signup.js`. Where the email ends up is decided by
 
 | Variable               | Effect                                                                                              |
 | ---------------------- | --------------------------------------------------------------------------------------------------- |
-| `VITE_FORM_ENDPOINT`   | Set: the email is POSTed there as JSON (`{ email, source, page }`). Written for Formspree — create a form at formspree.io, paste its `https://formspree.io/f/…` URL. Any JSON-accepting form backend works. |
+| `VITE_FORM_ENDPOINT`   | Where the email is POSTed as JSON (`{ email, source, page }`). Defaults to the studio's Formspree form `https://formspree.io/f/mgaaqbpv` (delivers to archiegemini@gmail.com; manage it at formspree.io/forms). Set to another form's URL to change it, or to `mailto` to open the visitor's mail client instead. |
 | `VITE_FORM_ACCESS_KEY` | Optional, Web3Forms only — sent as `access_key`.                                                     |
 | `VITE_CONTACT_EMAIL`   | Inbox for the fallback and for the final CTA's mail link. Defaults to `hello@planetowl.studio`.      |
 
-With no endpoint set the pill still works: it opens the visitor's mail client with a message to
-`VITE_CONTACT_EMAIL` that already carries their address. The variables are read at build time, so
-set them in the host's environment (Vercel/Netlify) as well as locally, and rebuild after changing them.
+Nothing needs configuring on the host for delivery to work — the default form is in the code.
+The variables are read at build time, so if you do override them, set them in the host's
+environment (Vercel/Netlify) as well as locally, and rebuild.
 
 ## Stack
 

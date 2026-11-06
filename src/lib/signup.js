@@ -10,14 +10,27 @@
  *      `VITE_FORM_ACCESS_KEY` is optional and is sent along as `access_key`,
  *      which is what Web3Forms expects if that is used instead.
  *
- *   2. Nothing set — the browser's mail client opens with a message to
+ *   2. Set to the empty string? No — unset falls back to the studio's own
+ *      Formspree form below. Only an endpoint that fails leaves the pill
+ *      reporting an error. (The mailto path remains for a build that sets
+ *      `VITE_FORM_ENDPOINT=mailto`.)
+ *
+ *      With `mailto` — the browser's mail client opens with a message to
  *      `VITE_CONTACT_EMAIL` (falling back to the studio address) with the
  *      visitor's email in the body. Nothing is lost if the endpoint has not
  *      been configured yet, it is just one more step for the visitor.
  *
  * See `.env.example` and the README's "Email sign-ups" section.
  */
-const ENDPOINT = import.meta.env.VITE_FORM_ENDPOINT?.trim()
+/**
+ * The studio's own Formspree form ("Planet Owl sign-ups", delivering to the
+ * studio inbox). Baked in as the default so the live site needs no host
+ * configuration; a Formspree id is public by design — it is in the HTML of
+ * every site that uses one — so there is nothing to keep out of the repo.
+ * `VITE_FORM_ENDPOINT` still overrides it, e.g. for a staging form.
+ */
+const DEFAULT_ENDPOINT = 'https://formspree.io/f/mgaaqbpv'
+const ENDPOINT = import.meta.env.VITE_FORM_ENDPOINT?.trim() || DEFAULT_ENDPOINT
 const ACCESS_KEY = import.meta.env.VITE_FORM_ACCESS_KEY?.trim()
 export const CONTACT_EMAIL = import.meta.env.VITE_CONTACT_EMAIL?.trim() || 'hello@planetowl.studio'
 
@@ -38,7 +51,7 @@ export async function submitSignup({ email, source = 'site' }) {
   const address = String(email || '').trim()
   if (!isValidEmail(address)) throw new Error('That does not look like an email address.')
 
-  if (!ENDPOINT) {
+  if (ENDPOINT === 'mailto') {
     const subject = encodeURIComponent('Free 2-week trial request — Planet Owl')
     const body = encodeURIComponent(
       `Hi Planet Owl,\n\nI'd like to start a project / claim the free 2-week trial.\n\nMy email: ${address}\nSent from: ${source}\n`,
