@@ -130,11 +130,27 @@ export const A = {
     /** Cut out of the promise ribbon, still on its gold badge. */
     promise: asset('promise-owl.webp'),
   },
+  /**
+   * Client work for the portfolio gallery, built from `assets/portfolio/`.
+   * `relevanceSite` is the lead tile's own 2.4 ratio and the two after it are
+   * landscape for the row; everything else is a square for the grid.
+   */
   work: {
-    /** 1616x673. The play badge is painted in — do not overlay another. */
-    lead: asset('work-lead.webp'),
-    observatory: asset('work-observatory.webp'),
-    street: asset('work-street.webp'),
+    relevanceSite: asset('work-relevance-site.webp'),
+    relevanceBrand: asset('work-relevance-brand.webp'),
+    rummageRush: asset('work-rummage-rush.webp'),
+    lowellQuicks: asset('work-lowell-quicks.webp'),
+    lowellHybrid: asset('work-lowell-hybrid.webp'),
+    twinRamsMaserati: asset('work-twinrams-maserati.webp'),
+    twinRamsSnake: asset('work-twinrams-snake.webp'),
+    twinRamsMatch: asset('work-twinrams-match.webp'),
+    jollyRecap: asset('work-jolly-recap.webp'),
+    sgmdCover: asset('work-sgmd-cover.webp'),
+    sgmdChallenge: asset('work-sgmd-challenge.webp'),
+    padfolioStreet: asset('work-padfolio-street.webp'),
+    padfolioOffice: asset('work-padfolio-office.webp'),
+    emailMystique: asset('work-email-mystique.webp'),
+    emailEquine: asset('work-email-equine.webp'),
   },
   flock: {
     wide: asset('flock-wide.webp'),

@@ -3,7 +3,6 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { A } from '../../lib/assets'
 import Reveal from '../../components/ui/Reveal'
 import { GoldButton } from '../../components/ui/Button'
-import CursorPlayBadge, { useCursorPlayBadge } from '../../components/ui/CursorPlayBadge'
 /**
  * The whole-cloud plate. The previous export (`main page clouds/image 34 (2)`)
  * was cut down its own right edge — alpha averaged 134 there against 0 on the
@@ -25,31 +24,164 @@ const FILTERS = [
 ]
 
 /**
- * Each piece carries every craft that went into it rather than one label, which
- * is what lets the default chip ("Video", first and active, as in the design)
- * show the whole gallery while every other chip still narrows to a real subset.
+ * The studio's client work. Each piece carries every craft that went into it
+ * rather than one label, so a 3D-rendered social post turns up under both
+ * "Graphic" and "3D".
+ *
+ * Three shapes, and the shape decides where a piece is hung:
+ *
+ *   lead   the 1616x673 tile at the top; there is one
+ *   wide   landscape art for the 787x466 row under it
+ *   (none) a square, for the grid behind "See more projects"
+ *
+ * `title` is the client or project and `kind` what was made for them; the two
+ * together are the caption. `href` is set only where there is a live thing to
+ * open. Everything else is a picture and is not wrapped in a link.
  */
 const WORK = [
   {
-    id: 'floating-city',
-    src: A.work.lead,
-    alt: 'A floating island city pouring a waterfall into the clouds',
-    tags: ['video', '3d', 'website'],
+    id: 'relevance-site',
+    src: A.work.relevanceSite,
+    title: 'Relevance Studio',
+    kind: 'Website',
+    alt: 'The Relevance Studio homepage: a navy hero reading "The recruiting platform that runs your hiring process" beside a photo of three colleagues',
+    tags: ['website'],
+    href: 'https://www.relevance.studio/en',
     lead: true,
   },
   {
-    id: 'observatory',
-    src: A.work.observatory,
-    alt: 'An observatory building with owls in flight above the plaza',
-    tags: ['video', 'graphic', 'website'],
+    id: 'relevance-brand',
+    src: A.work.relevanceBrand,
+    title: 'Relevance Studio',
+    kind: 'Brand guidelines',
+    alt: 'The Relevance Studio logo on four brand colours: white, ultramarine, peach and orange',
+    tags: ['graphic'],
+    wide: true,
   },
   {
-    id: 'skyline-run',
-    src: A.work.street,
-    alt: 'An aerial view of a city street with owls flying over a bus',
-    tags: ['video', '3d', 'apps', 'ai'],
+    id: 'rummage-rush',
+    src: A.work.rummageRush,
+    title: 'Rummage Rush',
+    kind: '3D game art',
+    alt: 'Voxel characters and recycling bins on a conveyor above the Rummage Rush logo',
+    tags: ['3d', 'apps'],
+    wide: true,
+  },
+  {
+    id: 'twinrams-maserati',
+    src: A.work.twinRamsMaserati,
+    title: 'Twin Rams × Maserati MSG Racing',
+    kind: 'Social post',
+    alt: 'A faceted blue ram mounted on a racing car under the line "Official Regional Search Partner"',
+    tags: ['graphic', '3d'],
+  },
+  {
+    id: 'lowell-quicks',
+    src: A.work.lowellQuicks,
+    title: 'Lowell Smokes Quicks',
+    kind: 'Packaging',
+    alt: 'Two kraft Lowell Smokes cartons, one open to show its contents',
+    tags: ['graphic', '3d'],
+  },
+  {
+    id: 'sgmd-cover',
+    src: A.work.sgmdCover,
+    title: 'SGMD',
+    kind: 'AI-illustrated carousel',
+    alt: 'A cartoon lion in scrubs at a desk beside the headline "Daily Actions to Make a Difference"',
+    tags: ['graphic', 'ai'],
+  },
+  {
+    id: 'jolly-recap',
+    src: A.work.jollyRecap,
+    title: 'Jolly Sports',
+    kind: 'Player recap',
+    alt: 'A basketball player celebrating over the words "MVP of the Game" and a 22-point stat',
+    tags: ['graphic'],
+  },
+  {
+    id: 'padfolio-street',
+    src: A.work.padfolioStreet,
+    title: 'Leather Padfolio',
+    kind: 'E-commerce lifestyle image',
+    alt: 'A man in a checked blazer carrying a brown leather padfolio, captioned "Perfect for on-the-go"',
+    tags: ['graphic'],
+  },
+  {
+    id: 'email-mystique',
+    src: A.work.emailMystique,
+    title: 'Mystique Dining',
+    kind: 'Email design',
+    alt: 'Red velvet curtains opening on a gilded dining room, headed "Host Your Private Event at Mystique Dining"',
+    tags: ['graphic'],
+  },
+  {
+    id: 'twinrams-snake',
+    src: A.work.twinRamsSnake,
+    title: 'Twin Rams',
+    kind: 'Lunar New Year post',
+    alt: 'A faceted snake and two rams on red lacquer podiums under "Year of the Snake Marketing Forecast"',
+    tags: ['graphic', '3d'],
+  },
+  {
+    id: 'lowell-hybrid',
+    src: A.work.lowellHybrid,
+    title: 'Lowell Smokes',
+    kind: 'Packaging',
+    alt: 'An open kraft Lowell Smokes carton with an illustrated sleeve',
+    tags: ['graphic', '3d'],
+  },
+  {
+    id: 'sgmd-challenge',
+    src: A.work.sgmdChallenge,
+    title: 'SGMD',
+    kind: 'AI-illustrated carousel',
+    alt: 'A cartoon lion in scrubs on a green hill under "Choose 1 brave thing from this challenge and do it today"',
+    tags: ['graphic', 'ai'],
+  },
+  {
+    id: 'padfolio-office',
+    src: A.work.padfolioOffice,
+    title: 'Leather Padfolio',
+    kind: 'E-commerce lifestyle image',
+    alt: 'A woman in a taupe suit holding a coffee cup with a leather padfolio under her arm',
+    tags: ['graphic'],
+  },
+  {
+    id: 'email-equine',
+    src: A.work.emailEquine,
+    title: 'Equine Supply Store',
+    kind: 'Email design',
+    alt: 'A chestnut horse beside "Final Hours to Save!" and a pink "Save $40 Off" ribbon',
+    tags: ['graphic'],
+  },
+  {
+    id: 'twinrams-match',
+    src: A.work.twinRamsMatch,
+    title: 'Twin Rams',
+    kind: 'Social ad',
+    alt: 'A faceted blue ram holding a phone showing a dating-app card, with "Relationships are complicated."',
+    tags: ['graphic', '3d'],
   },
 ]
+
+/**
+ * Only the crafts there is work to show for get a chip. "Video" has nothing
+ * tagged with it yet, so it stays off the bar until a piece is, and comes back
+ * by itself when one is added to `WORK`.
+ */
+const CHIPS = FILTERS.filter((f) => WORK.some((w) => w.tags.includes(f.id)))
+
+function Caption({ work }) {
+  return (
+    <figcaption className="mt-3 px-1 text-left sm:mt-4">
+      <span className="block text-[0.95rem] font-bold leading-snug text-plum-800 sm:text-base">
+        {work.title}
+      </span>
+      <span className="block text-sm leading-snug text-plum-600">{work.kind}</span>
+    </figcaption>
+  )
+}
 
 /**
  * SECTION 2 — the gallery, straight after the hero hands off.
@@ -75,14 +207,18 @@ const WORK = [
  * the row line up with the lead tile above it.
  */
 export default function Portfolio() {
-  const [filter, setFilter] = useState(FILTERS[0].id)
-  const shown = WORK.filter((w) => w.tags.includes(filter))
+  // `null` is the whole gallery. A chip narrows it and a second press on the
+  // same chip lets it go again, so no chip has to stand in for "everything".
+  const [filter, setFilter] = useState(null)
+  const [expanded, setExpanded] = useState(false)
+  const shown = filter ? WORK.filter((w) => w.tags.includes(filter)) : WORK
   const lead = shown.find((w) => w.lead)
-  const rest = shown.filter((w) => !w.lead)
+  const row = shown.filter((w) => w.wide)
+  const squares = shown.filter((w) => !w.lead && !w.wide)
+  // Unfiltered, the squares wait behind the button. Choosing a craft is asking
+  // to see it, so a filter opens the grid without a second click.
+  const gridOpen = expanded || filter !== null
   const reduce = useReducedMotion()
-
-  // The play badge that rides the cursor across the lead tile.
-  const play = useCursorPlayBadge()
 
   return (
     <section
@@ -119,7 +255,7 @@ export default function Portfolio() {
             flat export so the chips stay real buttons. */}
         <Reveal y={26} delay={0.16} className="mt-10 flex justify-center lg:mt-16">
           <div
-            role="tablist"
+            role="group"
             aria-label="Filter projects"
             /* The capsule gets the ledge too, in PLUM rather than in a darker
                shade of its own gold. The chips inside already press off a
@@ -135,15 +271,14 @@ export default function Portfolio() {
                2.5rem of capsule padding. */
             className="inline-flex max-w-full flex-wrap items-center justify-center gap-1.5 rounded-[2.5rem] bg-gold-500 p-2 shadow-[0_8px_0_-2px_var(--color-plum-900),0_26px_44px_-20px_rgba(54,14,57,0.6)] sm:rounded-full sm:p-2.5"
           >
-            {FILTERS.map((f) => {
+            {CHIPS.map((f) => {
               const active = f.id === filter
               return (
                 <motion.button
                   key={f.id}
                   type="button"
-                  role="tab"
-                  aria-selected={active}
-                  onClick={() => setFilter(f.id)}
+                  aria-pressed={active}
+                  onClick={() => setFilter(active ? null : f.id)}
                   whileTap={{ y: 2 }}
                   transition={{ type: 'spring', stiffness: 420, damping: 24 }}
                   // Presses onto plum, like every other button on the page —
@@ -258,8 +393,15 @@ export default function Portfolio() {
             // and `-left-[11%]` puts most of its body outside the frame so
             // what shows is a cloud passing the tile rather than one parked
             // on it.
+            //
+            // BEHIND the tile now (`z-0`), where it used to ride over it at
+            // `z-[15]`. Over the placeholder photograph that read as weather
+            // on the corner. The lead is a website capture now, and its
+            // headline sits in exactly that corner, so the cloud was covering
+            // the one line of the piece a visitor is meant to read. Behind,
+            // the two fifths of it that hang outside the frame still show.
             style={{ transform: 'scaleX(-1)' }}
-            className="pointer-events-none absolute -left-[16.8%] -top-[7%] z-[15] w-[42%] select-none"
+            className="pointer-events-none absolute -left-[16.8%] -top-[7%] z-0 w-[42%] select-none"
           />
           {/* No puff on the top-RIGHT corner. It was the upper-left one's
               counterpart, drawn on the same terms — but that corner is also
@@ -418,13 +560,12 @@ export default function Portfolio() {
                 // sliver showed through the gap between them.
                 className="group relative z-10 m-0"
               >
-                {/* The handlers sit on the LINK, which is the clipped box the
-                    picture actually fills — putting them on the figure would
-                    have the badge chasing the cursor across the pilot that
-                    overhangs outside it too. */}
+                {/* The one tile that opens something: the live site, in a
+                    new tab. */}
                 <a
-                  href="#portfolio"
-                  {...play.handlers}
+                  href={lead.href}
+                  target="_blank"
+                  rel="noreferrer"
                   className="relative block overflow-hidden rounded-[1.75rem] lg:rounded-[2rem]"
                 >
                   <img
@@ -434,7 +575,20 @@ export default function Portfolio() {
                     className="aspect-[1616/673] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
                   />
 
-                  <CursorPlayBadge {...play} size={44} />
+                  {/* The caption rides inside the picture here, where the row
+                      and the grid set theirs underneath: this block's height
+                      is fixed by its ratio and everything hung off it is
+                      placed against that, so a line of text below the tile
+                      would land in the gap the row is spaced by. Bottom-left
+                      is the capture's own empty navy. */}
+                  <figcaption className="absolute bottom-[4%] left-[2.5%] flex max-w-[70%] items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold text-plum-800 shadow-[0_10px_24px_-12px_rgba(54,14,57,0.6)] sm:px-4 sm:py-2 sm:text-sm">
+                    <span className="truncate">
+                      {lead.title}
+                      <span className="font-normal text-plum-600"> · {lead.kind}</span>
+                    </span>
+                    <span aria-hidden className="text-teal-600">↗</span>
+                    <span className="sr-only">(opens in a new tab)</span>
+                  </figcaption>
                 </a>
 
                 {/* The lead tile used to carry its OWN pilot here — a
@@ -472,7 +626,7 @@ export default function Portfolio() {
             figure before and separates it from the block that now contains
             just that figure. */}
         <div className="relative mt-5 lg:mt-16">
-        {rest.length > 0 && (
+        {row.length > 0 && (
           <>
           {/* No puff on the row's top-left corner any more. It was placed
               clear of the pilot owl baked into the observatory photo —
@@ -570,10 +724,10 @@ export default function Portfolio() {
               of them an empty cell the width of a tile. */}
           <motion.div
             layout
-            className={`grid gap-5 lg:gap-[2.625rem] ${rest.length > 1 ? 'sm:grid-cols-2' : 'sm:mx-auto sm:max-w-[calc(50%-1.3rem)]'}`}
+            className={`grid gap-5 lg:gap-[2.625rem] ${row.length > 1 ? 'sm:grid-cols-2' : 'sm:mx-auto sm:max-w-[calc(50%-1.3rem)]'}`}
           >
             <AnimatePresence mode="popLayout">
-              {rest.map((w) => (
+              {row.map((w) => (
                 <motion.figure
                   key={w.id}
                   layout
@@ -581,43 +735,84 @@ export default function Portfolio() {
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.94, y: -12 }}
                   transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                  className="group m-0 overflow-hidden rounded-[1.75rem] lg:rounded-[2rem]"
+                  className="m-0"
                 >
-                  {/* Flip applied to the LINK wrapper, not the `<img>` itself.
-                      (The image used to carry a `group-hover:scale-[1.04]`
-                      zoom, which is gone — these tiles do not open anything,
-                      so a control-like response to the pointer was promising
-                      something that never arrived.)
-
-                      Plain `transform: scaleX(-1)` via inline style, not
-                      Tailwind's `-scale-x-100` utility — that utility
-                      compiles to the standalone CSS `scale` property rather
-                      than `transform`, which is what every other mirrored
-                      image on this site (the owls) already uses via
-                      Motion's own `style={{ scaleX: -1 }}`, and matching
-                      that proven, universally-supported property is safer
-                      than the newer one. */}
-                  <a
-                    href="#portfolio"
-                    className="block"
-                    style={w.id === 'observatory' ? { transform: 'scaleX(-1)' } : undefined}
-                  >
+                  {/* Not links, and no hover zoom: these tiles do not open
+                      anything, so a control-like response to the pointer
+                      would be promising something that never arrives. */}
+                  <div className="overflow-hidden rounded-[1.75rem] lg:rounded-[2rem]">
                     <img
                       src={w.src}
                       alt={w.alt}
                       loading="lazy"
                       className="aspect-[787/466] w-full object-cover"
                     />
-                  </a>
+                  </div>
+                  <Caption work={w} />
                 </motion.figure>
               ))}
             </AnimatePresence>
           </motion.div>
         </div>
 
-        <Reveal delay={0.1} className="mt-10 flex justify-center lg:mt-16">
-          <GoldButton href="#portfolio" className="h-[52px]">See more projects</GoldButton>
-        </Reveal>
+        {/* --------------------------------------------------------- grid --
+            The square pieces. Two columns on a phone, three from `sm`, four
+            from `lg`: there are twelve, which all three divide, so the last
+            row is full at every width. */}
+        {gridOpen && squares.length > 0 && (
+          <motion.div
+            layout
+            id="portfolio-more"
+            className="relative z-10 mt-8 grid grid-cols-2 gap-x-4 gap-y-7 sm:grid-cols-3 sm:gap-x-5 lg:mt-16 lg:grid-cols-4 lg:gap-x-[2.625rem] lg:gap-y-12"
+          >
+            <AnimatePresence mode="popLayout">
+              {squares.map((w, i) => (
+                <motion.figure
+                  key={w.id}
+                  layout
+                  initial={reduce ? false : { opacity: 0, scale: 0.94, y: 24 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.94, y: -12 }}
+                  transition={{
+                    duration: 0.45,
+                    delay: reduce ? 0 : Math.min(i, 8) * 0.04,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                  className="m-0"
+                >
+                  <div className="overflow-hidden rounded-2xl sm:rounded-[1.75rem]">
+                    <img
+                      src={w.src}
+                      alt={w.alt}
+                      loading="lazy"
+                      className="aspect-square w-full object-cover"
+                    />
+                  </div>
+                  <Caption work={w} />
+                </motion.figure>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        )}
+
+        {/* Only while there is something for it to do. With a craft chosen the
+            grid is already open, so the button would have nothing to add. */}
+        {filter === null && (
+          <Reveal delay={0.1} className="mt-10 flex justify-center lg:mt-16">
+            <GoldButton
+              href="#portfolio-more"
+              role="button"
+              aria-expanded={expanded}
+              onClick={(e) => {
+                e.preventDefault()
+                setExpanded((v) => !v)
+              }}
+              className="h-[52px]"
+            >
+              {expanded ? 'Show fewer projects' : 'See more projects'}
+            </GoldButton>
+          </Reveal>
+        )}
       </div>
     </section>
   )
