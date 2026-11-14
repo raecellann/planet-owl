@@ -1,8 +1,9 @@
+import { useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 import { A } from '../../lib/assets'
 import Reveal from '../../components/ui/Reveal'
 import { GoldButton } from '../../components/ui/Button'
-import { CONTACT_EMAIL } from '../../lib/signup'
+import StartProjectModal from '../../components/StartProjectModal'
 
 // Fixed positions so the sky never reshuffles between renders.
 const STARS = [
@@ -23,6 +24,8 @@ const STARS = [
  */
 export default function FinalCTA() {
   const reduce = useReducedMotion()
+  // Opens the same "Start a Project" popup the navbar's pill does.
+  const [projectOpen, setProjectOpen] = useState(false)
 
   return (
     // Pulled UP under the nest so the two overlap rather than abut, and its
@@ -110,11 +113,15 @@ export default function FinalCTA() {
         ))}
       </div>
 
-      <div className="relative mx-auto max-w-3xl px-5 text-center sm:px-8">
+      <div className="relative mx-auto max-w-5xl px-5 text-center sm:px-8">
         <Reveal y={40}>
+          {/* Two lines from `sm` up: the container is wide enough for the
+              longer second line, and `nowrap` on each half stops either one
+              breaking again. Phones still wrap naturally. */}
           <h2 className="font-ui text-[clamp(1.9rem,4.6vw,3.35rem)] font-bold leading-[1.1] text-gold-500">
-            Ready to Build Something the
-            <br className="hidden sm:block" /> Internet Has Not Seen Yet?
+            <span className="sm:whitespace-nowrap">Ready to Build Something</span>
+            <br className="hidden sm:block" />{' '}
+            <span className="sm:whitespace-nowrap">the Internet Has Not Seen Yet?</span>
           </h2>
         </Reveal>
         <Reveal y={30} delay={0.1}>
@@ -129,22 +136,24 @@ export default function FinalCTA() {
           </p>
         </Reveal>
         <Reveal y={24} delay={0.18} className="mt-9">
-          {/* `Frame 10.png`'s own badge — the pilot's face, not the flat
-              brand mark `withOwl` draws by default elsewhere (the nav's
-              "Start a Project"). White disc, and `iconFit="cover"` to crop
-              into his face rather than letterbox the whole plane inside the
-              circle. */}
+          {/* Same badge, sizing and popup as the navbar's "Start a Project"
+              pill, so the two primary actions read as one button. */}
           <GoldButton
-            href={`mailto:${CONTACT_EMAIL}`}
+            href="#start"
             withOwl
-            iconSrc={A.owl.pilot}
-            iconFit="cover"
+            iconSrc={A.buttonOwl}
+            iconAsBadge
+            onClick={(e) => {
+              e.preventDefault()
+              setProjectOpen(true)
+            }}
             className="h-[52px]"
           >
             Book a Discovery Flight
           </GoldButton>
         </Reveal>
       </div>
+      <StartProjectModal open={projectOpen} onClose={() => setProjectOpen(false)} />
     </section>
   )
 }

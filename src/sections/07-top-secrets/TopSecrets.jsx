@@ -398,9 +398,16 @@ export default function TopSecrets() {
         />
       </motion.div>
 
-      <div className="relative z-10 mx-auto max-w-6xl px-5 sm:px-8">
+      <div className="relative z-10 mx-auto max-w-6xl px-5 sm:px-8 lg:max-w-none lg:px-0">
         {/* ------------------------------------------------- the secrets -- */}
-        <div className="mt-10 space-y-8 sm:mt-14 sm:space-y-10">
+        {/* On desktop the run of secrets is pinned to the heading's own
+            lettering rather than to a fixed-width column. The plate is
+            full-bleed, and in its 2071px file the gold "Top Secrets" spans
+            x = 189 → 1833, i.e. 9.1% → 88.5% of the width. A `max-w-6xl`
+            column stayed 1152px wide while the heading kept growing, so above
+            ~1920px the cards sat well inside the title. Padding in `vw` makes
+            the column the same share of the window the lettering is. */}
+        <div className="mt-10 space-y-8 sm:mt-14 sm:space-y-10 lg:pl-[9.1vw] lg:pr-[11.5vw]">
           {SECRETS.map((s, i) => {
             const flipped = i % 2 === 1
             const landed = i === 0
@@ -463,21 +470,21 @@ export default function TopSecrets() {
                 )}
 
                 <article
-                  className="grid items-center gap-10 lg:grid-cols-[1fr_1.35fr] lg:gap-16"
+                  className="grid items-center gap-10 lg:grid-cols-[1fr_1.5fr] lg:gap-[4vw]"
                 >
                 <Reveal
                   y={44}
                   {...(landed ? { onMount: true, delay: 0.5 } : {})}
-                  className={`pl-12 pr-2 sm:pr-4 lg:pr-0 ${flipped ? 'lg:order-2' : ''}`}
+                  className={`pl-12 pr-2 sm:pr-4 lg:px-0 ${flipped ? 'lg:order-2' : ''}`}
                 >
-                  <span className="font-ui text-[clamp(2.5rem,6vw,4.5rem)] font-bold leading-none text-gold-500">
+                  <span className="font-ui text-[clamp(2.5rem,5vw,8rem)] font-bold leading-none text-gold-500">
                     {s.n}
                   </span>
-                  <h3 className="mt-2 font-ui text-[clamp(1.45rem,3.2vw,2.35rem)] font-bold leading-[1.15] text-gold-500">
+                  <h3 className="mt-2 font-ui text-[clamp(1.45rem,2.6vw,4.25rem)] font-bold leading-[1.15] text-gold-500">
                     {s.title[0]}
                     <br className="hidden sm:block" /> {s.title[1]}
                   </h3>
-                  <p className="mt-4 max-w-lg font-ui leading-relaxed text-gold-500">{s.copy}</p>
+                  <p className="mt-4 max-w-[34em] font-ui text-[clamp(1rem,1.1vw,1.75rem)] leading-relaxed text-gold-500">{s.copy}</p>
                 </Reveal>
 
                 <Reveal
@@ -529,7 +536,7 @@ function Partners({ copyRef }) {
 
 function Peephole({ src, alt, glow, eager }) {
   return (
-    <div className="relative mx-auto w-full max-w-[37rem]">
+    <div className="relative mx-auto w-full max-w-[37rem] lg:max-w-none">
       {glow && (
         <div className="pointer-events-none absolute inset-[-12%] rounded-full bg-[radial-gradient(circle,rgba(240,185,57,0.22)_0%,rgba(240,185,57,0)_66%)]" />
       )}

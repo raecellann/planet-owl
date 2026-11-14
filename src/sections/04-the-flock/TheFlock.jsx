@@ -1,4 +1,4 @@
-import { motion } from 'motion/react'
+import { motion, useReducedMotion } from 'motion/react'
 import { A } from '../../lib/assets'
 import Reveal from '../../components/ui/Reveal'
 import { GoldButton, TealButton } from '../../components/ui/Button'
@@ -68,6 +68,7 @@ const CARDS = [
 
 /** SECTION 4 — careers, on the gold band, where the sky starts turning to dusk. */
 export default function TheFlock() {
+  const reduce = useReducedMotion()
   return (
     <section
       id="the-flock"
@@ -167,19 +168,28 @@ export default function TheFlock() {
           ANY transform value animates — true here too, opacity alone still
           puts Motion in charge of the element's `transform`, and a
           class-based flip would be dropped the instant the fly-in runs. */}
-      <motion.img
-        src={A.owl.front}
-        alt=""
+      {/* Entrance on the outer box, float on the inner image: both animate
+          `y`/`rotate`, so on one element the loop would cancel the fly-in. The
+          float is a slow bob with a little pitch, offset so the nose leads. */}
+      <motion.div
         aria-hidden
-        loading="lazy"
-        draggable={false}
-        style={{ scaleX: -1 }}
         initial={{ opacity: 0, x: 36, y: -30, rotate: 10 }}
         whileInView={{ opacity: 1, x: 0, y: 0, rotate: 0 }}
         viewport={{ once: true, margin: '-10% 0px' }}
         transition={{ duration: 1.1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-        className="owl-shadow pointer-events-none absolute -top-[5.5rem] right-[-6%] z-10 w-[42%] select-none sm:-top-[20vw] sm:right-[0vw] sm:w-[28%]"
-      />
+        className="pointer-events-none absolute -top-[5.5rem] right-[-6%] z-10 w-[42%] select-none sm:-top-[20vw] sm:right-[0vw] sm:w-[28%]"
+      >
+        <motion.img
+          src={A.owl.front}
+          alt=""
+          loading="lazy"
+          draggable={false}
+          style={{ scaleX: -1 }}
+          animate={reduce ? undefined : { y: ['0%', '-4%', '0%', '3%', '0%'], rotate: [0, -1.5, 0, 1.2, 0] }}
+          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+          className="owl-shadow block w-full"
+        />
+      </motion.div>
 
 
       {/* `pt-32` drops the heading clear of the band's torn top edge — up

@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom'
 import { useEffect, useRef } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { A } from '../lib/assets'
@@ -82,7 +83,9 @@ export default function StartProjectModal({ open, onClose }) {
     }
   }, [open, onClose])
 
-  return (
+  // Portalled to <body> so a parent's transform or stacking context (the
+  // final CTA section renders one of these too) cannot trap the fixed overlay.
+  return createPortal(
     <AnimatePresence>
       {open && (
         <motion.div
@@ -157,6 +160,7 @@ export default function StartProjectModal({ open, onClose }) {
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   )
 }

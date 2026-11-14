@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, useReducedMotion, useScroll, useSpring, useTransform } from 'motion/react'
 import { A } from '../../lib/assets'
 
@@ -91,6 +91,8 @@ const OWL_GO = [0.38, 0.52]
  * earlier; every other layer keyed on PUSH moves up with it.
  */
 const PUSH = [0.28, 0.78]
+/** The opening tilt: from the whole arch down onto the hole. */
+const TILT = [0, 0.16]
 const CLOSE = [0.76, 0.97]
 const REVEAL_AT = 0.6
 
@@ -172,15 +174,20 @@ export default function NestView({ onReveal }) {
   // Four stops, not three. Apparent size goes as 1/distance, so an even
   // approach is nearly flat early and near-vertical at the end; spread evenly
   // the last stretch would crawl while the first raced.
+  // The zoom now STARTS WITH THE PILOT (`OWL[0]`) rather than waiting for
+  // `PUSH`: the city creeps in to 1.35x while he grows toward camera, so the
+  // background travels with him from his first frame instead of sitting
+  // still behind him and only moving once he is already leaving.
   const cityScale = useTransform(
     p,
     [
-      PUSH[0],
+      OWL[0],
+      OWL[1],
       PUSH[0] + (PUSH[1] - PUSH[0]) * 0.55,
       PUSH[0] + (PUSH[1] - PUSH[0]) * 0.82,
       PUSH[1],
     ],
-    at(1, 2.6, 9, 60),
+    at(1, 1.35, 2.6, 9, 60),
   )
 
   /**
@@ -328,7 +335,37 @@ export default function NestView({ onReveal }) {
   // this holds at any window shape — which is the point. Fixed, the pane's
   // final position depended on how tall the window happened to be against a
   // panel of fixed ratio, so the shot framed up differently on every screen.
-  const panelY = useTransform(p, [PUSH[0], PAN_ENDS], at('-53.5%', '-43.9%'))
+  //
+  // It also OPENS higher now. Pinned straight onto the hole, the cave's whole
+  // dark upper wall sat above the window and the city ran directly under the
+  // branch, so the first frame read as a close-up rather than the arch in the
+  // reference. The panel now starts with its own top on the frame's top (the
+  // branch over the dark wall, the opening low in shot) and tilts down onto
+  // the hole across `TILT`, while the pilot is rising into the opening.
+  //
+  // In PIXELS, from measured sizes, because the three positions mix two
+  // units: the frame's height and the panel's.
+  const frameRef = useRef(null)
+  const panelRef = useRef(null)
+  const [dims, setDims] = useState({ f: 0, h: 0 })
+  useEffect(() => {
+    const read = () =>
+      setDims({ f: frameRef.current?.offsetHeight ?? 0, h: panelRef.current?.offsetHeight ?? 0 })
+    read()
+    const ro = new ResizeObserver(read)
+    if (frameRef.current) ro.observe(frameRef.current)
+    if (panelRef.current) ro.observe(panelRef.current)
+    return () => ro.disconnect()
+  }, [])
+  const atHole = dims.f / 2 - 0.535 * dims.h
+  const atPane = dims.f / 2 - 0.439 * dims.h
+  const panelY = useTransform(p, (v) => {
+    if (reduce) return atHole
+    if (v <= TILT[1]) return Math.min(1, Math.max(0, v / TILT[1])) * atHole
+    if (v <= PUSH[0]) return atHole
+    const t = Math.min(1, (v - PUSH[0]) / (PAN_ENDS - PUSH[0]))
+    return atHole + (atPane - atHole) * t
+  })
 
   // The dark pane on the glass facade — the doorway — opening.
   //
@@ -472,7 +509,7 @@ export default function NestView({ onReveal }) {
        * That is the point — it grows with the branch, so the clearance under
        * the wizard holds at every width.
        */
-      className="relative z-10 w-full pt-[calc(27.8vw+2rem)] sm:pt-[calc(22.2vw+2rem)] lg:pt-[calc(19.5vw+2rem)] xl:pt-[calc(18.1vw+2rem)] 2xl:pt-[calc(17.4vw+2rem)]"
+      className="relative z-10 w-full pt-[calc(27.8vw+2rem)] sm:pt-[calc(19.5vw+2rem)] lg:pt-[calc(14.6vw+2rem)]"
     >
 
       {/* The white only covers the branch's clearance, not the whole section.
@@ -481,7 +518,7 @@ export default function NestView({ onReveal }) {
           of the shot, because what is behind it is Top Secrets. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-[calc(27.8vw+2rem)] bg-white sm:h-[calc(22.2vw+2rem)] lg:h-[calc(19.5vw+2rem)] xl:h-[calc(18.1vw+2rem)] 2xl:h-[calc(17.4vw+2rem)]"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[calc(27.8vw+2rem)] bg-white sm:h-[calc(19.5vw+2rem)] lg:h-[calc(14.6vw+2rem)]"
       />
 
       <div ref={trackRef} className="relative h-[200svh]">
@@ -501,7 +538,7 @@ export default function NestView({ onReveal }) {
         <motion.div
           aria-hidden
           style={{ x: '-50%', y: branchY, scale: branchScale }}
-          className="pointer-events-none absolute left-1/2 top-0 z-40 w-[200%] max-w-none origin-top select-none sm:w-[160%] lg:w-[140%] xl:w-[130%] 2xl:w-[125%]"
+          className="pointer-events-none absolute left-1/2 top-0 z-40 w-[200%] max-w-none origin-top select-none sm:w-[140%] lg:w-[105%]"
         >
           <img
             src={A.nest.branch}
@@ -511,7 +548,7 @@ export default function NestView({ onReveal }) {
             className="w-full [mask-image:linear-gradient(180deg,#000_0%,#000_58%,transparent_92%)]"
           />
         </motion.div>
-        <div className="sticky top-0 h-[100svh] w-full overflow-hidden">
+        <div ref={frameRef} className="sticky top-0 h-[100svh] w-full overflow-hidden">
           {/* Centred on the HOLE rather than on the panel's own middle: the
               opening sits 53.5% down the plate, and it is what the visitor
               has to be looking at for the whole sequence. The panel overflows
@@ -529,8 +566,9 @@ export default function NestView({ onReveal }) {
         // nothing animates off it any more — the zoom lives entirely on the
         // city layer inside, which has its own `scale` and its own
         // `transformOrigin` on the window in the tower.
+        ref={panelRef}
         style={{ opacity: shot, x: '-50%', y: panelY, transformOrigin: `${HOLE.x} ${HOLE.y}` }}
-        className={`absolute left-1/2 top-1/2 w-[max(100%,calc(100svh*1057/1192))] bg-[#140c0a] ${CAVE_RATIO}`}
+        className={`absolute left-1/2 top-0 w-[max(100%,calc(100svh*1057/1192))] bg-[#140c0a] ${CAVE_RATIO}`}
       >
         {/* INNER CLIPPED CONTAINER FOR BACKGROUNDS */}
         {/* The cave does NOT scale. It is the window the camera looks
