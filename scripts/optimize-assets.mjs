@@ -6,7 +6,7 @@
  * Re-run it whenever new art lands. It is idempotent — every output is derived
  * only from the source file, so nothing drifts.
  */
-import { mkdir, readdir, stat } from 'node:fs/promises'
+import { mkdir, readdir, stat, writeFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import sharp from 'sharp'
@@ -47,52 +47,6 @@ const CUTOUTS = {
   // is the older source this replaced.
   'container/Frame 2087325473.png': { name: 'work-lead', width: 1616, trim: false },
 
-  // --- section 2 · portfolio, the real work ---------------------------------
-  // Client pieces from the studio's shared Portfolio drive, copied into
-  // `assets/portfolio/` under readable names. All `trim: false` unless noted:
-  // these are finished, opaque artwork, so there is no margin to remove.
-  //
-  // The lead tile. A 1920x800 capture of relevance.studio at 2x (3840x1600),
-  // which is the tile's own 1616x673 ratio, so nothing is cropped. Shipped
-  // wider than the 1616 column so the site's small type survives a retina
-  // screen.
-  'portfolio/relevance-studio-site.png': { name: 'work-relevance-site', width: 2400, trim: false },
-  // Page 10 of the brand guidelines PDF, rendered at 144dpi (3840x2160). The
-  // crop is the four-colour logo board on its own, measured to the board's
-  // edge, without the page's margin or its column of body copy.
-  'portfolio/relevance-brand-guidelines-p10.png': {
-    name: 'work-relevance-brand',
-    width: 1500,
-    trim: false,
-    extract: { left: 958, top: 369, width: 2732, height: 1513 },
-  },
-  'portfolio/rummage-rush-cover.png': { name: 'work-rummage-rush', width: 1500, trim: false },
-  // The two packaging renders are cut-outs on transparency. `flatten` sets
-  // them on a card of their own rather than on whatever is behind the tile.
-  'portfolio/lowell-smokes-quicks.png': { name: 'work-lowell-quicks', width: 900, trim: false, flatten: '#e9e1d3' },
-  'portfolio/lowell-smokes-hybrid.png': { name: 'work-lowell-hybrid', width: 900, trim: false, flatten: '#e9e1d3' },
-  'portfolio/twin-rams-maserati.png': { name: 'work-twinrams-maserati', width: 900, trim: false },
-  'portfolio/twin-rams-year-of-the-snake.jpg': { name: 'work-twinrams-snake', width: 900, trim: false },
-  'portfolio/twin-rams-relationships.jpg': { name: 'work-twinrams-match', width: 900, trim: false },
-  'portfolio/jolly-sports-player-recap.png': { name: 'work-jolly-recap', width: 900, trim: false },
-  'portfolio/sgmd-carousel-cover.jpg': { name: 'work-sgmd-cover', width: 900, trim: false },
-  'portfolio/sgmd-carousel-challenge.jpg': { name: 'work-sgmd-challenge', width: 900, trim: false },
-  'portfolio/padfolio-lifestyle-street.png': { name: 'work-padfolio-street', width: 900, trim: false },
-  'portfolio/padfolio-lifestyle-office.png': { name: 'work-padfolio-office', width: 900, trim: false },
-  // Emails are one long column (1280x7292 and 600x3470). The tile shows the
-  // opening screen of each: a square off the top.
-  'portfolio/email-mystic-dining.png': {
-    name: 'work-email-mystique',
-    width: 900,
-    trim: false,
-    extract: { left: 0, top: 0, width: 1280, height: 1280 },
-  },
-  'portfolio/email-pet-supply.png': {
-    name: 'work-email-equine',
-    width: 900,
-    trim: false,
-    extract: { left: 0, top: 0, width: 600, height: 600 },
-  },
   // The play badge that rides the cursor across the lead tile. It used to be
   // painted into the tile export itself, which is why it could not be made to
   // move; this re-export drops it, and it ships as its own 45x45 cut-out
@@ -495,10 +449,72 @@ async function build(rel, { name, width, trim = true, extract, extend, keyWhite 
   )
 }
 
+/**
+ * The portfolio's client work, which is not listed file by file like the
+ * cut-outs above. Every folder in `assets/portfolio/` is one brand and every
+ * image in it one piece of that brand's album, in filename order:
+ *
+ *   assets/portfolio/twin-rams/01-maserati.jpg
+ *     -> public/assets/work/twin-rams/01-maserati.webp        the album size
+ *     -> public/assets/work/twin-rams/01-maserati.thumb.webp  the gallery tile
+ *
+ * The thumb is cut to at most 4:5 from the top, so a nine-thousand-pixel email
+ * does not become a tile that tall. A file named `cover.*` is the brand's tile
+ * only and stays out of its album.
+ *
+ * What it found is written to `work-manifest.json` beside the gallery, with
+ * each file's size, so `work.js` only has to say what a brand is called and
+ * never has to list its pictures. Drop a file in a folder, run this, done.
+ */
+const WORK_SRC = join(SRC, 'portfolio')
+const WORK_OUT = join(OUT, 'work')
+const WORK_MANIFEST = join(ROOT, 'src', 'sections', '02-portfolio', 'work-manifest.json')
+const FULL_WIDTH = 1600
+const THUMB_WIDTH = 720
+const THUMB_MAX_RATIO = 1.25 // height / width
+
+async function buildPortfolio() {
+  let brands
+  try {
+    brands = (await readdir(WORK_SRC, { withFileTypes: true })).filter((d) => d.isDirectory())
+  } catch {
+    return
+  }
+  console.log('\nPortfolio albums -> public/assets/work\n')
+  const manifest = {}
+  for (const { name: brand } of brands.sort((a, b) => a.name.localeCompare(b.name))) {
+    await mkdir(join(WORK_OUT, brand), { recursive: true })
+    const files = (await readdir(join(WORK_SRC, brand))).filter((f) => /\.(png|jpe?g|webp)$/i.test(f)).sort()
+    manifest[brand] = []
+    for (const file of files) {
+      const base = file.replace(/\.[^.]+$/, '')
+      const from = join(WORK_SRC, brand, file)
+      const full = await sharp(from)
+        .resize({ width: FULL_WIDTH, withoutEnlargement: true })
+        .webp({ quality: 84, effort: 6 })
+        .toFile(join(WORK_OUT, brand, `${base}.webp`))
+
+      const meta = await sharp(from).metadata()
+      const tw = Math.min(THUMB_WIDTH, meta.width)
+      const th = Math.min(Math.round((meta.height / meta.width) * tw), Math.round(tw * THUMB_MAX_RATIO))
+      const thumb = await sharp(from)
+        .resize({ width: tw, height: th, fit: 'cover', position: 'top' })
+        .webp({ quality: 82, effort: 6 })
+        .toFile(join(WORK_OUT, brand, `${base}.thumb.webp`))
+
+      manifest[brand].push({ name: base, w: full.width, h: full.height, tw: thumb.width, th: thumb.height })
+    }
+    console.log(`  ok     ${brand.padEnd(24)} ${files.length} file${files.length === 1 ? '' : 's'}`)
+  }
+  await writeFile(WORK_MANIFEST, JSON.stringify(manifest, null, 2) + '\n')
+}
+
 async function main() {
   await mkdir(OUT, { recursive: true })
   console.log('\nOptimising cut-outs -> public/assets\n')
   for (const [rel, opts] of Object.entries(CUTOUTS)) await build(rel, opts)
+
+  await buildPortfolio()
 
   const kept = (await readdir(OUT)).filter((f) => /\.(png|jpg)$/.test(f))
   console.log(`\nLeft as-is: ${kept.join(', ')}\n`)

@@ -1,0 +1,602 @@
+{
+  "ayala-group": [
+    {
+      "name": "01-film",
+      "w": 1280,
+      "h": 720,
+      "tw": 720,
+      "th": 405
+    }
+  ],
+  "cpo": [
+    {
+      "name": "01-email",
+      "w": 600,
+      "h": 4410,
+      "tw": 600,
+      "th": 750
+    }
+  ],
+  "equine-supply": [
+    {
+      "name": "01-email",
+      "w": 600,
+      "h": 3470,
+      "tw": 600,
+      "th": 750
+    }
+  ],
+  "jolly-sports": [
+    {
+      "name": "01-player-recap",
+      "w": 1080,
+      "h": 1080,
+      "tw": 720,
+      "th": 720
+    },
+    {
+      "name": "02-player-spotlight",
+      "w": 1080,
+      "h": 1350,
+      "tw": 720,
+      "th": 900
+    }
+  ],
+  "landing-page-showreel": [
+    {
+      "name": "01-film",
+      "w": 1280,
+      "h": 720,
+      "tw": 720,
+      "th": 405
+    }
+  ],
+  "lowell-herb-co": [
+    {
+      "name": "01-quicks",
+      "w": 1080,
+      "h": 1080,
+      "tw": 720,
+      "th": 720
+    },
+    {
+      "name": "02-hybrid",
+      "w": 1600,
+      "h": 1600,
+      "tw": 720,
+      "th": 720
+    },
+    {
+      "name": "03-originals",
+      "w": 1600,
+      "h": 1600,
+      "tw": 720,
+      "th": 720
+    },
+    {
+      "name": "04-pack-views",
+      "w": 1600,
+      "h": 631,
+      "tw": 720,
+      "th": 284
+    },
+    {
+      "name": "05-littles-dieline",
+      "w": 1600,
+      "h": 1363,
+      "tw": 720,
+      "th": 613
+    },
+    {
+      "name": "06-sock-patterns",
+      "w": 1600,
+      "h": 1131,
+      "tw": 720,
+      "th": 509
+    },
+    {
+      "name": "07-sock-techpack",
+      "w": 1600,
+      "h": 1131,
+      "tw": 720,
+      "th": 509
+    },
+    {
+      "name": "08-film-3d",
+      "w": 1080,
+      "h": 1920,
+      "tw": 720,
+      "th": 900
+    },
+    {
+      "name": "09-film-social",
+      "w": 1080,
+      "h": 1920,
+      "tw": 720,
+      "th": 900
+    }
+  ],
+  "maybelline": [
+    {
+      "name": "01-film",
+      "w": 1350,
+      "h": 2400,
+      "tw": 720,
+      "th": 900
+    }
+  ],
+  "mystique-dining": [
+    {
+      "name": "01-email",
+      "w": 1200,
+      "h": 6836,
+      "tw": 720,
+      "th": 900
+    }
+  ],
+  "relevance-studio": [
+    {
+      "name": "01-website",
+      "w": 1600,
+      "h": 667,
+      "tw": 720,
+      "th": 300
+    },
+    {
+      "name": "02-guidelines-p01",
+      "w": 1600,
+      "h": 900,
+      "tw": 720,
+      "th": 405
+    },
+    {
+      "name": "03-guidelines-p06",
+      "w": 1600,
+      "h": 900,
+      "tw": 720,
+      "th": 405
+    },
+    {
+      "name": "04-guidelines-p10",
+      "w": 1600,
+      "h": 900,
+      "tw": 720,
+      "th": 405
+    },
+    {
+      "name": "05-guidelines-p14",
+      "w": 1600,
+      "h": 900,
+      "tw": 720,
+      "th": 405
+    },
+    {
+      "name": "06-guidelines-p15",
+      "w": 1600,
+      "h": 900,
+      "tw": 720,
+      "th": 405
+    },
+    {
+      "name": "07-guidelines-p18",
+      "w": 1600,
+      "h": 900,
+      "tw": 720,
+      "th": 405
+    },
+    {
+      "name": "08-guidelines-p22",
+      "w": 1600,
+      "h": 900,
+      "tw": 720,
+      "th": 405
+    },
+    {
+      "name": "09-guidelines-p24",
+      "w": 1600,
+      "h": 900,
+      "tw": 720,
+      "th": 405
+    },
+    {
+      "name": "10-guidelines-p25",
+      "w": 1600,
+      "h": 900,
+      "tw": 720,
+      "th": 405
+    },
+    {
+      "name": "11-guidelines-p26",
+      "w": 1600,
+      "h": 900,
+      "tw": 720,
+      "th": 405
+    },
+    {
+      "name": "12-guidelines-p27",
+      "w": 1600,
+      "h": 900,
+      "tw": 720,
+      "th": 405
+    }
+  ],
+  "rummage-rush": [
+    {
+      "name": "01-cover",
+      "w": 1600,
+      "h": 900,
+      "tw": 720,
+      "th": 405
+    },
+    {
+      "name": "02-gameplay",
+      "w": 1600,
+      "h": 900,
+      "tw": 720,
+      "th": 405
+    },
+    {
+      "name": "03-models",
+      "w": 1600,
+      "h": 900,
+      "tw": 720,
+      "th": 405
+    }
+  ],
+  "samsill": [
+    {
+      "name": "01-lifestyle-street",
+      "w": 1600,
+      "h": 1600,
+      "tw": 720,
+      "th": 720
+    },
+    {
+      "name": "02-lifestyle-office",
+      "w": 1600,
+      "h": 1600,
+      "tw": 720,
+      "th": 720
+    },
+    {
+      "name": "03-lifestyle-desk",
+      "w": 1600,
+      "h": 1600,
+      "tw": 720,
+      "th": 720
+    },
+    {
+      "name": "04-product-overview",
+      "w": 1600,
+      "h": 1600,
+      "tw": 720,
+      "th": 720
+    }
+  ],
+  "sgmd": [
+    {
+      "name": "01-carousel",
+      "w": 1080,
+      "h": 1080,
+      "tw": 720,
+      "th": 720
+    },
+    {
+      "name": "02-carousel",
+      "w": 1080,
+      "h": 1080,
+      "tw": 720,
+      "th": 720
+    },
+    {
+      "name": "03-carousel",
+      "w": 1080,
+      "h": 1080,
+      "tw": 720,
+      "th": 720
+    },
+    {
+      "name": "04-carousel",
+      "w": 1080,
+      "h": 1080,
+      "tw": 720,
+      "th": 720
+    },
+    {
+      "name": "05-carousel",
+      "w": 1080,
+      "h": 1080,
+      "tw": 720,
+      "th": 720
+    }
+  ],
+  "shopify-stores": [
+    {
+      "name": "247studio",
+      "w": 1440,
+      "h": 900,
+      "tw": 720,
+      "th": 450
+    },
+    {
+      "name": "ag1",
+      "w": 1440,
+      "h": 900,
+      "tw": 720,
+      "th": 450
+    },
+    {
+      "name": "alor",
+      "w": 1440,
+      "h": 900,
+      "tw": 720,
+      "th": 450
+    },
+    {
+      "name": "amiquip",
+      "w": 1440,
+      "h": 900,
+      "tw": 720,
+      "th": 450
+    },
+    {
+      "name": "buzplants",
+      "w": 1440,
+      "h": 900,
+      "tw": 720,
+      "th": 450
+    },
+    {
+      "name": "cover",
+      "w": 1600,
+      "h": 948,
+      "tw": 720,
+      "th": 427
+    },
+    {
+      "name": "elevex",
+      "w": 1440,
+      "h": 900,
+      "tw": 720,
+      "th": 450
+    },
+    {
+      "name": "fullfat",
+      "w": 1440,
+      "h": 900,
+      "tw": 720,
+      "th": 450
+    },
+    {
+      "name": "fzklfit",
+      "w": 1440,
+      "h": 900,
+      "tw": 720,
+      "th": 450
+    },
+    {
+      "name": "galifornia",
+      "w": 1440,
+      "h": 900,
+      "tw": 720,
+      "th": 450
+    },
+    {
+      "name": "lifelab",
+      "w": 1440,
+      "h": 900,
+      "tw": 720,
+      "th": 450
+    },
+    {
+      "name": "lockharts",
+      "w": 1440,
+      "h": 900,
+      "tw": 720,
+      "th": 450
+    },
+    {
+      "name": "musway",
+      "w": 1440,
+      "h": 900,
+      "tw": 720,
+      "th": 450
+    },
+    {
+      "name": "mypelvicbra",
+      "w": 1440,
+      "h": 900,
+      "tw": 720,
+      "th": 450
+    },
+    {
+      "name": "omic",
+      "w": 1440,
+      "h": 900,
+      "tw": 720,
+      "th": 450
+    },
+    {
+      "name": "osioils",
+      "w": 1440,
+      "h": 900,
+      "tw": 720,
+      "th": 450
+    },
+    {
+      "name": "papermoney",
+      "w": 1440,
+      "h": 900,
+      "tw": 720,
+      "th": 450
+    },
+    {
+      "name": "patapal",
+      "w": 1440,
+      "h": 900,
+      "tw": 720,
+      "th": 450
+    },
+    {
+      "name": "plantwell",
+      "w": 1440,
+      "h": 900,
+      "tw": 720,
+      "th": 450
+    },
+    {
+      "name": "pupstrong",
+      "w": 1440,
+      "h": 900,
+      "tw": 720,
+      "th": 450
+    },
+    {
+      "name": "purelybella",
+      "w": 1440,
+      "h": 900,
+      "tw": 720,
+      "th": 450
+    },
+    {
+      "name": "rebalance",
+      "w": 1440,
+      "h": 900,
+      "tw": 720,
+      "th": 450
+    },
+    {
+      "name": "slumbercloud",
+      "w": 1440,
+      "h": 900,
+      "tw": 720,
+      "th": 450
+    },
+    {
+      "name": "storyjewelry",
+      "w": 1440,
+      "h": 900,
+      "tw": 720,
+      "th": 450
+    },
+    {
+      "name": "truebotanicals",
+      "w": 1440,
+      "h": 900,
+      "tw": 720,
+      "th": 450
+    },
+    {
+      "name": "vetsak",
+      "w": 1440,
+      "h": 900,
+      "tw": 720,
+      "th": 450
+    },
+    {
+      "name": "xyab",
+      "w": 1440,
+      "h": 900,
+      "tw": 720,
+      "th": 450
+    },
+    {
+      "name": "zalori",
+      "w": 1440,
+      "h": 900,
+      "tw": 720,
+      "th": 450
+    }
+  ],
+  "short-form-podcast": [
+    {
+      "name": "01-film",
+      "w": 1600,
+      "h": 900,
+      "tw": 720,
+      "th": 405
+    }
+  ],
+  "slothpilot": [
+    {
+      "name": "01-home",
+      "w": 1440,
+      "h": 900,
+      "tw": 720,
+      "th": 450
+    }
+  ],
+  "solomon-ai": [
+    {
+      "name": "01-home",
+      "w": 1440,
+      "h": 900,
+      "tw": 720,
+      "th": 450
+    }
+  ],
+  "spacetalk": [
+    {
+      "name": "01-email",
+      "w": 1200,
+      "h": 7768,
+      "tw": 720,
+      "th": 900
+    }
+  ],
+  "twin-rams": [
+    {
+      "name": "01-maserati",
+      "w": 1080,
+      "h": 1080,
+      "tw": 720,
+      "th": 720
+    },
+    {
+      "name": "02-year-of-the-snake",
+      "w": 1080,
+      "h": 1080,
+      "tw": 720,
+      "th": 720
+    },
+    {
+      "name": "03-relationships",
+      "w": 1080,
+      "h": 1080,
+      "tw": 720,
+      "th": 720
+    }
+  ],
+  "xpandr": [
+    {
+      "name": "01-email",
+      "w": 600,
+      "h": 9295,
+      "tw": 600,
+      "th": 750
+    },
+    {
+      "name": "02-film",
+      "w": 1280,
+      "h": 720,
+      "tw": 720,
+      "th": 405
+    }
+  ],
+  "xyanter": [
+    {
+      "name": "01-film-gallery",
+      "w": 1280,
+      "h": 720,
+      "tw": 720,
+      "th": 405
+    },
+    {
+      "name": "02-film-forest",
+      "w": 720,
+      "h": 1280,
+      "tw": 720,
+      "th": 900
+    }
+  ]
+}

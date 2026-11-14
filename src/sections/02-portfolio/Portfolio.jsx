@@ -1,8 +1,10 @@
-import { useState } from 'react'
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+import { useRef, useState } from 'react'
+import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { A } from '../../lib/assets'
 import Reveal from '../../components/ui/Reveal'
 import { GoldButton } from '../../components/ui/Button'
+import Album from './Album'
+import { WORK } from './work'
 /**
  * The whole-cloud plate. The previous export (`main page clouds/image 34 (2)`)
  * was cut down its own right edge — alpha averaged 134 there against 0 on the
@@ -14,7 +16,12 @@ import { GoldButton } from '../../components/ui/Button'
 import cloudImg from '../../../assets/section 2/image 35 copy.png'
 
 
+/**
+ * "All" first and active, as the design has its first chip: the whole gallery
+ * is the resting state and every other chip narrows it to one craft.
+ */
 const FILTERS = [
+  { id: 'all', label: 'All' },
   { id: 'video', label: 'Video' },
   { id: 'graphic', label: 'Graphic' },
   { id: 'apps', label: 'Apps' },
@@ -24,153 +31,16 @@ const FILTERS = [
 ]
 
 /**
- * The studio's client work. Each piece carries every craft that went into it
- * rather than one label, so a 3D-rendered social post turns up under both
- * "Graphic" and "3D".
+ * The work itself lives in `work.js`, one entry per brand. A tile here is a
+ * brand, not a single piece: pressing it opens that brand's album.
  *
- * Three shapes, and the shape decides where a piece is hung:
- *
- *   lead   the 1616x673 tile at the top; there is one
- *   wide   landscape art for the 787x466 row under it
- *   (none) a square, for the grid behind "See more projects"
- *
- * `title` is the client or project and `kind` what was made for them; the two
- * together are the caption. `href` is set only where there is a live thing to
- * open. Everything else is a picture and is not wrapped in a link.
+ * Only the crafts there is work to show for get a chip, so a craft with
+ * nothing tagged to it never leads to an empty gallery.
  */
-const WORK = [
-  {
-    id: 'relevance-site',
-    src: A.work.relevanceSite,
-    title: 'Relevance Studio',
-    kind: 'Website',
-    alt: 'The Relevance Studio homepage: a navy hero reading "The recruiting platform that runs your hiring process" beside a photo of three colleagues',
-    tags: ['website'],
-    href: 'https://www.relevance.studio/en',
-    lead: true,
-  },
-  {
-    id: 'relevance-brand',
-    src: A.work.relevanceBrand,
-    title: 'Relevance Studio',
-    kind: 'Brand guidelines',
-    alt: 'The Relevance Studio logo on four brand colours: white, ultramarine, peach and orange',
-    tags: ['graphic'],
-    wide: true,
-  },
-  {
-    id: 'rummage-rush',
-    src: A.work.rummageRush,
-    title: 'Rummage Rush',
-    kind: '3D game art',
-    alt: 'Voxel characters and recycling bins on a conveyor above the Rummage Rush logo',
-    tags: ['3d', 'apps'],
-    wide: true,
-  },
-  {
-    id: 'twinrams-maserati',
-    src: A.work.twinRamsMaserati,
-    title: 'Twin Rams × Maserati MSG Racing',
-    kind: 'Social post',
-    alt: 'A faceted blue ram mounted on a racing car under the line "Official Regional Search Partner"',
-    tags: ['graphic', '3d'],
-  },
-  {
-    id: 'lowell-quicks',
-    src: A.work.lowellQuicks,
-    title: 'Lowell Smokes Quicks',
-    kind: 'Packaging',
-    alt: 'Two kraft Lowell Smokes cartons, one open to show its contents',
-    tags: ['graphic', '3d'],
-  },
-  {
-    id: 'sgmd-cover',
-    src: A.work.sgmdCover,
-    title: 'SGMD',
-    kind: 'AI-illustrated carousel',
-    alt: 'A cartoon lion in scrubs at a desk beside the headline "Daily Actions to Make a Difference"',
-    tags: ['graphic', 'ai'],
-  },
-  {
-    id: 'jolly-recap',
-    src: A.work.jollyRecap,
-    title: 'Jolly Sports',
-    kind: 'Player recap',
-    alt: 'A basketball player celebrating over the words "MVP of the Game" and a 22-point stat',
-    tags: ['graphic'],
-  },
-  {
-    id: 'padfolio-street',
-    src: A.work.padfolioStreet,
-    title: 'Leather Padfolio',
-    kind: 'E-commerce lifestyle image',
-    alt: 'A man in a checked blazer carrying a brown leather padfolio, captioned "Perfect for on-the-go"',
-    tags: ['graphic'],
-  },
-  {
-    id: 'email-mystique',
-    src: A.work.emailMystique,
-    title: 'Mystique Dining',
-    kind: 'Email design',
-    alt: 'Red velvet curtains opening on a gilded dining room, headed "Host Your Private Event at Mystique Dining"',
-    tags: ['graphic'],
-  },
-  {
-    id: 'twinrams-snake',
-    src: A.work.twinRamsSnake,
-    title: 'Twin Rams',
-    kind: 'Lunar New Year post',
-    alt: 'A faceted snake and two rams on red lacquer podiums under "Year of the Snake Marketing Forecast"',
-    tags: ['graphic', '3d'],
-  },
-  {
-    id: 'lowell-hybrid',
-    src: A.work.lowellHybrid,
-    title: 'Lowell Smokes',
-    kind: 'Packaging',
-    alt: 'An open kraft Lowell Smokes carton with an illustrated sleeve',
-    tags: ['graphic', '3d'],
-  },
-  {
-    id: 'sgmd-challenge',
-    src: A.work.sgmdChallenge,
-    title: 'SGMD',
-    kind: 'AI-illustrated carousel',
-    alt: 'A cartoon lion in scrubs on a green hill under "Choose 1 brave thing from this challenge and do it today"',
-    tags: ['graphic', 'ai'],
-  },
-  {
-    id: 'padfolio-office',
-    src: A.work.padfolioOffice,
-    title: 'Leather Padfolio',
-    kind: 'E-commerce lifestyle image',
-    alt: 'A woman in a taupe suit holding a coffee cup with a leather padfolio under her arm',
-    tags: ['graphic'],
-  },
-  {
-    id: 'email-equine',
-    src: A.work.emailEquine,
-    title: 'Equine Supply Store',
-    kind: 'Email design',
-    alt: 'A chestnut horse beside "Final Hours to Save!" and a pink "Save $40 Off" ribbon',
-    tags: ['graphic'],
-  },
-  {
-    id: 'twinrams-match',
-    src: A.work.twinRamsMatch,
-    title: 'Twin Rams',
-    kind: 'Social ad',
-    alt: 'A faceted blue ram holding a phone showing a dating-app card, with "Relationships are complicated."',
-    tags: ['graphic', '3d'],
-  },
-]
+const CHIPS = FILTERS.filter((f) => f.id === 'all' || WORK.some((w) => w.tags.includes(f.id)))
 
-/**
- * Only the crafts there is work to show for get a chip. "Video" has nothing
- * tagged with it yet, so it stays off the bar until a piece is, and comes back
- * by itself when one is added to `WORK`.
- */
-const CHIPS = FILTERS.filter((f) => WORK.some((w) => w.tags.includes(f.id)))
+/** "5 pieces", set after the kind, only where there is more than one. */
+const count = (work) => (work.items.length > 1 ? ` · ${work.items.length} pieces` : '')
 
 function Caption({ work }) {
   return (
@@ -178,8 +48,24 @@ function Caption({ work }) {
       <span className="block text-[0.95rem] font-bold leading-snug text-plum-800 sm:text-base">
         {work.title}
       </span>
-      <span className="block text-sm leading-snug text-plum-600">{work.kind}</span>
+      <span className="block text-sm leading-snug text-plum-600">
+        {work.kind}
+        {count(work)}
+      </span>
     </figcaption>
+  )
+}
+
+/** The gold play disc, centred on a tile whose picture is a film's poster. */
+function PlayMark() {
+  return (
+    <span className="pointer-events-none absolute inset-0 grid place-items-center">
+      <img
+        src={A.playBadge}
+        alt=""
+        className="size-12 drop-shadow-[0_8px_18px_rgba(36,5,31,0.55)] transition-transform duration-300 group-hover:scale-110 sm:size-14"
+      />
+    </span>
   )
 }
 
@@ -207,18 +93,55 @@ function Caption({ work }) {
  * the row line up with the lead tile above it.
  */
 export default function Portfolio() {
-  // `null` is the whole gallery. A chip narrows it and a second press on the
-  // same chip lets it go again, so no chip has to stand in for "everything".
-  const [filter, setFilter] = useState(null)
+  const [filter, setFilter] = useState('all')
   const [expanded, setExpanded] = useState(false)
-  const shown = filter ? WORK.filter((w) => w.tags.includes(filter)) : WORK
+  // The brand whose album is open, or null.
+  const [album, setAlbum] = useState(null)
+  const shown = filter === 'all' ? WORK : WORK.filter((w) => w.tags.includes(filter))
   const lead = shown.find((w) => w.lead)
   const row = shown.filter((w) => w.wide)
-  const squares = shown.filter((w) => !w.lead && !w.wide)
-  // Unfiltered, the squares wait behind the button. Choosing a craft is asking
-  // to see it, so a filter opens the grid without a second click.
-  const gridOpen = expanded || filter !== null
+  const rest = shown.filter((w) => !w.lead && !w.wide)
+  // Under "All", the wall waits behind the button. Choosing a craft is asking
+  // to see it, so any other chip opens the wall without a second click.
+  const wallOpen = expanded || filter !== 'all'
   const reduce = useReducedMotion()
+
+  // The row's cloud leaves to the left as the row is scrolled past: at rest
+  // while the row is in the lower part of the window, gone by the time its
+  // bottom edge has climbed to a third of the way down. Driven by
+  // scroll position rather than played once, so scrolling back brings them
+  // home again.
+  const rowRef = useRef(null)
+  const { scrollYProgress: rowPassed } = useScroll({
+    target: rowRef,
+    offset: ['start 0.4', 'end 0.3'],
+  })
+  const driftOpacity = useTransform(rowPassed, [0, 1], [1, 0])
+  const cloudDrift = useTransform(rowPassed, [0, 1], ['0%', reduce ? '0%' : '-45%'])
+
+  // The lead tile's plane makes its pass on the scroll. It holds on the
+  // right-hand edge until the tile is centred in the window, then flies
+  // right to left across the picture and out past the window's left edge,
+  // gone by the time the tile's bottom reaches the top of the window. The
+  // distance is in `vw` because it is the WINDOW it has to cross: its own
+  // 40%-of-tile width plus the full window, whatever the tile's size.
+  // Scroll back up and it flies home.
+  const leadRef = useRef(null)
+  const { scrollYProgress: leadPassed } = useScroll({
+    target: leadRef,
+    offset: ['center center', 'end start'],
+  })
+  const leadFlight = useTransform(leadPassed, [0, 1], ['0vw', reduce ? '0vw' : '-140vw'])
+
+  // The row's plane does the same pass the other way. It faces right, so it
+  // flies left to right: holding on the left edge until the row is centred,
+  // then across both tiles and out past the window's right edge. It used to
+  // drift left and fade with the cloud; the cloud still does.
+  const { scrollYProgress: rowCentred } = useScroll({
+    target: rowRef,
+    offset: ['center center', 'end start'],
+  })
+  const rowFlight = useTransform(rowCentred, [0, 1], ['0vw', reduce ? '0vw' : '140vw'])
 
   return (
     <section
@@ -278,7 +201,7 @@ export default function Portfolio() {
                   key={f.id}
                   type="button"
                   aria-pressed={active}
-                  onClick={() => setFilter(active ? null : f.id)}
+                  onClick={() => setFilter(f.id)}
                   whileTap={{ y: 2 }}
                   transition={{ type: 'spring', stiffness: 420, damping: 24 }}
                   // Presses onto plum, like every other button on the page —
@@ -349,6 +272,7 @@ export default function Portfolio() {
             clouds hung off its corners did not — they carried on flying around
             an empty 1616x673 hole in the page. */}
         <div
+          ref={leadRef}
           className={`relative z-20 mt-7 lg:mt-[2.625rem] ${lead ? 'aspect-[1616/673]' : ''}`}
         >
           {/* Two puffs of atmosphere, on two different footings.
@@ -526,19 +450,28 @@ export default function Portfolio() {
               is mirrored so its nose banks down into frame instead of
               trailing off tail-first. `z-20` sits them above the lead
               figure's own `z-10`. */}
-          <motion.img
-            src={A.owl.plane}
-            alt=""
-            aria-hidden
-            loading="lazy"
-            draggable={false}
-            style={{ scaleX: -1, right: 'min(calc((100% - 100vw) / 2 - 9%), -4%)' }}
-            initial={reduce ? false : { opacity: 0, x: 40, y: 22, rotate: 8 }}
-            whileInView={{ opacity: 1, x: 0, y: 0, rotate: 0 }}
-            viewport={{ once: true, margin: '-10% 0px' }}
-            transition={{ duration: 1.1, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="owl-shadow pointer-events-none absolute top-[19%] z-20 w-[40%] select-none"
-          />
+          {/* Wrapper and plane, as on the row below: the wrapper holds the
+              position and is flown across by the scroll (`leadFlight`), and
+              the plane inside it plays its one-time arrival, so the two
+              motions do not fight over the same `x`. */}
+          <motion.div
+            style={{ right: 'min(calc((100% - 100vw) / 2 - 9%), -4%)', x: leadFlight }}
+            className="pointer-events-none absolute top-[19%] z-20 w-[40%]"
+          >
+            <motion.img
+              src={A.owl.plane}
+              alt=""
+              aria-hidden
+              loading="lazy"
+              draggable={false}
+              style={{ scaleX: -1 }}
+              initial={reduce ? false : { opacity: 0, x: 40, y: 22, rotate: 8 }}
+              whileInView={{ opacity: 1, x: 0, y: 0, rotate: 0 }}
+              viewport={{ once: true, margin: '-10% 0px' }}
+              transition={{ duration: 1.1, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              className="owl-shadow block w-full select-none"
+            />
+          </motion.div>
             </>
           )}
 
@@ -560,36 +493,38 @@ export default function Portfolio() {
                 // sliver showed through the gap between them.
                 className="group relative z-10 m-0"
               >
-                {/* The one tile that opens something: the live site, in a
-                    new tab. */}
-                <a
-                  href={lead.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="relative block overflow-hidden rounded-[1.75rem] lg:rounded-[2rem]"
+                {/* A button, like every tile: it opens the brand's album,
+                    and the live site is offered from inside it. */}
+                <button
+                  type="button"
+                  onClick={() => setAlbum(lead)}
+                  aria-label={`Open the ${lead.title} album`}
+                  className="relative block w-full cursor-pointer overflow-hidden rounded-[1.75rem] text-left lg:rounded-[2rem]"
                 >
                   <img
-                    src={lead.src}
+                    src={lead.cover.src}
                     alt={lead.alt}
                     loading="lazy"
                     className="aspect-[1616/673] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
                   />
 
                   {/* The caption rides inside the picture here, where the row
-                      and the grid set theirs underneath: this block's height
+                      and the wall set theirs underneath: this block's height
                       is fixed by its ratio and everything hung off it is
                       placed against that, so a line of text below the tile
                       would land in the gap the row is spaced by. Bottom-left
                       is the capture's own empty navy. */}
-                  <figcaption className="absolute bottom-[4%] left-[2.5%] flex max-w-[70%] items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold text-plum-800 shadow-[0_10px_24px_-12px_rgba(54,14,57,0.6)] sm:px-4 sm:py-2 sm:text-sm">
+                  <figcaption className="absolute bottom-[4%] left-[2.5%] flex max-w-[80%] items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold text-plum-800 shadow-[0_10px_24px_-12px_rgba(54,14,57,0.6)] sm:px-4 sm:py-2 sm:text-sm">
                     <span className="truncate">
                       {lead.title}
-                      <span className="font-normal text-plum-600"> · {lead.kind}</span>
+                      <span className="font-normal text-plum-600">
+                        {' '}
+                        · {lead.kind}
+                        {count(lead)}
+                      </span>
                     </span>
-                    <span aria-hidden className="text-teal-600">↗</span>
-                    <span className="sr-only">(opens in a new tab)</span>
                   </figcaption>
-                </a>
+                </button>
 
                 {/* The lead tile used to carry its OWN pilot here — a
                     separate plane that flew in from the right, held a beat
@@ -625,7 +560,7 @@ export default function Portfolio() {
             The gap is unchanged: `mt-5 lg:mt-16` separated this from the
             figure before and separates it from the block that now contains
             just that figure. */}
-        <div className="relative mt-5 lg:mt-16">
+        <div ref={rowRef} className="relative mt-5 lg:mt-16">
         {row.length > 0 && (
           <>
           {/* No puff on the row's top-left corner any more. It was placed
@@ -681,7 +616,7 @@ export default function Portfolio() {
               to. `bottom` follows in the same unit, 2vw being what the old 7%
               of the row resolved to across the range, so the two cannot come
               apart either. */}
-          <img
+          <motion.img
             src={cloudImg}
             alt=""
             aria-hidden
@@ -690,6 +625,9 @@ export default function Portfolio() {
               width: '32vw',
               right: 'calc((100% - 100vw) / 2 - 12.8vw)',
               bottom: '-2.6vw',
+              // Leaves with the plane as the row is scrolled past.
+              x: cloudDrift,
+              opacity: driftOpacity,
             }}
             className="pointer-events-none absolute z-30 max-w-none select-none"
           />
@@ -703,18 +641,27 @@ export default function Portfolio() {
               figures mean different distances in boxes of different shapes.
 
               `z-30`, and written after the cloud so it paints over it. */}
-          <motion.img
-            src={A.owl.plane}
-            alt=""
-            aria-hidden
-            loading="lazy"
-            draggable={false}
-            initial={reduce ? false : { opacity: 0, x: -40, y: 24, rotate: -8 }}
-            whileInView={{ opacity: 1, x: 0, y: 0, rotate: 0 }}
-            viewport={{ once: true, margin: '-10% 0px' }}
-            transition={{ duration: 1.1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="owl-shadow pointer-events-none absolute -left-[16%] top-[18%] z-30 w-[40%] select-none sm:-left-[13.2%] sm:w-[33%]"
-          />
+          {/* Two elements for two motions that would otherwise fight over the
+              same `x`: the wrapper holds the position and is flown across to
+              the right by the scroll (`rowFlight`), and the plane inside it
+              plays its one-time arrival. */}
+          <motion.div
+            style={{ x: rowFlight }}
+            className="pointer-events-none absolute -left-[16%] top-[18%] z-30 w-[40%] sm:-left-[13.2%] sm:w-[33%]"
+          >
+            <motion.img
+              src={A.owl.plane}
+              alt=""
+              aria-hidden
+              loading="lazy"
+              draggable={false}
+              initial={reduce ? false : { opacity: 0, x: -40, y: 24, rotate: -8 }}
+              whileInView={{ opacity: 1, x: 0, y: 0, rotate: 0 }}
+              viewport={{ once: true, margin: '-10% 0px' }}
+              transition={{ duration: 1.1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              className="owl-shadow block w-full select-none"
+            />
+          </motion.div>
           </>
         )}
 
@@ -737,17 +684,20 @@ export default function Portfolio() {
                   transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
                   className="m-0"
                 >
-                  {/* Not links, and no hover zoom: these tiles do not open
-                      anything, so a control-like response to the pointer
-                      would be promising something that never arrives. */}
-                  <div className="overflow-hidden rounded-[1.75rem] lg:rounded-[2rem]">
+                  <button
+                    type="button"
+                    onClick={() => setAlbum(w)}
+                    aria-label={`Open the ${w.title} album`}
+                    className="group relative block w-full cursor-pointer overflow-hidden rounded-[1.75rem] lg:rounded-[2rem]"
+                  >
                     <img
-                      src={w.src}
+                      src={w.cover.src}
                       alt={w.alt}
                       loading="lazy"
-                      className="aspect-[787/466] w-full object-cover"
+                      className="aspect-[787/466] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
                     />
-                  </div>
+                    {w.film && <PlayMark />}
+                  </button>
                   <Caption work={w} />
                 </motion.figure>
               ))}
@@ -755,49 +705,59 @@ export default function Portfolio() {
           </motion.div>
         </div>
 
-        {/* --------------------------------------------------------- grid --
-            The square pieces. Two columns on a phone, three from `sm`, four
-            from `lg`: there are twelve, which all three divide, so the last
-            row is full at every width. */}
-        {gridOpen && squares.length > 0 && (
-          <motion.div
-            layout
+        {/* --------------------------------------------------------- wall --
+            Every other brand, hung as a masonry: CSS columns, each tile at
+            its picture's own shape. A fixed grid of squares cropped whatever
+            was not square and left holes in its last row whenever the count
+            did not divide by the column count; columns take any number of
+            tiles of any shape and close up around them.
+
+            Two columns on a phone, three from `sm`, four from `lg`. Each
+            image states its width and height, so the columns are laid out
+            at their final heights before a single picture has loaded and
+            nothing jumps as they arrive. */}
+        {wallOpen && rest.length > 0 && (
+          <div
             id="portfolio-more"
-            className="relative z-10 mt-8 grid grid-cols-2 gap-x-4 gap-y-7 sm:grid-cols-3 sm:gap-x-5 lg:mt-16 lg:grid-cols-4 lg:gap-x-[2.625rem] lg:gap-y-12"
+            className="relative z-10 mt-8 columns-2 gap-x-4 sm:columns-3 sm:gap-x-5 lg:mt-16 lg:columns-4 lg:gap-x-[2.625rem]"
           >
-            <AnimatePresence mode="popLayout">
-              {squares.map((w, i) => (
-                <motion.figure
-                  key={w.id}
-                  layout
-                  initial={reduce ? false : { opacity: 0, scale: 0.94, y: 24 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.94, y: -12 }}
-                  transition={{
-                    duration: 0.45,
-                    delay: reduce ? 0 : Math.min(i, 8) * 0.04,
-                    ease: [0.16, 1, 0.3, 1],
-                  }}
-                  className="m-0"
+            {rest.map((w, i) => (
+              <motion.figure
+                key={w.id}
+                initial={reduce ? false : { opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.45,
+                  delay: reduce ? 0 : Math.min(i, 8) * 0.04,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                className="m-0 mb-7 break-inside-avoid lg:mb-10"
+              >
+                <button
+                  type="button"
+                  onClick={() => setAlbum(w)}
+                  aria-label={`Open the ${w.title} album`}
+                  className="group relative block w-full cursor-pointer overflow-hidden rounded-2xl sm:rounded-[1.75rem]"
                 >
-                  <div className="overflow-hidden rounded-2xl sm:rounded-[1.75rem]">
-                    <img
-                      src={w.src}
-                      alt={w.alt}
-                      loading="lazy"
-                      className="aspect-square w-full object-cover"
-                    />
-                  </div>
-                  <Caption work={w} />
-                </motion.figure>
-              ))}
-            </AnimatePresence>
-          </motion.div>
+                  <img
+                    src={w.cover.thumb}
+                    alt={w.alt}
+                    width={w.cover.tw}
+                    height={w.cover.th}
+                    loading="lazy"
+                    className="block h-auto w-full transition-transform duration-700 group-hover:scale-[1.03]"
+                  />
+                  {w.film && <PlayMark />}
+                </button>
+                <Caption work={w} />
+              </motion.figure>
+            ))}
+          </div>
         )}
 
         {/* Only while there is something for it to do. With a craft chosen the
-            grid is already open, so the button would have nothing to add. */}
-        {filter === null && (
+            wall is already open, so the button would have nothing to add. */}
+        {filter === 'all' && (
           <Reveal delay={0.1} className="mt-10 flex justify-center lg:mt-16">
             <GoldButton
               href="#portfolio-more"
@@ -814,6 +774,10 @@ export default function Portfolio() {
           </Reveal>
         )}
       </div>
+
+      {/* Keyed by brand so each album mounts fresh, at the top, with no film
+          left playing from the one before. */}
+      {album && <Album key={album.id} work={album} onClose={() => setAlbum(null)} />}
     </section>
   )
 }

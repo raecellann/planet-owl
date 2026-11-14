@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'motion/react'
 import { A, NAV_LINKS } from '../lib/assets'
 import { GoldButton } from './ui/Button'
@@ -52,6 +52,19 @@ export default function Nav({ entered = true }) {
   const collapsed = isDesktop && !scrolled
   const expanded = !collapsed
 
+  // Clip the contents only while the pill is collapsed or mid-resize, so the
+  // links/CTA are revealed by the growing edge rather than spilling past it,
+  // but the fully open bar never clips the CTA's drop shadow.
+  const [resizing, setResizing] = useState(false)
+  const mounted = useRef(false)
+  useEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true
+      return
+    }
+    setResizing(true)
+  }, [collapsed])
+
   useEffect(() => {
     if (entered) setOpen(false)
   }, [entered])
@@ -65,9 +78,22 @@ export default function Nav({ entered = true }) {
       // side, so 4.22vw of inset and 91.6vw wide.
       className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-[17.8vw] sm:pt-[2.92vw]"
     >
-      <motion.nav
-        layout
-        transition={{ layout: { duration: 0.9, ease: [0.4, 0, 0.2, 1] } }}
+      <nav
+        // The collapse/expand is a real `max-width` transition, not motion's
+        // `layout` prop. `layout` animates size with a scale transform, which
+        // stretched the rounded ends into an oval (and the logo with them)
+        // mid-animation. Animating the actual width keeps the pill a pill.
+        // Collapsed width = logo (278x60 plate, so 4.634x its height) plus
+        // the collapsed padding either side, plus 2px of slack.
+        style={{
+          maxWidth: collapsed
+            ? 'calc(max(1.5rem, 2vw) * 4.634 + 2 * max(1.2rem, 1.4vw) + 2px)'
+            : 'min(1758px, 100%)',
+          transition: 'max-width 0.9s cubic-bezier(0.4, 0, 0.2, 1)',
+        }}
+        onTransitionEnd={(e) => {
+          if (e.target === e.currentTarget && e.propertyName === 'max-width') setResizing(false)
+        }}
         // `pr-3` and the taller padding are what stop the gold CTA colliding
         // with the pill: the button carries a 10px hard drop shadow, and at the
         // old `pr-2`/`py-2` that shadow punched straight through the white.
@@ -118,7 +144,7 @@ export default function Nav({ entered = true }) {
         // ENTERED bar's own height at each breakpoint: below `sm` the tallest
         // child is the 44px menu button (44 + 28 = 72), from `sm` up it is the
         // 52px CTA (52 + 28 = 80).
-        className={`mx-auto flex min-h-[72px] items-center rounded-full bg-white shadow-[0_12px_34px_-24px_rgba(54,14,57,0.45)] sm:min-h-[max(3.25rem,4.4vw)] sm:py-[0.4vw] ${
+        className={`mx-auto flex w-full min-h-[72px] items-center ${collapsed || resizing ? 'overflow-hidden' : ''} rounded-full bg-white shadow-[0_12px_34px_-24px_rgba(54,14,57,0.45)] sm:min-h-[max(3.25rem,4.4vw)] sm:py-[0.4vw] ${
           collapsed
             ? // Logo-only capsule centred at the top of the hero. Mobile never
               // reaches this branch (collapse only fires at lg+), so the padding
@@ -126,9 +152,9 @@ export default function Nav({ entered = true }) {
               // separately rather than as a single `lg:px-*` to guarantee they
               // override the asymmetric `sm:pl-7 sm:pr-4` above regardless of
               // Tailwind's utility source order.
-              'py-3.5 pl-4 pr-3 sm:pl-7 sm:pr-4 lg:w-fit lg:pl-[max(1.2rem,1.4vw)] lg:pr-[max(1.2rem,1.4vw)]'
+              'py-3.5 pl-4 pr-3 sm:pl-7 sm:pr-4 lg:pl-[max(1.2rem,1.4vw)] lg:pr-[max(1.2rem,1.4vw)]'
             : // Full pill: logo + links + CTA, capped at the reference width.
-              'w-full max-w-[1758px] py-3.5 pl-4 pr-3 sm:pl-7 sm:pr-4'
+              'py-3.5 pl-4 pr-3 sm:pl-7 sm:pr-4'
         }`}
       >
         {/* On the landing screen the bar shows the MARK alone; the full
@@ -143,8 +169,7 @@ export default function Nav({ entered = true }) {
             height: the mark is taller than it is wide where the lockup is
             much wider than tall, so matching heights keeps the pill exactly
             as it was and only the width of this one child changes. */}
-        <motion.a
-          layout
+        <a
           href="#home"
           className="flex shrink-0 items-center"
           aria-label="Planet Owl — home"
@@ -154,10 +179,10 @@ export default function Nav({ entered = true }) {
             alt="Planet Owl"
             className="h-8 w-auto sm:h-[max(1.5rem,2vw)]"
           />
-        </motion.a>
+        </a>
 
         <ul
-          className={`ml-auto hidden items-center gap-[max(1rem,2vw)] ${expanded ? 'lg:flex' : ''} ${gate}`}
+          className={`ml-auto hidden shrink-0 items-center gap-[max(1rem,2vw)] ${expanded ? 'lg:flex' : ''} ${gate}`}
         >
           {NAV_LINKS.map((l) => (
             <li key={l.href}>
@@ -210,7 +235,7 @@ export default function Nav({ entered = true }) {
           ))}
         </ul>
 
-        <div className={`ml-auto flex items-center gap-2 lg:ml-9 ${collapsed ? 'hidden' : ''}`}>
+        <div className={`ml-auto flex shrink-0 items-center gap-2 lg:ml-9 ${collapsed ? 'hidden' : ''}`}>
           {/* `translate-y-[-3px]`: the box itself sat dead centre (14px
               above, 14px below) with no offset, but the hard shadow paints
               only BELOW the box — so the shadow needs some of that bottom
@@ -275,7 +300,7 @@ export default function Nav({ entered = true }) {
             </span>
           </button>
         </div>
-      </motion.nav>
+      </nav>
 
       <AnimatePresence>
         {open && !collapsed && (

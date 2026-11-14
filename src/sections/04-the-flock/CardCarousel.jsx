@@ -129,7 +129,14 @@ export default function CardCarousel({ items, renderItem, className = '', label 
           }}
           onDragEnd={onDragEnd}
           style={{ x }}
-          className="flex cursor-grab list-none touch-pan-y gap-6 active:cursor-grabbing"
+          // `items-end`: the two photographs overhang their cards by different
+          // amounts (the sitter rises 23% of one export and 26% of the other),
+          // so the exports are different heights at the same width. Aligned by
+          // their tops, the taller one hung its card about 5% of a card-width
+          // lower than its neighbours. The cards themselves are the same height
+          // and each sits at the very bottom of its export, so seating them on
+          // one baseline lines every card up and lets the overhangs differ.
+          className="flex cursor-grab list-none touch-pan-y items-end gap-6 active:cursor-grabbing"
         >
           {loop.map((item, k) => (
             <Card
