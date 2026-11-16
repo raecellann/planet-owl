@@ -39,6 +39,33 @@ const VINE_FADE =
   '[mask-image:linear-gradient(90deg,#000_0%,#000_86%,transparent_100%)]'
 
 /**
+ * Where the vines go, read off the Figma frame (2087325440, 1920 wide).
+ *
+ * The frame has exactly three, all the same blurred layer:
+ *
+ *   - a long one across the join of 01 and 02, on the right
+ *   - a shorter one across the join of 02 and 03, on the right
+ *   - one standing up the left edge beside 02
+ *
+ * Keyed by the secret each is drawn WITH: `top` is measured from that
+ * secret's own top edge (a join sits half a row-gap above it), or as a share
+ * of its height for the one that stands beside it.
+ *
+ * `left` is the centre of the layer's bounding box as a share of the frame.
+ * `width` is the layer's width times 0.798 — `secrets-vine.webp` is that same
+ * layer exported and trimmed, 1211px of the layer's 1518.
+ * `matrix` is the layer's own transform from the file, so the two that are
+ * mirrored as well as turned come out mirrored here too.
+ */
+const VINES = {
+  1: [
+    { left: '75.9vw', top: 'calc(-1.25rem - 2.1vw)', width: '63.1vw', matrix: '-1, 0.016, -0.016, -1' },
+    { left: '4.8vw', top: '80%', width: '34vw', matrix: '0.48, 0.877, 0.877, -0.48', desktopOnly: true },
+  ],
+  2: [{ left: '81.4vw', top: 'calc(-1.25rem - 1.6vw)', width: '42.2vw', matrix: '-0.983, -0.185, -0.185, 0.983' }],
+}
+
+/**
  * The design's own render per secret, from `assets/section 6`. Each one IS the
  * secret rather than an illustration of it — the film crew for attention, the
  * headset and holograms for products, the robots and consoles for the clever
@@ -359,73 +386,6 @@ export default function TopSecrets() {
       </Reveal>
 
 
-      {/* Vines down the FLANKS, alongside the sprigs that hang between the
-          secrets below — the reference carries both, and they do different
-          jobs: these frame the whole run, those link one secret to the next.
-
-          The plate is 1211x335, a wide horizontal branch, so each column is
-          that image turned 90 degrees: `rotate` with the box sized on the
-          axis the picture is long on.
-
-          That size is in `vw` now, not `min(52vh,34rem)`. Sized in `vh` it
-          tracked the window's HEIGHT while everything it frames is laid out
-          against its width, and the `34rem` cap then froze it on tall
-          windows - so the same vine came out 35.5% of the window's width at
-          1318x900, 29.2% at 1600x900 and 28.3% at 1920x1080. Three different
-          framings for three window shapes, which is exactly what shifts when
-          the page is zoomed. A share of the width is constant by
-          construction, and it is the same axis the secrets beside it are
-          measured on. The two sides are mirrored copies of
-          the same one (`scaleX(-1)` composed onto the rotation, inline, since
-          a Tailwind flip class and an inline transform cannot both win), and
-          the right one is offset down the page so the pair never reads as a
-          matched set drawn twice.
-
-          `-z-0` keeps them behind the content column (`z-10`) — they are
-          framing, not something the type has to work around.
-
-          THE FRAME ARRIVES FIRST now, and the title last - the reverse of
-          how this was first built. The heading above is on `delay={0.5}`,
-          timed to the nest dive's own hold so it fades in as the veil clears;
-          this waits until that has played and then brings the whole frame up
-          under it, so the section reads title first, world second, rather
-          than everything being present at once with only the gold moving.
-          1.15s is the heading's delay plus its fade, so the two never overlap
-          — the title is finished and still before the vines start.
-
-          One `motion.div` on the GROUP rather than a fade on each vine: the
-          three arrive as a single scene that way, and it animates one element
-          instead of three. */}
-      <motion.div
-        aria-hidden
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.9, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
-        className="pointer-events-none absolute inset-0 overflow-hidden"
-      >
-        <img
-          src={A.secrets.vine}
-          alt=""
-          loading="lazy"
-          style={{ transform: 'rotate(90deg)' }}
-          className={`absolute -left-[18%] top-[8%] w-[32vw] max-w-none origin-center opacity-80 ${VINE_FADE}`}
-        />
-        <img
-          src={A.secrets.vine}
-          alt=""
-          loading="lazy"
-          style={{ transform: 'rotate(90deg) scaleX(-1)' }}
-          className={`absolute -right-[18%] top-[34%] w-[32vw] max-w-none origin-center opacity-80 ${VINE_FADE}`}
-        />
-        <img
-          src={A.secrets.vine}
-          alt=""
-          loading="lazy"
-          style={{ transform: 'rotate(90deg)' }}
-          className={`absolute -left-[16%] top-[62%] w-[27vw] max-w-none origin-center opacity-70 ${VINE_FADE}`}
-        />
-      </motion.div>
-
       <div className="relative z-10 mx-auto max-w-6xl px-5 sm:px-8 lg:max-w-none lg:px-0">
         {/* ------------------------------------------------- the secrets -- */}
         {/* On desktop the run of secrets is pinned to the heading's own
@@ -441,64 +401,40 @@ export default function TopSecrets() {
             const landed = i === 0
             
             return (
-              <div key={s.n}>
-                {/* Only the FIRST gap carries a vine now. The lower gap had a
-                    pair — a short sprig on the left and a long one on the
-                    right — and that soft, split strand across the middle of
-                    the page was flagged as something that should not be
-                    there. */}
-                {i === 1 && (
-                  /* The vines BETWEEN the secrets, restored. The reference has
-                     both kinds at once — strands down the flanks (added
-                     separately, behind the column) and these sprigs hanging in
-                     the gaps — and taking these out to add those left the run
-                     of three secrets with nothing linking one to the next.
+              <div key={s.n} className="relative">
+                {/* The vines, placed from the Figma frame (2087325440) rather
+                    than by eye. See `VINES` for where each figure comes from.
 
-                     Broken out of the `max-w-6xl px-5 sm:px-8` column with
-                     `left-1/2 w-screen -translate-x-1/2`: centring on the
-                     VIEWPORT rather than on this element's own padded
-                     containing block is what pins the vine's end to the true
-                     edge of the section.
+                    The strip is the full window wide and as tall as this
+                    secret, so a vine can be pinned in window widths across
+                    and against this secret's own top or height down. From
+                    `lg` the column is inset 9.1vw on the left, so the strip
+                    is pulled back by exactly that; below it the column is
+                    centred and the strip centres with it.
 
-                     `scaleX(-1)` composed onto the rotation rather than in
-                     place of it, so the end that used to trail into the middle
-                     is the one anchored at the edge. The second, smaller sprig
-                     appears only in the LOWER gap (`i > 1`): two full-width
-                     vines one under the other read as a pattern rather than as
-                     growth. */
+                    Above the pictures, as in the frame — there the vines are
+                    the LAST layers in the group, soft foreground growth
+                    crossing the nests' edges. */}
+                {VINES[i] && (
                   <div
-                    className={`relative left-1/2 mb-8 flex w-screen -translate-x-1/2 sm:mb-10 ${i > 1 ? 'justify-between' : 'justify-end pr-[5%]'}`}
+                    aria-hidden
+                    className="pointer-events-none absolute inset-y-0 left-1/2 z-20 w-screen -translate-x-1/2 lg:left-[-9.1vw] lg:translate-x-0"
                   >
-                    {i > 1 && (
+                    {VINES[i].map((v) => (
                       <img
+                        key={v.matrix}
                         src={A.secrets.vine}
                         alt=""
-                        aria-hidden
                         loading="lazy"
-                        style={{ transform: 'rotate(-177deg)' }}
-                        className={`block w-full max-w-[9rem] opacity-90 sm:max-w-xs ${VINE_FADE}`}
+                        style={{
+                          left: v.left,
+                          top: v.top,
+                          width: v.width,
+                          transform: `translate(-50%, -50%) matrix(${v.matrix}, 0, 0)`,
+                        }}
+                        className={`absolute max-w-none ${v.desktopOnly ? 'hidden lg:block' : ''} ${VINE_FADE}`}
                       />
-                    )}
-                    {/* Only the FIRST gap's vine is turned the right way up.
-                        The lower pair keep the `-177deg` they have always had —
-                        they hang from above, which is what a vine does when
-                        there is more nest over it, and turning those over too
-                        made the whole section point the same way.
-
-                        `pr-[5%]` on that first one. Right-anchored against a
-                        `w-screen` strip inside an `overflow-hidden` section,
-                        its far end sat exactly on the window edge and the tip
-                        of the branch was sliced off — a vine reaching for the
-                        edge reads better than one that has already reached it
-                        and been cut. */}
-                    <img
-                      src={A.secrets.vine}
-                      alt=""
-                      aria-hidden
-                      loading="lazy"
-                      style={{ transform: i > 1 ? 'rotate(-177deg) scaleX(-1)' : 'rotate(3deg) scaleX(-1)' }}
-                      className={`block w-full max-w-2xl opacity-90 sm:max-w-3xl ${VINE_FADE}`}
-                    />
+                    ))}
                   </div>
                 )}
 
