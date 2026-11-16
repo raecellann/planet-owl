@@ -120,10 +120,41 @@ const CUTOUTS = {
   // `trim: false` matters even with no crop: a trim would pull the canvas in
   // to the alpha bbox, and since the overhang reaches higher on one export
   // than the other, the two cards would end up different shapes.
+  //
+  // `erase` blanks the three marker sparkles painted beside the owl. They are
+  // pixels in a flat photo, so they could never be animated in place — the
+  // page used to lay SVG stars over them to fake a twinkle, which read as a
+  // second set blinking BEHIND a first set that never moved. They now ship as
+  // their own three cut-outs (below) and are drawn back on in the same spots
+  // by `TheFlock.jsx`, so the stars you see are the stars that blink.
   'container/Group 2087325408 (1).png': {
     name: 'flock-candid',
     width: 900,
     trim: false,
+    erase: [
+      { left: 548, top: 66, width: 44, height: 44 },
+      { left: 602, top: 116, width: 30, height: 30 },
+      { left: 648, top: 86, width: 60, height: 72 },
+    ],
+  },
+  // The same three rectangles, each as its own plate.
+  'container/Group 2087325408 (1).png#sparkle-1': {
+    name: 'flock-sparkle-1',
+    width: 44,
+    trim: false,
+    extract: { left: 548, top: 66, width: 44, height: 44 },
+  },
+  'container/Group 2087325408 (1).png#sparkle-2': {
+    name: 'flock-sparkle-2',
+    width: 30,
+    trim: false,
+    extract: { left: 602, top: 116, width: 30, height: 30 },
+  },
+  'container/Group 2087325408 (1).png#sparkle-3': {
+    name: 'flock-sparkle-3',
+    width: 60,
+    trim: false,
+    extract: { left: 648, top: 86, width: 60, height: 72 },
   },
   // The gold band the careers cards sit on. Its top and bottom edges are torn
   // into feathers, so the section gradient shows through above and below it.
@@ -411,7 +442,21 @@ async function keyOutWhiteField(pipe, threshold = 238) {
   return sharp(data, { raw: { width, height, channels } })
 }
 
-async function build(rel, { name, width, trim = true, extract, extend, keyWhite = false, flatten }) {
+/** Clears the alpha inside each rectangle — see `flock-candid`. */
+async function eraseRects(pipe, rects) {
+  const { data, info } = await pipe.ensureAlpha().raw().toBuffer({ resolveWithObject: true })
+  const { width, height, channels } = info
+  for (const r of rects) {
+    for (let y = r.top; y < Math.min(height, r.top + r.height); y++) {
+      for (let x = r.left; x < Math.min(width, r.left + r.width); x++) {
+        data[(y * width + x) * channels + 3] = 0
+      }
+    }
+  }
+  return sharp(data, { raw: { width, height, channels } })
+}
+
+async function build(rel, { name, width, trim = true, extract, extend, keyWhite = false, flatten, erase }) {
   // A key may carry a `#tag` so one source can produce more than one output —
   // `cloud-puff` and `cloud-big` are the same file cropped two different ways.
   // The tag is for uniqueness in this object only and never reaches the disk.
@@ -425,6 +470,7 @@ async function build(rel, { name, width, trim = true, extract, extend, keyWhite 
 
   let pipe = sharp(from)
   if (extract) pipe = pipe.extract(extract)
+  if (erase) pipe = await eraseRects(pipe, erase)
   if (trim) pipe = pipe.trim({ threshold: 1 })
   // `extend` pads AFTER the crop. It exists so two plates of the same subject
   // can be made to sit at the same scale: `object-contain` fits by RATIO, so

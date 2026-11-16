@@ -8,7 +8,7 @@ import {
   useSpring,
   useTransform,
 } from 'motion/react'
-import { A } from '../../lib/assets'
+import { A, openStartProject } from '../../lib/assets'
 import Island from './Island'
 import FloatingOwl from './FloatingOwl'
 import { GoldButton } from '../../components/ui/Button'
@@ -543,7 +543,16 @@ export default function Hero() {
               transition={{ duration: 0.8, delay: 0.62, ease: [0.16, 1, 0.3, 1] }}
               className="pointer-events-auto relative z-[60] mt-[min(1.25rem,2.2svh)]"
             >
-              <GoldButton href="#what-we-do" className="h-[52px]">
+              {/* Opens the "Start a Project" popup rather than jumping down
+                  the page. The href stays as the no-JS fallback. */}
+              <GoldButton
+                href="#start"
+                className="h-[52px]"
+                onClick={(e) => {
+                  e.preventDefault()
+                  openStartProject()
+                }}
+              >
                 Peek Inside the Nest
               </GoldButton>
             </motion.div>

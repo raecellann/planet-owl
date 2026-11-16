@@ -88,7 +88,7 @@ export default function TheFlock() {
       // hidden` with `overflow-y: visible` computes the visible axis to
       // `auto` — so `overflow-x-hidden` here would silently re-clip the top
       // and put the pilot back inside. `clip` leaves the other axis alone.
-      className="relative overflow-x-clip bg-white pb-28 pt-24 sm:pb-36 sm:pt-32"
+      className="relative overflow-x-clip bg-white pb-40 pt-24 sm:pb-48 sm:pt-32"
     >
       {/* The gold band the cards sit on. Stretched rather than cropped: its top
           and bottom edges are torn into feathers, and `cover` would slice
@@ -196,7 +196,12 @@ export default function TheFlock() {
           from `pt-24`, which read as too close to it once the pilot above
           moved higher and left more open gold above the heading than below
           it. */}
-      <div className="relative mx-auto max-w-6xl px-5 pt-32 sm:px-8">
+      {/* `pt-20` now, and the 3rem taken off here is given back as bottom
+          padding on the section (`pb-40`/`sm:pb-48`). The heading and the
+          cards were sitting low in the gold — far more band above the
+          heading than under the cards — so the whole block comes up and
+          reads centred in the plate instead. */}
+      <div className="relative mx-auto max-w-6xl px-5 pt-20 sm:px-8">
         <Reveal y={36}>
           <h2 className="text-center font-ui text-[clamp(1.9rem,4.6vw,3.35rem)] font-bold leading-[1.08] text-plum-800">
             Join 1,000+ Owls
@@ -209,7 +214,7 @@ export default function TheFlock() {
           neighbours were being chopped off square at the container's edge; out
           here the row runs to the screen edges, so what trims them is the
           viewport itself and they simply carry on off-screen. */}
-      <Reveal y={48} className="relative mt-12 w-full">
+      <Reveal y={48} className="relative mt-8 w-full">
         <CardCarousel items={CARDS} label="Open roles at Planet Owl" renderItem={renderCard} />
       </Reveal>
 
@@ -284,39 +289,43 @@ export default function TheFlock() {
 }
 
 /**
- * Sits on top of the three sparkles already baked into `flock-candid` (see
- * the export note above `CARDS`), roughly over each one, so the twinkle
- * reads as those stars animating rather than as new ones appearing —
- * they cannot be animated in place since they are pixels in the one flat
- * photo, not separate layers. Only the two `sparkles: true` cards (the
- * ones actually shot on `flock-candid`) render these; the wide/SEO photo
- * has no baked stars to sit over.
+ * The candid card's three marker stars — the card's OWN stars, not copies.
  *
- * Percentages measured off `flock-candid.webp`'s own 822x614 canvas, so
- * they track the card at every breakpoint the carousel scales it to.
+ * They used to be pixels in the flat photo with SVG stars laid over them to
+ * fake a twinkle. The painted ones could not move, so what blinked was a
+ * second set sitting behind a first set that never changed. The asset script
+ * now lifts the three out of the plate (`erase` on `flock-candid`) and ships
+ * each as its own cut-out, and these put them back in exactly the rectangles
+ * they were cut from — so the stars on screen are the ones doing the blinking.
+ *
+ * Each box is its source rectangle as a share of the plate's 822x614 canvas,
+ * so they track the card at every size the carousel scales it to. Staggered
+ * delays and unequal periods keep the three from pulsing in step.
  */
 const SPARKLES = [
-  { left: '69.1%', top: '11.7%', size: '2.7%', delay: 0 },
-  { left: '83.1%', top: '16%', size: '4.1%', delay: 0.6 },
-  { left: '74.8%', top: '20.8%', size: '2.2%', delay: 1.2 },
+  { src: A.flock.sparkles[0], left: 548, top: 66, w: 44, h: 44, delay: 0, period: 1.7 },
+  { src: A.flock.sparkles[1], left: 602, top: 116, w: 30, h: 30, delay: 0.55, period: 1.3 },
+  { src: A.flock.sparkles[2], left: 648, top: 86, w: 60, h: 72, delay: 0.25, period: 2.1 },
 ]
 
-function Sparkle({ left, top, size, delay }) {
+function Sparkle({ src, left, top, w, h, delay, period }) {
+  const reduce = useReducedMotion()
   return (
-    <motion.svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.4"
-      strokeLinejoin="round"
+    <motion.img
+      src={src}
+      alt=""
       aria-hidden
-      className="pointer-events-none absolute text-plum-800"
-      style={{ left, top, width: size, height: size }}
-      animate={{ opacity: [0.25, 1, 0.25], scale: [0.7, 1, 0.7] }}
-      transition={{ duration: 2.2, delay, repeat: Infinity, ease: 'easeInOut' }}
-    >
-      <path d="M12 3l1.6 5.4a2.5 2.5 0 0 0 1.7 1.7L21 12l-5.7 1.9a2.5 2.5 0 0 0-1.7 1.7L12 21l-1.9-5.4a2.5 2.5 0 0 0-1.7-1.7L3 12l5.4-1.9a2.5 2.5 0 0 0 1.7-1.7L12 3z" />
-    </motion.svg>
+      draggable={false}
+      className="pointer-events-none absolute select-none"
+      style={{
+        left: `${(left / 822) * 100}%`,
+        top: `${(top / 614) * 100}%`,
+        width: `${(w / 822) * 100}%`,
+        height: `${(h / 614) * 100}%`,
+      }}
+      animate={reduce ? undefined : { opacity: [1, 0.15, 1], scale: [1, 0.72, 1] }}
+      transition={{ duration: period, delay, repeat: Infinity, ease: 'easeInOut' }}
+    />
   )
 }
 

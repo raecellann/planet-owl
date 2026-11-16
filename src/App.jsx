@@ -44,14 +44,17 @@ const landOnHero = () => {
  * sky at the top to night at the bottom, so the whole page reads as a single
  * flight rather than a stack of slides.
  */
-export default function App() {
+export default function App({ skipIntro = false }) {
   // The intro gates the page: nothing below it is reachable until the button
   // has been held. The lock is a class on <html> rather than inline styles so
   // it cannot be half-applied, and it is released the moment `entered` flips.
-  const [entered, setEntered] = useState(false)
+  // `skipIntro` is set when the visitor is coming BACK from the blog — see
+  // `Root` in `main.jsx`. They land straight on the page, and on whichever
+  // section the link they followed names.
+  const [entered, setEntered] = useState(skipIntro)
   // Removed once the flight has landed, so the finished page is sections 1-9
   // and nothing else — you cannot scroll back up into the landing screen.
-  const [introGone, setIntroGone] = useState(false)
+  const [introGone, setIntroGone] = useState(skipIntro)
   // Top Secrets is a secret: it is not in the page at all until `NestView`'s
   // owl is clicked, so it cannot be found by scrolling past it. Once true it
   // stays true — a secret you have unlocked does not lock itself again just
@@ -102,6 +105,21 @@ export default function App() {
     setEntered(true)
     landOnHero()
   }
+
+  useEffect(() => {
+    if (!skipIntro) return
+    document.title = 'Planet Owl — Creative Work, Handled by a System of Geniuses'
+    const id = window.location.hash.slice(1)
+    const target = id && !id.startsWith('/') ? document.getElementById(id) : null
+    // A beat later: the sections have to lay out before there is anywhere
+    // to scroll to. A timer rather than `requestAnimationFrame`, which does
+    // not fire at all while the tab is in the background.
+    const t = setTimeout(() => {
+      if (target) target.scrollIntoView({ behavior: 'instant', block: 'start' })
+      else window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+    }, 60)
+    return () => clearTimeout(t)
+  }, [skipIntro])
 
   useEffect(() => {
     const root = document.documentElement

@@ -1,5 +1,5 @@
-import { useCallback, useState } from 'react'
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+import { useCallback, useRef, useState } from 'react'
+import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { A } from '../../lib/assets'
 import Reveal from '../../components/ui/Reveal'
 import cloudImg from '../../../assets/section 2/image 35 copy.png'
@@ -36,8 +36,8 @@ const CRAFTS = [
     // See the note on `CRAFTS`, above.
     scale: 1,
     // left side bearing of the first glyph, in em — see the note on the <h2>
-    bearing: 0.078,
-    em: 3.3315,
+    bearing: 0.0625,
+    em: 3.441,
     owl: A.owl.vr,
     alt: 'An owl in VR goggles polishing a silver owl trophy',
     items: [
@@ -53,8 +53,8 @@ const CRAFTS = [
     title: 'Develop',
     // See the note on `CRAFTS`, above.
     scale: 1,
-    bearing: 0.078,
-    em: 3.985,
+    bearing: 0.0625,
+    em: 4.166,
     owl: A.owl.develop,
     alt: 'An owl in a cap with a laptop and a coffee mug',
     items: [
@@ -81,8 +81,8 @@ const CRAFTS = [
     // cent shorter than its neighbours, which is the trade the duck forces -
     // one of the two can be equal, not both.
     scale: 1,
-    bearing: 0.078,
-    em: 3.2758,
+    bearing: 0.0625,
+    em: 3.393,
     owl: A.owl.digital,
     alt: 'An owl with a megaphone, a tablet and a satchel',
     items: [
@@ -99,8 +99,8 @@ const CRAFTS = [
     title: 'AI Tech',
     // See the note on `CRAFTS`, above.
     scale: 1,
-    bearing: 0.0156,
-    em: 3.5915,
+    bearing: 0,
+    em: 3.671,
     owl: A.owl.ai,
     alt: 'An owl in glasses beside a white robot dog',
     items: ['AI Assistants', 'Chatbots', 'Automation', 'Generative AI', 'Analytics', 'Integration'],
@@ -138,26 +138,29 @@ const PROMISE = ['No guesswork.', 'No revisions.', 'No changes.']
 const RIBBON_TILE = { x: 184, w: 1469, h: 224, plate: 3241 }
 
 /**
- * The woosh.
+ * The change between crafts: a FADE, and nothing else.
  *
- * A true push, not a crossfade: slides enter and leave from a FULL frame width
- * so the outgoing one is completely gone rather than sitting half-overlapped
- * with the incoming one — that overlap, plus a heavy blur and an opacity fade
- * on both, is what made the earlier version read as two things dissolving into
- * each other instead of one thing being swept aside.
+ * This used to be a push — the whole slide swept off sideways a full frame
+ * width while the next one swept in. By request it is now one fade, with the
+ * three parts of the slide (the giant word, the owl, the services list)
+ * arriving on different delays so the craft assembles itself rather than
+ * appearing as a single block. Nothing travels.
  *
- * Opacity stays at 1 the whole way, and nothing softens either. There used to
- * be a 5px blur in transit for a speed streak — but a blurred word and list
- * sliding past reads as the content fading out rather than being pushed
- * aside, which is the one thing a push is meant not to look like. What sells
- * the speed is the travel and the 0.62s ease, not the softening.
+ * The outgoing slide fades as one piece and is gone before the first part of
+ * the incoming one starts (`OUT` is shorter than the first `IN` delay), so
+ * two words are never legible on top of each other.
+ *
+ * `em` and `bearing` on each craft are Momo Trust Display's own metrics for
+ * that word (measured: advance width and first-glyph side bearing at 1em).
  */
-const SWEEP = { duration: 0.62, ease: [0.33, 0.9, 0.28, 1] }
+const OUT = { duration: 0.22, ease: 'easeOut' }
+const FADE_IN = (delay) => ({ duration: 0.55, delay, ease: [0.16, 1, 0.3, 1] })
+const IN = { word: 0.22, owl: 0.38, list: 0.56 }
 
 const SLIDE = {
-  enter: (d) => ({ x: d > 0 ? '104%' : '-104%', opacity: 1 }),
-  center: { x: '0%', opacity: 1 },
-  exit: (d) => ({ x: d > 0 ? '-104%' : '104%', opacity: 1 }),
+  enter: { opacity: 1 },
+  center: { opacity: 1 },
+  exit: { opacity: 0, transition: OUT },
 }
 
 /** SECTION 3 — what we do, one craft at a time. */
@@ -167,12 +170,29 @@ export default function WhatWeDo() {
   const reduce = useReducedMotion()
   const craft = CRAFTS[i]
 
+  // The two puffs drift OUT toward their own edges as the section scrolls
+  // through the window — left one further left, right one further right — so
+  // they read as weather clearing rather than as a backdrop pinned behind the
+  // owls. Mapped from the section's top reaching the top of the window to
+  // its bottom leaving there: they are in place while the craft is being
+  // read, and pull away as the visitor scrolls on past it.
+  const sectionRef = useRef(null)
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start start', 'end start'] })
+  const cloudLeftX = useTransform(scrollYProgress, [0, 0.8], ['0vw', '-24vw'])
+  const cloudRightX = useTransform(scrollYProgress, [0, 0.8], ['0vw', '24vw'])
+  const cloudY = useTransform(scrollYProgress, [0, 0.8], ['0vw', '5vw'])
+
   const go = useCallback(
     (step) => {
       // One sweep at a time — a second click mid-flight leaves AnimatePresence
       // with two exiting slides and the layout stutters.
       if (sweeping) return
       setSweeping(true)
+      // Belt and braces: the list's `onAnimationComplete` is what normally
+      // releases this, but under reduced motion nothing animates and so
+      // nothing completes — without the timer the arrows would lock after
+      // one press.
+      setTimeout(() => setSweeping(false), 1250)
       setSlide(([prev]) => [(prev + step + CRAFTS.length) % CRAFTS.length, step])
     },
     [sweeping],
@@ -208,7 +228,7 @@ export default function WhatWeDo() {
     // a little to spare, and does it here — on the section the plane
     // reaches INTO — rather than by shortening that reach and undercutting
     // the "crossing the gold band" effect its own placement is built for.
-    <section id="what-we-do" className="relative overflow-hidden bg-white pb-[11vw] pt-12 sm:pt-32">
+    <section ref={sectionRef} id="what-we-do" className="relative overflow-hidden bg-white pb-[11vw] pt-12 sm:pt-32">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[linear-gradient(180deg,#dfe7fa_0%,rgba(255,255,255,0)_100%)]" />
 
       {/* The puff, on the section's own right edge with exactly half of it
@@ -235,12 +255,14 @@ export default function WhatWeDo() {
           frame. It grows DOWNWARD from `top-[52%]`, which is why it can take
           this much without reaching the arrows or the services list above
           it; the section's own `overflow-hidden` takes care of the bottom. */}
-      <img
+      <motion.img
         src={cloudImg}
         alt=""
         aria-hidden
         loading="lazy"
-        className="pointer-events-none absolute -right-[29.7vw] top-[13.8vw] z-0 w-[46vw] max-w-none select-none opacity-60"
+        style={reduce ? undefined : { x: cloudRightX, y: cloudY }}
+        // `top-[17vw]`, down from 13.8 — both puffs sit a little lower now.
+        className="pointer-events-none absolute -right-[29.7vw] top-[17vw] z-0 w-[46vw] max-w-none select-none opacity-60"
       />
 
       {/* Its counterpart on the LEFT flank, which the reference carries and
@@ -276,13 +298,18 @@ export default function WhatWeDo() {
           `z-0` keeps it behind the owl (`z-10`) and the word, so it is
           atmosphere the composition stands in front of rather than a shape
           laid over it. */}
-      <img
+      <motion.img
         src={cloudImg}
         alt=""
         aria-hidden
         loading="lazy"
-        style={{ transform: 'scaleX(-1)' }}
-        className="pointer-events-none absolute -left-[13vw] top-[34vw] z-0 w-[32vw] max-w-none select-none opacity-60"
+        // The mirror is a motion `scaleX` rather than an inline `transform`
+        // string: Motion owns the element's transform the moment `x` is
+        // animated, and a hand-written one would be overwritten by it.
+        style={reduce ? { scaleX: -1 } : { scaleX: -1, x: cloudLeftX, y: cloudY }}
+        // `top-[38vw]`, down from 34 — it sat high enough to cut across the
+        // owls' feet; lower, it is ground haze under them.
+        className="pointer-events-none absolute -left-[13vw] top-[38vw] z-0 w-[32vw] max-w-none select-none opacity-60"
       />
 
       {/* 1594 — the design's own content width. The inspector puts the title
@@ -297,7 +324,7 @@ export default function WhatWeDo() {
           design actually draws it at. */}
       <div className="relative mx-auto max-w-[1594px] px-5 sm:px-8">
         <Reveal y={40}>
-          <p className="-ml-[0.0156em] font-ui text-[clamp(1.3rem,4.17vw,5rem)] font-bold leading-[1.05] text-plum-700">
+          <p className="font-['Momo_Trust_Display'] text-[clamp(1.3rem,4.17vw,5rem)] font-normal leading-[1.05] text-plum-700">
             What we do?
           </p>
         </Reveal>
@@ -377,8 +404,6 @@ export default function WhatWeDo() {
               initial="enter"
               animate="center"
               exit="exit"
-              transition={SWEEP}
-              onAnimationComplete={() => setSweeping(false)}
               /* 1232fr / 277fr with a 5.33% gap — the inspector's own numbers.
                  Title block X 122 W 1232, list X 1439 W 277, so the gap between
                  them is 1439 - (122 + 1232) = 85, and 85 / 1594 = 5.33% of the
@@ -433,7 +458,15 @@ export default function WhatWeDo() {
                  *
                  * Fill is #562354 from the inspector, which is `plum-700` — it
                  * was `plum-800`. */}
-                <h2
+                {/* Momo Trust Display, Regular — the face and weight the
+                    inspector names. It used to be Momo Trust Sans at 700 as
+                    a stand-in, from when the Display cut was not loaded; it
+                    is now (`index.css` imports it, and the hero headline is
+                    already set in it), so the word is drawn in the real one. */}
+                <motion.h2
+                  initial={reduce ? false : { opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={FADE_IN(IN.word)}
                   /* Pulled left by the first glyph's own side bearing, so the
                      INK lines up with the label above rather than the boxes.
                      Both start at the container edge already — but a side
@@ -446,10 +479,10 @@ export default function WhatWeDo() {
                     marginLeft: `-${craft.bearing}em`,
                     fontSize: 'var(--word)',
                   }}
-                  className="relative z-0 whitespace-nowrap font-ui font-bold leading-[1.05] tracking-normal text-plum-700"
+                  className="relative z-0 whitespace-nowrap font-['Momo_Trust_Display'] font-normal leading-[1.05] tracking-normal text-plum-700"
                 >
                   {craft.title}
-                </h2>
+                </motion.h2>
 
                 {/* Figma places the owl at X 0, hard against the 1920 frame's
                     left edge. It starts at the content column's edge here —
@@ -499,9 +532,9 @@ export default function WhatWeDo() {
                   alt={craft.alt}
                   loading="lazy"
                   key={craft.title}
-                  initial={reduce ? false : { opacity: 0, x: -160 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={SWEEP}
+                  initial={reduce ? false : { opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={FADE_IN(IN.owl)}
                   /* No `owl-shadow`, and a fade on the last 5%.
                      All four craft plates are cut flat along the bottom of
                      their own ground shadow — measured, alpha is still 255 two
@@ -544,9 +577,12 @@ export default function WhatWeDo() {
                   half-visible. */}
               <motion.ul
                 key={craft.title}
-                initial={reduce ? false : { opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.45, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                initial={reduce ? false : { opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={FADE_IN(IN.list)}
+                // The list is the last part in, so it is what releases the
+                // arrows for the next press.
+                onAnimationComplete={() => setSweeping(false)}
                 className="sm:pb-4 lg:pb-0 lg:pt-10"
               >
                 {craft.items.map((item) => (

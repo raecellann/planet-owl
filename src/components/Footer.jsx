@@ -32,7 +32,7 @@ export default function Footer() {
           (33vw tall at 1.757:1) the bottom lands 18.8vw into the band, and
           23.2vw leaves the 4.4vw gap to the heading that the reference shows.
           Change the plane's width and this has to move with it. */}
-      <div className="relative -mt-px bg-[#e7b248] px-3 pb-14 pt-[23.2vw] sm:px-[4.22vw] sm:pb-16">
+      <div className="relative -mt-px bg-[#e7b248] px-3 pb-14 pt-[27.8vw] sm:px-[4.22vw] sm:pb-16">
         {/* It no longer matches the navbar, and that is deliberate rather than
             drift.
 
@@ -117,7 +117,11 @@ export default function Footer() {
               The wrapper takes the position and `Reveal` sits INSIDE it,
               because `Reveal` animates `y`, and a transform would make it the
               containing block for anything absolute within it. */}
-          <div className="pointer-events-none absolute -top-[14.2vw] left-[21vw] w-[58vw]">
+          {/* 66vw now, up from 58, by request ("palakihin"). Re-centred the
+              same way — (100 - 66) / 2 = 17 — and the band's `pt` follows:
+              66 / 1.757 = 37.6vw tall, less the 14.2 above the band, plus the
+              same 4.4vw gap to the heading = 27.8vw. */}
+          <div className="pointer-events-none absolute -top-[14.2vw] left-[17vw] w-[66vw]">
             <Reveal y={40}>
               {/* `width`/`height` are the file's own 1564x890. Without them
                   this image measured 0 tall until it loaded, so the footer
@@ -202,22 +206,12 @@ export default function Footer() {
               scrolled fully down these links sit at 858 of a 900 viewport, past
               the 792 line, and stayed at opacity 0 forever. The last row on the
               page needs a margin with no bottom inset. */}
+          {/* Socials FIRST, directly under the lockup, then the text links on
+              their own row below — the Facebook mark used to trail the end of
+              the link row, where it read as a seventh link rather than as the
+              studio's socials. */}
           <Reveal y={22} delay={0.24} viewport={{ once: true, margin: '0px' }}>
-            <nav
-              aria-label="Footer"
-              className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 sm:mt-10"
-            >
-              {FOOTER_LINKS.map((l) => (
-                <a
-                  key={l.label}
-                  href={l.href}
-                  className="font-display text-sm font-semibold text-plum-800 transition-colors hover:text-plum-950 sm:text-base"
-                >
-                  {l.label}
-                </a>
-              ))}
-              {/* Facebook, as an icon at the end of the same row, in the
-                  links' own plum so it reads as part of the set. */}
+            <div className="mt-8 flex items-center justify-center gap-4 sm:mt-10">
               <a
                 href="https://www.facebook.com/profile.php?id=61592183553087"
                 target="_blank"
@@ -225,10 +219,24 @@ export default function Footer() {
                 aria-label="Planet Owl on Facebook"
                 className="text-plum-800 transition-colors hover:text-plum-950"
               >
-                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className="size-5 sm:size-6">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className="size-8 sm:size-9">
                   <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.413c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.886v2.265h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073Z" />
                 </svg>
               </a>
+            </div>
+            <nav
+              aria-label="Footer"
+              className="mt-5 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 sm:mt-6"
+            >
+              {FOOTER_LINKS.map((l) => (
+                <a
+                  key={l.label}
+                  href={l.href}
+                  className="font-ui text-sm font-semibold text-plum-800 transition-colors hover:text-plum-950 sm:text-base"
+                >
+                  {l.label}
+                </a>
+              ))}
             </nav>
           </Reveal>
         </div>

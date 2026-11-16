@@ -95,10 +95,9 @@ export default function FinalCTA() {
           was never the problem — it is smooth to 0.73 of a channel step — it
           was being covered before it got there. Fading the haze out over the
           last 22% hands the final ramp back to the background. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 top-[20svh] bg-[radial-gradient(ellipse_76%_42%_at_50%_26%,rgba(44,35,14,0.60)_0%,rgba(44,35,14,0.26)_44%,rgba(44,35,14,0)_74%),radial-gradient(ellipse_96%_44%_at_50%_92%,rgba(135,103,103,0.18)_0%,rgba(135,103,103,0.06)_50%,rgba(135,103,103,0)_78%)] [mask-image:linear-gradient(180deg,transparent_0%,#000_16%,#000_78%,transparent_100%)]"
-      />
+      {/* GONE, by request: the warm bloom read as a yellow gradient sitting
+          behind the headline. The ground is the flat ramp on the section
+          itself now, with only the stars over it. */}
 
       {/* stars */}
       <div className="pointer-events-none absolute inset-0">

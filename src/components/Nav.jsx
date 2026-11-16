@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'motion/react'
-import { A, NAV_LINKS } from '../lib/assets'
+import { A, NAV_LINKS, START_PROJECT_EVENT } from '../lib/assets'
 import { GoldButton } from './ui/Button'
 import StartProjectModal from './StartProjectModal'
 
@@ -69,6 +69,18 @@ export default function Nav({ entered = true }) {
     if (entered) setOpen(false)
   }, [entered])
 
+  // Any button on the page can open this same popup by dispatching
+  // `START_PROJECT_EVENT` (the hero's "Peek Inside the Nest" does) — the
+  // modal lives here, so this is the one place that has to listen.
+  useEffect(() => {
+    const onOpen = () => {
+      setOpen(false)
+      setProjectOpen(true)
+    }
+    window.addEventListener(START_PROJECT_EVENT, onOpen)
+    return () => window.removeEventListener(START_PROJECT_EVENT, onOpen)
+  }, [])
+
   return (
     <motion.header
       initial={{ y: -110, opacity: 0 }}
@@ -76,7 +88,20 @@ export default function Nav({ entered = true }) {
       transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
       // Figma puts the bar at X 81, Y 56, W 1758 of a 1920 frame — 81 either
       // side, so 4.22vw of inset and 91.6vw wide.
-      className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-[17.8vw] sm:pt-[2.92vw]"
+      //
+      // The 17.8vw inset (the reference's 64.4%-wide pill) only applies from
+      // 1440 up now. Below that the bar's contents hit their `rem` FLOORS —
+      // the links stop shrinking at 0.8rem, the CTA at 2.5rem tall — while a
+      // 64.4vw pill kept narrowing, so between roughly 1024 and 1400 the row
+      // was wider than the pill: the links ran into the logo and the gold
+      // CTA hung out past the right end. A 5vw inset gives the same contents
+      // a 90vw pill at those widths, which they fit with room to spare.
+      //
+      // `min-[90rem]`, not `min-[1440px]`: Tailwind orders min-width variants
+      // by value, and it can only do that when they share a unit. Written in
+      // px this rule was emitted BEFORE `sm:` (which is 40rem) and lost to it
+      // at every width.
+      className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-[5vw] sm:pt-[2.92vw] min-[90rem]:px-[17.8vw]"
     >
       <nav
         // The collapse/expand is a real `max-width` transition, not motion's
@@ -182,7 +207,10 @@ export default function Nav({ entered = true }) {
         </a>
 
         <ul
-          className={`ml-auto hidden shrink-0 items-center gap-[max(1rem,2vw)] ${expanded ? 'lg:flex' : ''} ${gate}`}
+          // `pl-6` is a floor on the gap to the logo: `ml-auto` only pushes
+          // the links away while there is spare room, and with none left
+          // "Portfolio" sat flush against the wordmark.
+          className={`ml-auto hidden shrink-0 items-center gap-[max(1rem,2vw)] pl-6 ${expanded ? 'lg:flex' : ''} ${gate}`}
         >
           {NAV_LINKS.map((l) => (
             <li key={l.href}>

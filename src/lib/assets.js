@@ -133,6 +133,12 @@ export const A = {
   flock: {
     wide: asset('flock-wide.webp'),
     candid: asset('flock-candid.webp'),
+    /** The candid card's three marker stars, cut out of it so they can blink. */
+    sparkles: [
+      asset('flock-sparkle-1.webp'),
+      asset('flock-sparkle-2.webp'),
+      asset('flock-sparkle-3.webp'),
+    ],
   },
   /** Full-width gold band with torn, feathered top and bottom edges. */
   goldPlate: asset('gold-plate.webp'),
@@ -143,6 +149,13 @@ export const A = {
     asset('feather-4.webp'),
   ],
 }
+
+/**
+ * Fired on `window` to open the "Start a Project" popup from anywhere on the
+ * page. `Nav` owns the modal and listens for it.
+ */
+export const START_PROJECT_EVENT = 'planet-owl:start-project'
+export const openStartProject = () => window.dispatchEvent(new Event(START_PROJECT_EVENT))
 
 export const NAV_LINKS = [
   { label: 'Portfolio', href: '#portfolio' },
@@ -157,6 +170,7 @@ export const FOOTER_LINKS = [
   { label: 'What We Do', href: '#what-we-do' },
   { label: 'The Nest', href: '#the-nest' },
   { label: 'Careers', href: '#the-flock' },
-  { label: 'Blog', href: '#nest-view' },
+  // The blog is its own page, on a hash route — see `src/blog/`.
+  { label: 'Blog', href: '#/blog' },
   { label: 'Privacy', href: '#start' },
 ]

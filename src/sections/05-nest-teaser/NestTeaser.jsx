@@ -225,18 +225,38 @@ export default function NestTeaser() {
           where there is nothing else to. */}
       {!reduce && (
         <div aria-hidden className="pointer-events-none absolute inset-0 z-10 overflow-hidden">
+          {/* Two elements per feather: the outer box carries the slow turn,
+              the image inside it carries the HOVER. On one element the two
+              would fight over `rotate` — the flutter would cancel the turn
+              for as long as the pointer stayed on it.
+
+              The flutter fires the instant the pointer lands: a quick
+              shake that dies away, with a small lift, as if the feather had
+              been brushed. It is a keyframed one-shot rather than a spring
+              so it starts at full speed instead of easing in. */}
           {FEATHERS.map(([left, top, vw, cap, secs, dir], i) => (
-            <motion.img
+            <motion.div
               key={i}
-              src={A.feathers[2]}
-              alt=""
-              loading="lazy"
-              decoding="async"
-              className="pointer-events-auto absolute w-auto cursor-pointer saturate-100 transition-[filter,transform] duration-300 hover:saturate-[1.75]"
+              className="absolute"
               style={{ left: `${left}%`, top: `${top}%`, height: `min(${vw}vw, ${cap}%)` }}
               animate={{ rotate: 360 * dir }}
               transition={{ duration: secs, repeat: Infinity, ease: 'linear' }}
-            />
+            >
+              <motion.img
+                src={A.feathers[2]}
+                alt=""
+                loading="lazy"
+                decoding="async"
+                className="pointer-events-auto block h-full w-auto cursor-pointer saturate-100 transition-[filter] duration-300 hover:saturate-[1.75]"
+                whileHover={{
+                  rotate: [0, -16, 13, -9, 6, -3, 0],
+                  scale: [1, 1.12, 1.1, 1.08, 1.06, 1.05, 1.05],
+                  y: [0, -10, -6, -8, -5, -6, -6],
+                  transition: { duration: 0.7, ease: 'easeOut' },
+                }}
+                transition={{ duration: 0.35, ease: 'easeOut' }}
+              />
+            </motion.div>
           ))}
         </div>
       )}
@@ -420,7 +440,21 @@ export default function NestTeaser() {
             aria-hidden
             loading="lazy"
             decoding="async"
-            className={`absolute inset-0 h-auto max-h-full w-[44.9vw] max-w-[86vw] object-contain [mask-image:linear-gradient(180deg,#000_96%,transparent_100%)] transition-opacity duration-200 ${
+            // `h-full w-full`, not a second copy of the resting image's own
+            // sizing. This one is `absolute`, so `h-auto max-h-full
+            // w-[44.9vw]` resolved independently of the image under it: the
+            // moment the window's shape made the height cap bind on one and
+            // not the other, the two plates drew at different sizes and the
+            // hover showed a second, smaller owl standing inside the first.
+            // Filling the wrapper — whose box IS the resting image's box —
+            // with the same `object-contain` makes them the same rectangle
+            // by construction (both plates are 760x859).
+            //
+            // `object-bottom` because the wrapper is `h-full` and can be
+            // TALLER than the resting image when width is what binds; the
+            // resting image stands on the wrapper's floor (`items-end`), so
+            // this one has to as well.
+            className={`absolute inset-0 h-full w-full object-contain object-bottom [mask-image:linear-gradient(180deg,#000_96%,transparent_100%)] transition-opacity duration-200 ${
               hovered ? 'opacity-100' : 'opacity-0 pointer-events-none'
             }`}
           />

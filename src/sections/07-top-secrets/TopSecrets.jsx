@@ -59,7 +59,9 @@ const SECRETS = [
     copy: 'From websites and mobile apps to e-commerce platforms and custom software, we design and develop digital products that look exceptional, work beautifully and support real business goals.',
     art: A.secrets.products,
     alt: 'An owl in a headset reaching into a ring of glowing interface panels',
-    glow: true,
+    // No halo. It was the only one of the three carrying the gold bloom
+    // behind it, which read as a ring round this picture alone.
+    glow: false,
   },
   {
     n: '03',
@@ -111,6 +113,32 @@ function NestHotspot({ review, open, onToggle, play }) {
         // carries the affordance for everyone else.
         className="absolute grid size-9 -translate-x-1/2 -translate-y-1/2 cursor-pointer place-items-center rounded-full transition-all duration-200 focus-visible:ring-2 focus-visible:ring-white/85 sm:size-10"
       >
+        {/* The pulse, by request — the dots read as paint rather than as
+            something to press. Two rings leave the painted dot half a cycle
+            apart and fade as they grow, with a small solid core breathing
+            over the dot itself, so the mark is always visibly live. The
+            old objection to a ring here was to a STATIC halo, a second
+            circle parked round the first; these never rest at any size.
+            Stopped while the card is open — the dot has done its job. */}
+        {!open && (
+          <>
+            {[0, 0.9].map((delay) => (
+              <motion.span
+                key={delay}
+                aria-hidden
+                className="pointer-events-none absolute size-[38%] rounded-full bg-white"
+                animate={{ scale: [1, 3.4], opacity: [0.65, 0] }}
+                transition={{ duration: 1.8, delay, repeat: Infinity, ease: 'easeOut' }}
+              />
+            ))}
+            <motion.span
+              aria-hidden
+              className="pointer-events-none absolute size-[38%] rounded-full bg-white shadow-[0_0_10px_2px_rgba(255,255,255,0.6)]"
+              animate={{ scale: [1, 1.25, 1], opacity: [0.85, 1, 0.85] }}
+              transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+            />
+          </>
+        )}
         <span className="sr-only font-ui">{open ? `Hide ${label}` : `Read ${label}`}</span>
       </button>
 
@@ -414,7 +442,12 @@ export default function TopSecrets() {
             
             return (
               <div key={s.n}>
-                {i > 0 && (
+                {/* Only the FIRST gap carries a vine now. The lower gap had a
+                    pair — a short sprig on the left and a long one on the
+                    right — and that soft, split strand across the middle of
+                    the page was flagged as something that should not be
+                    there. */}
+                {i === 1 && (
                   /* The vines BETWEEN the secrets, restored. The reference has
                      both kinds at once — strands down the flanks (added
                      separately, behind the column) and these sprigs hanging in
@@ -469,8 +502,14 @@ export default function TopSecrets() {
                   </div>
                 )}
 
+                {/* The PICTURE always gets the wide track. The split used to
+                    be a fixed `1fr 1.5fr`, and the flipped secret (02) swaps
+                    its two children with `order` — so its picture landed in
+                    the narrow `1fr` column and drew at two thirds the size of
+                    the other two. Mirroring the tracks along with the order
+                    keeps all three pictures the same size. */}
                 <article
-                  className="grid items-center gap-10 lg:grid-cols-[1fr_1.5fr] lg:gap-[4vw]"
+                  className={`grid items-center gap-10 lg:gap-[4vw] ${flipped ? 'lg:grid-cols-[1.5fr_1fr]' : 'lg:grid-cols-[1fr_1.5fr]'}`}
                 >
                 <Reveal
                   y={44}
