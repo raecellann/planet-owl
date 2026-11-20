@@ -4,6 +4,7 @@ import Reveal from '../../components/ui/Reveal'
 import { GoldButton, TealButton } from '../../components/ui/Button'
 import CardCarousel from './CardCarousel'
 import DrawnDoodle from '../../components/ui/DrawnDoodle'
+import { PHONE, useMediaQuery } from '../../lib/useMediaQuery'
 /** The two marker hearts the design draws over the card's top edge. */
 import heartLg from '../../../assets/container/Highlight 9.png'
 import heartSm from '../../../assets/container/Highlight 10.png'
@@ -69,6 +70,9 @@ const CARDS = [
 /** SECTION 4 — careers, on the gold band, where the sky starts turning to dusk. */
 export default function TheFlock() {
   const reduce = useReducedMotion()
+  // Phones only, and not under reduced motion — there the pilots keep their
+  // parked positions rather than looping across the screen for ever.
+  const flyAcross = useMediaQuery(PHONE) && !reduce
   return (
     <section
       id="the-flock"
@@ -88,7 +92,13 @@ export default function TheFlock() {
       // hidden` with `overflow-y: visible` computes the visible axis to
       // `auto` — so `overflow-x-hidden` here would silently re-clip the top
       // and put the pilot back inside. `clip` leaves the other axis alone.
-      className="relative overflow-x-clip bg-white pb-40 pt-24 sm:pb-48 sm:pt-32"
+      //
+      // `-mt-px` closes the hairline that showed between this section and the
+      // one above. `WhatWeDo`'s height is built from `vw` figures, so its
+      // bottom edge lands on a fraction of a pixel, and the dark page
+      // background showed through the sliver as a grey line across the white.
+      // Overlapping by one pixel leaves no gap to show through.
+      className="relative -mt-px overflow-x-clip bg-white pb-40 pt-24 sm:pb-48 sm:pt-32"
     >
       {/* The gold band the cards sit on. Stretched rather than cropped: its top
           and bottom edges are torn into feathers, and `cover` would slice
@@ -171,6 +181,34 @@ export default function TheFlock() {
       {/* Entrance on the outer box, float on the inner image: both animate
           `y`/`rotate`, so on one element the loop would cancel the fly-in. The
           float is a slow bob with a little pitch, offset so the nose leads. */}
+      {/* On a phone both pilots FLY ACROSS instead of parking (client
+          request). Parked, each one sat half off its edge of a 390px screen —
+          the top one over the ribbon's words, the bottom one sliced by the
+          window — and read as stuck. Crossing the whole width, they read as
+          passing through. The section is `overflow-x-clip`, so starting and
+          ending fully outside it adds no scroll. This one goes right to left
+          (its nose is mirrored to point left); the lower one goes the other
+          way, on a different clock so the two never cross in step. */}
+      {flyAcross ? (
+        <motion.div
+          aria-hidden
+          initial={{ x: '102vw' }}
+          animate={{ x: ['102vw', '-46vw'] }}
+          transition={{ duration: 9, ease: 'linear', repeat: Infinity, repeatDelay: 1.5 }}
+          className="pointer-events-none absolute -top-[5.5rem] left-0 z-10 w-[42%] select-none"
+        >
+          <motion.img
+            src={A.owl.front}
+            alt=""
+            loading="lazy"
+            draggable={false}
+            style={{ scaleX: -1 }}
+            animate={{ y: ['0%', '-6%', '0%', '5%', '0%'], rotate: [0, -2, 0, 1.5, 0] }}
+            transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
+            className="owl-shadow block w-full"
+          />
+        </motion.div>
+      ) : (
       <motion.div
         aria-hidden
         initial={{ opacity: 0, x: 36, y: -30, rotate: 10 }}
@@ -190,6 +228,7 @@ export default function TheFlock() {
           className="owl-shadow block w-full"
         />
       </motion.div>
+      )}
 
 
       {/* `pt-32` drops the heading clear of the band's torn top edge — up
@@ -269,6 +308,27 @@ export default function TheFlock() {
           left, nose up (`x:-90,y:40,rotate:-10` → `0,0,0`), so the two read
           as arriving from opposite corners rather than one flying in while
           the other just fades in place. */}
+      {flyAcross ? (
+        // The phone version: left to right across the band's bottom edge.
+        // See the note on the top pilot.
+        <motion.div
+          aria-hidden
+          initial={{ x: '-48vw' }}
+          animate={{ x: ['-48vw', '102vw'] }}
+          transition={{ duration: 11, ease: 'linear', repeat: Infinity, repeatDelay: 2.5, delay: 3 }}
+          className="pointer-events-none absolute -bottom-10 left-0 z-10 w-[44%] select-none"
+        >
+          <motion.img
+            src={A.owl.plane}
+            alt=""
+            loading="lazy"
+            draggable={false}
+            animate={{ y: ['0%', '5%', '0%', '-6%', '0%'], rotate: [0, 1.5, 0, -2, 0] }}
+            transition={{ duration: 3.6, repeat: Infinity, ease: 'easeInOut' }}
+            className="owl-shadow block w-full"
+          />
+        </motion.div>
+      ) : (
       <motion.img
         src={A.owl.plane}
         alt=""
@@ -284,6 +344,7 @@ export default function TheFlock() {
         // band, per direct feedback that it sat too high.
         className="owl-shadow pointer-events-none absolute -bottom-10 left-[-11%] z-10 w-[44%] max-w-[540px] select-none sm:-bottom-28 sm:left-[-9%] sm:w-[38%]"
       />
+      )}
     </section>
   )
 }
@@ -417,19 +478,28 @@ function renderCard(card) {
           restated in `vw` against each of the card widths the carousel sets
           below: 3.55% of 80/64/52/46vw. Without this the opaque foot of the
           scrim squared off the card's two bottom corners against the gold. */}
-      <figcaption className="absolute inset-x-0 bottom-0 flex flex-wrap items-center justify-between gap-4 rounded-b-[2.84vw] bg-[linear-gradient(180deg,rgba(69,22,71,0)_0%,rgba(69,22,71,0.55)_38%,rgba(69,22,71,0.9)_100%)] px-6 pb-5 pt-14 sm:rounded-b-[2.27vw] lg:rounded-b-[1.85vw] xl:rounded-b-[1.63vw]">
-        <span>
-          <span className="block font-display text-lg font-semibold text-white sm:text-xl">
+      {/* Compact on phones: one row, smaller type and a smaller pill. At the
+          desktop sizes the caption wrapped onto three lines on a 300px card
+          and its scrim climbed over the whole photograph — the role sat on
+          the sitter's face and the button on the laptop. Kept to a single
+          strip along the foot, the picture is visible again. */}
+      <figcaption className="absolute inset-x-0 bottom-0 flex flex-nowrap items-center justify-between gap-2 rounded-b-[2.84vw] bg-[linear-gradient(180deg,rgba(69,22,71,0)_0%,rgba(69,22,71,0.55)_38%,rgba(69,22,71,0.9)_100%)] px-3.5 pb-3 pt-8 sm:flex-wrap sm:gap-4 sm:rounded-b-[2.27vw] sm:px-6 sm:pb-5 sm:pt-14 lg:rounded-b-[1.85vw] xl:rounded-b-[1.63vw]">
+        <span className="min-w-0">
+          <span className="block font-display text-[0.9rem] font-semibold leading-tight text-white sm:text-xl sm:leading-normal">
             {card.role}
           </span>
-          <span className="text-sm text-plum-100/80">{card.note}</span>
+          <span className="text-xs text-plum-100/80 sm:text-sm">{card.note}</span>
         </span>
         {/* Teal, and "Join the Flock" — the card's own button in the design,
             not the page's gold primary. Gold is the site's one loud action
             (Start a Project, Build My World); a gold button inside every card
             of a carousel makes four of them shout at once, and none of them
             is the page's main action. */}
-        <TealButton href="#start" draggable={false}>
+        <TealButton
+          href="#start"
+          draggable={false}
+          className="shrink-0 whitespace-nowrap max-sm:px-3.5 max-sm:py-2 max-sm:text-xs"
+        >
           Join the Flock
         </TealButton>
       </figcaption>

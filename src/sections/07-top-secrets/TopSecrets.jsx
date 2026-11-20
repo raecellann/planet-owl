@@ -180,7 +180,15 @@ function NestHotspot({ review, open, onToggle, play }) {
             transition={{ duration: 0.34, ease: [0.16, 1, 0.3, 1] }}
             style={{
               transformOrigin: 'top left',
-              left: `calc(${x} + 0.5rem)`,
+              // Capped so the card's right edge stays inside the plate. The
+              // second term is the furthest left the card can start and
+              // still fit — the plate's width less the card's own (the same
+              // `max(15rem,32%)` as the class below) and a small gutter. On a
+              // phone the Maserati dot sits past half way across and the
+              // 15rem card ran ~60px off the right of the screen, where the
+              // section's `overflow-hidden` cut it; Nike's did the same at
+              // every width.
+              left: `min(calc(${x} + 0.5rem), calc(100% - max(15rem, 32%) - 0.75rem))`,
               top: `calc(${y} + 0.75rem)`,
             }}
             {...(plate ? play.handlers : {})}

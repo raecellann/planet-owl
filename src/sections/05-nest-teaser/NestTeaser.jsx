@@ -4,6 +4,7 @@ import { A } from '../../lib/assets'
 import Reveal from '../../components/ui/Reveal'
 import { GoldButton } from '../../components/ui/Button'
 import DrawnDoodle from '../../components/ui/DrawnDoodle'
+import { PHONE, useMediaQuery } from '../../lib/useMediaQuery'
 /** The hand-drawn sparkle cluster the design hangs off the wizard's hat. */
 import sparkleImg from '../../../assets/container/Group 2087325404.png'
 
@@ -144,8 +145,26 @@ const FEATHERS = [
  * keeps his whole body in frame — the thing that was cropping him before was
  * being sized in `rem` against a section whose height came from padding.
  */
+/**
+ * Where the same three feathers sit on a PHONE — [left %, top %] per row of
+ * `FEATHERS`, sizes unchanged.
+ *
+ * The desktop positions are read off a landscape frame. On a portrait screen
+ * the type block is the full width of the section, so the two flank feathers
+ * at ~22% down landed straight across the paragraph, and the wizard — who is
+ * most of the width there — stood on top of the small one. These drop the
+ * flank pair into the open band between the button and the wizard's hat, and
+ * move the small one out past his right shoulder.
+ */
+const FEATHERS_PHONE = [
+  [-4, 42],
+  [84, 47],
+  [88, 70],
+]
+
 export default function NestTeaser() {
   const reduce = useReducedMotion()
+  const phone = useMediaQuery(PHONE)
   const [hovered, setHovered] = useState(false)
 
   return (
@@ -190,7 +209,14 @@ export default function NestTeaser() {
       // below), which is what their swept-disc containment was built
       // against. `overflow-x-clip` still stops the page from widening, the
       // one thing dropping `overflow-hidden` outright would have risked.
-      className="relative flex h-[100svh] min-h-[46rem] w-full flex-col overflow-x-clip bg-white"
+      //
+      // Phones size to CONTENT, not to the screen. A full-screen section only
+      // works while the wizard can grow to fill what the type leaves, and on
+      // a portrait phone he cannot: his width is what binds (he is already
+      // 80vw), so every extra pixel of screen height became empty white
+      // between the button and his hat — worst on tall phones. In flow, the
+      // gap is whatever the wizard column's own top padding says it is.
+      className="relative flex h-auto w-full flex-col overflow-x-clip bg-white sm:h-[100svh] sm:min-h-[46rem]"
     >
       {/* No seam gradient here any more — The Flock above ends on white now,
           so a lavender fade would be inventing a colour neither section has. */}
@@ -234,7 +260,9 @@ export default function NestTeaser() {
               shake that dies away, with a small lift, as if the feather had
               been brushed. It is a keyframed one-shot rather than a spring
               so it starts at full speed instead of easing in. */}
-          {FEATHERS.map(([left, top, vw, cap, secs, dir], i) => (
+          {FEATHERS.map(([deskLeft, deskTop, vw, cap, secs, dir], i) => {
+            const [left, top] = phone ? FEATHERS_PHONE[i] : [deskLeft, deskTop]
+            return (
             <motion.div
               key={i}
               className="absolute"
@@ -257,7 +285,8 @@ export default function NestTeaser() {
                 transition={{ duration: 0.35, ease: 'easeOut' }}
               />
             </motion.div>
-          ))}
+            )
+          })}
         </div>
       )}
 
@@ -336,7 +365,10 @@ export default function NestTeaser() {
           minimum that still keeps him off the button on a short window, and
           the bottom is down from 5% to 2% for the same reason: every pixel of
           padding is a pixel off the owl. */}
-      <div className="relative z-20 flex min-h-0 flex-1 items-end justify-center pb-[0.5%] pt-[min(4vw,2.5rem)]">
+      {/* `pt-9` on phones is now the WHOLE gap between the button and the
+          wizard's plate (the section is content-height there) — enough for
+          the sparkles off his hat to clear the button, and no more. */}
+      <div className="relative z-20 flex min-h-0 flex-1 items-end justify-center pb-[0.5%] pt-9 sm:pt-[min(4vw,2.5rem)]">
         <motion.div
           onPointerEnter={() => setHovered(true)}
           onPointerLeave={() => setHovered(false)}
@@ -366,7 +398,15 @@ export default function NestTeaser() {
           // when its containing block's own height isn't definite. The owl
           // was rendering at `width: 44.9vw` with no real height cap at all,
           // free to grow past the space above it and overlap the headline.
-          className="relative flex h-full items-end justify-center"
+          //
+          // `h-auto` below `sm`, where the reasoning above runs the other way
+          // round. On a portrait phone WIDTH binds, not height: the owl is
+          // sized `80vw` and the column left under the type is taller than
+          // he is, so there is nothing for a height cap to do. Left `h-full`
+          // there, this box was the whole column rather than the owl's own
+          // box, and the sparkle cluster — placed as a share of this box —
+          // hung in the empty space under the button instead of off his hat.
+          className="relative flex h-auto items-end justify-center sm:h-full"
         >
           {/* Resting image dictating normal layout flow and sizing */}
           <img
@@ -386,7 +426,12 @@ export default function NestTeaser() {
             // ink, so at full opacity it covers this one completely, and on
             // the way there the two simply dissolve into each other with
             // nothing showing through to the background.
-            className="h-auto max-h-full w-[44.9vw] max-w-[86vw] object-contain [mask-image:linear-gradient(180deg,#000_96%,transparent_100%)]"
+            //
+            // `80vw` on phones. 44.9vw is the Figma's share of a LANDSCAPE
+            // frame; on a 390px portrait screen it drew him 175px wide at the
+            // foot of a section a full screen tall, with a third of the
+            // screen empty between him and the button.
+            className="h-auto max-h-full w-[80vw] max-w-[86vw] object-contain [mask-image:linear-gradient(180deg,#000_96%,transparent_100%)] sm:w-[44.9vw]"
           />
           {/* The design's sparkle cluster, off the top right of the wizard's
               hat, turned -14.14° as Figma has it.

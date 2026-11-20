@@ -643,7 +643,10 @@ export default function WhatWeDo() {
             {/* `mt-12` (~half an inch) drops the pair lower against the rail
                 without touching the lift math above — that negative margin is
                 sized off the rail/owl and shifting it would move both. */}
-            <div className="relative mt-6 flex items-center gap-[clamp(0.75rem,1.25vw,1.5rem)] lg:mt-12">
+            {/* On phones the pair is split — previous on the left edge, next
+                on the right — by client request, rather than sitting together
+                under the list. From `sm` up they are a pair again. */}
+            <div className="relative mt-6 flex items-center justify-between gap-[clamp(0.75rem,1.25vw,1.5rem)] sm:justify-start lg:mt-12">
               <Arrow
                 label={`Previous craft, ${CRAFTS[(i - 1 + CRAFTS.length) % CRAFTS.length].title}`}
                 onClick={() => go(-1)}

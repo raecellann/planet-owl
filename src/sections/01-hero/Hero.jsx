@@ -13,6 +13,7 @@ import Island from './Island'
 import FloatingOwl from './FloatingOwl'
 import { GoldButton } from '../../components/ui/Button'
 import { useFinePointer, usePointerParallax } from '../../lib/usePointerParallax'
+import { PHONE, useMediaQuery } from '../../lib/useMediaQuery'
 
 /**
  * Scroll and cursor parallax enabled. There is no idle flight any more — see
@@ -269,7 +270,14 @@ export default function Hero() {
 
   // FIXED: Increased scale to 1.5 to fit the screen, and massive pull-up (-110vh) to clear the mist completely.
   const narrow = useNarrowViewport()
-  const islandYNum = useTransform(p, [0, 0.5, 1], to(0, -45, -110))
+  const phone = useMediaQuery(PHONE)
+  // Phones stop the climb at -54vh instead of -110. The island's box is only
+  // ~75svh tall there (it is `150vw` wide, not sized off the height), so a
+  // pull of more than a screen carried the whole island off the top with a
+  // third of the hero's scroll still to go — and what was left was a full
+  // screen of empty cloud before the next section arrived. -54 finishes with
+  // the island filling the window, and it leaves with the page instead.
+  const islandYNum = useTransform(p, [0, 0.5, 1], phone ? to(0, -30, -54) : to(0, -45, -110))
   const islandY = useMotionTemplate`${islandYNum}vh`
   // Phones: the island is already most of the screen at rest, so the push-in
   // is gentler — at 1.5x it became a crop of the building with the owl's
@@ -628,7 +636,9 @@ export default function Hero() {
             x: '-50%',
             y: broomY,
             scale: broomScale,
-            transformOrigin: '76% 73.2%',
+            // Phones: the owl sits 22% further left (see its `left-[30%]`
+            // below), so the origin moves with it to stay on its centre.
+            transformOrigin: phone ? '54% 73.2%' : '76% 73.2%',
           }}
           className={`layer pointer-events-none z-40 ${ISLAND_BOX}`}
         >
@@ -662,7 +672,14 @@ export default function Hero() {
                 still={frozen}
                 src={A.owl.broom}
                 alt="Owl riding a broomstick"
-                className="left-[52%] top-[54%] w-[48%]"
+                // `left-[30%]` on phones. The island box is `150vw` there and
+                // centred, so it overhangs the screen by 25vw a side — and at
+                // 52% + 48% this owl's right edge is the BOX's right edge,
+                // which put a quarter of the bird (its face) off the screen
+                // from the first frame. At 30% the whole owl is in the window
+                // through the hold; it only crosses the edge on the final
+                // push at the camera, which is the point of that beat.
+                className="left-[30%] top-[54%] w-[48%] sm:left-[52%]"
                 rise={0}
                 drift={0}
                 spin={9}
