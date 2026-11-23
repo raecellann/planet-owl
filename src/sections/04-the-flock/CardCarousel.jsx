@@ -162,7 +162,27 @@ export default function CardCarousel({ items, renderItem, className = '', label 
           by screen readers, but are clipped out of view. Deleting them
           outright would have made the roles past the first unreachable for
           anyone not using a pointer. */}
-      <div className="sr-only">
+      {/* On touch screens nothing else says the row moves, so it gets arrows,
+          one dot per role, and a short hint. */}
+      <div className="relative z-10 mt-5 flex flex-col items-center gap-2 lg:hidden">
+        <div className="flex items-center gap-3">
+          <button type="button" aria-label="Previous role" onClick={() => settle(index - 1)} className="grid size-10 place-items-center rounded-full bg-plum-800 text-gold-400 transition-transform active:scale-90">
+            <svg viewBox="0 0 24 24" aria-hidden className="size-5" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"><path d="m15 6-6 6 6 6" /></svg>
+          </button>
+          <div className="flex items-center">
+            {items.map((item, d) => (
+              <button key={item.id} type="button" aria-label={`Show role ${d + 1} of ${n}`} aria-current={d === active ? 'true' : undefined} onClick={() => settle(n + d)} className="grid h-8 place-items-center px-1">
+                <span className={`block h-2 rounded-full transition-all duration-300 ${d === active ? 'w-6 bg-plum-800' : 'w-2 bg-plum-800/35'}`} />
+              </button>
+            ))}
+          </div>
+          <button type="button" aria-label="Next role" onClick={() => settle(index + 1)} className="grid size-10 place-items-center rounded-full bg-plum-800 text-gold-400 transition-transform active:scale-90">
+            <svg viewBox="0 0 24 24" aria-hidden className="size-5" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"><path d="m9 6 6 6-6 6" /></svg>
+          </button>
+        </div>
+        <p className="font-ui text-sm font-semibold text-plum-800">Swipe to see more roles</p>
+      </div>
+      <div className="hidden lg:block lg:sr-only">
         <button type="button" onClick={() => settle(index - 1)}>
           Previous role
         </button>
