@@ -3,7 +3,6 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import BlogLayout from './BlogLayout'
 import { A } from '../lib/assets'
 import { WORK } from '../sections/02-portfolio/work'
-import cloudImg from '../../assets/section 2/image 35 copy.png'
 
 /**
  * The About page, at `#/about`.
@@ -151,19 +150,16 @@ export default function About() {
               you.
             </p>
           </div>
-          {/* The studio's own wizard on a patch of sky, by request — this was
-              a stock-looking photograph of a woman at a laptop, the one
-              picture on the page that was not Planet Owl's own artwork. */}
-          <div className="relative overflow-hidden rounded-[1.75rem] bg-[linear-gradient(180deg,#cdd8f4_0%,#eef3fb_70%,#ffffff_100%)] px-6 pt-10 shadow-[0_30px_60px_-30px_rgba(54,14,57,0.5)]">
-            <img src={cloudImg} alt="" aria-hidden className="pointer-events-none absolute -left-[18%] top-[8%] w-[62%] max-w-none opacity-70" />
-            <img src={cloudImg} alt="" aria-hidden className="pointer-events-none absolute -right-[22%] top-[38%] w-[70%] max-w-none -scale-x-100 opacity-60" />
-            <img
-              src={A.owl.wizardLg}
-              alt="The Planet Owl wizard, in a starred hat with a wand"
-              loading="lazy"
-              className="relative mx-auto block h-[min(70vw,24rem)] w-auto object-contain [mask-image:linear-gradient(180deg,#000_94%,transparent_100%)]"
-            />
-          </div>
+          {/* The studio's own wizard, standing free on the page — no card,
+              no sky panel behind him (by request; he had been put in a
+              rounded container, and before that this was a stock-looking
+              photograph). */}
+          <img
+            src={A.owl.wizardLg}
+            alt="The Planet Owl wizard, in a starred hat with a wand"
+            loading="lazy"
+            className="mx-auto block h-[min(80vw,30rem)] w-auto object-contain [mask-image:linear-gradient(180deg,#000_94%,transparent_100%)]"
+          />
         </div>
       </section>
 
@@ -263,12 +259,29 @@ export default function About() {
           <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-plum-700">
             What We Are Here to Do
           </h2>
-          <ul className="mt-10 grid gap-8 lg:grid-cols-3">
+          {/* STACKED, by request — the same dealt-deck scroll as the pricing
+              page. Each panel is sticky and pins a step lower than the last,
+              so the next one slides up over it as the page moves. The
+              offsets clear the fixed nav; nothing above this list may clip
+              or the pinning stops. */}
+          <ul className="mt-10 space-y-8">
             {PROMISES.map((p, i) => (
-              <li key={p.title} className="border-t-4 border-gold-500 pt-6">
-                <p className="font-ui text-sm font-bold text-teal-600">0{i + 1}</p>
-                <h3 className="mt-2 font-ui text-xl font-bold leading-snug text-plum-900">{p.title}</h3>
-                <p className="mt-3 font-ui leading-relaxed text-plum-800">{p.copy}</p>
+              <li
+                key={p.title}
+                style={{ top: `calc(8.5rem + ${i * 1.75}rem)` }}
+                className={`sticky grid min-h-[17rem] items-center gap-6 rounded-[1.75rem] p-8 shadow-[0_-22px_44px_-28px_rgba(54,14,57,0.6)] sm:p-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-12 ${
+                  ['bg-gold-200', 'bg-[#e7b248]', 'bg-plum-800'][i]
+                }`}
+              >
+                <div>
+                  <p className={`font-['Momo_Trust_Display'] text-5xl leading-none ${i === 2 ? 'text-gold-500' : 'text-teal-600'}`}>
+                    0{i + 1}
+                  </p>
+                  <h3 className={`mt-3 font-['Momo_Trust_Display'] text-[clamp(1.6rem,3vw,2.5rem)] font-normal leading-[1.1] ${i === 2 ? 'text-white' : 'text-plum-900'}`}>
+                    {p.title}
+                  </h3>
+                </div>
+                <p className={`font-ui text-lg leading-relaxed ${i === 2 ? 'text-gold-200' : 'text-plum-900'}`}>{p.copy}</p>
               </li>
             ))}
           </ul>
