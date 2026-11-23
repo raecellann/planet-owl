@@ -1,5 +1,5 @@
-import { useEffect } from 'react'
-import { motion, useReducedMotion } from 'motion/react'
+import { useEffect, useRef, useState } from 'react'
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import BlogLayout from './BlogLayout'
 import { A } from '../lib/assets'
 import Faq from '../components/Faq'
@@ -89,6 +89,90 @@ const STEPS = [
   { n: '03', title: 'Keep the flock on it', copy: 'Stay on the plan month to month, and step up to the next one when you need another craft.' },
 ]
 
+const STEP_ART = [A.owl.digital, A.owl.develop, A.owl.wizardLg]
+
+/**
+ * The roadmap. The steps scroll past on the left while the owl on the right
+ * stays in place and changes to match whichever step is mid-screen, and the
+ * gold line fills as you go. Cut-out art, so there is no box round the picture.
+ * On phones there is no room for a pinned column, so each step carries its own.
+ */
+function HowItWorks() {
+  const reduce = useReducedMotion()
+  const [active, setActive] = useState(0)
+  const stepRefs = useRef([])
+
+  useEffect(() => {
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) setActive(Number(e.target.dataset.step))
+        })
+      },
+      { rootMargin: '-48% 0px -48% 0px' },
+    )
+    stepRefs.current.forEach((el) => el && io.observe(el))
+    return () => io.disconnect()
+  }, [])
+
+  return (
+    <div className="mt-12 grid gap-12 lg:grid-cols-2 lg:gap-16">
+      <ol className="relative pl-16">
+        <span aria-hidden className="absolute bottom-6 left-[1.375rem] top-2 w-1 rounded-full bg-plum-100" />
+        <motion.span
+          aria-hidden
+          initial={false}
+          animate={{ scaleY: (active + 1) / STEPS.length }}
+          transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+          className="absolute bottom-6 left-[1.375rem] top-2 w-1 origin-top rounded-full bg-gold-500"
+        />
+        {STEPS.map((st, i) => (
+          <li
+            key={st.n}
+            ref={(el) => {
+              stepRefs.current[i] = el
+            }}
+            data-step={i}
+            className="relative flex min-h-[20rem] flex-col justify-center py-8 lg:min-h-[62svh]"
+          >
+            <span
+              aria-hidden
+              className={`absolute -left-16 top-1/2 grid size-12 -translate-y-1/2 place-items-center rounded-full font-ui text-base font-bold shadow-[0_6px_0_-2px_var(--color-plum-950)] transition-colors duration-300 ${
+                i <= active ? 'bg-plum-800 text-gold-500' : 'bg-plum-100 text-plum-700'
+              }`}
+            >
+              {st.n}
+            </span>
+            <div className={`transition-opacity duration-300 ${i === active ? 'opacity-100' : 'lg:opacity-40'}`}>
+              <h3 className="font-ui text-2xl font-bold text-plum-900 lg:text-3xl">{st.title}</h3>
+              <p className="mt-2 max-w-md font-ui text-lg leading-relaxed text-plum-800">{st.copy}</p>
+              <img src={STEP_ART[i]} alt="" aria-hidden loading="lazy" className="mt-6 h-52 w-auto object-contain lg:hidden" />
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <div className="hidden lg:block">
+        <div className="sticky top-[calc(50svh-13rem)] flex h-[26rem] items-center justify-center">
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.img
+              key={active}
+              src={STEP_ART[active]}
+              alt=""
+              aria-hidden
+              initial={reduce ? false : { opacity: 0, y: 26, scale: 0.92 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={reduce ? undefined : { opacity: 0, y: -22, scale: 0.96 }}
+              transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+              className="max-h-full w-auto max-w-full object-contain"
+            />
+          </AnimatePresence>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 const TILE = {
   off: { opacity: 0, y: 28, scale: 0.97 },
   on: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
@@ -137,7 +221,7 @@ export default function Pricing() {
           {PLANS.map((p) => (
             <li
               key={p.name}
-              className={`flex flex-col rounded-[1.75rem] p-7 ring-1 ${p.featured ? 'bg-teal-400 text-plum-900 shadow-[0_30px_60px_-30px_rgba(54,14,57,0.5)] [&_.text-plum-600]:text-plum-900 [&_.text-plum-700]:text-plum-900 [&_.text-plum-800]:text-plum-900 [&_.text-teal-500]:text-plum-900' : 'bg-white text-plum-900 ring-plum-900/10 shadow-[0_30px_60px_-36px_rgba(54,14,57,0.45)]'}`}
+              className={`flex flex-col rounded-[1.75rem] p-7 ring-1 ${p.featured ? 'bg-teal-400 text-plum-900 ring-teal-400 shadow-[0_30px_60px_-30px_rgba(54,14,57,0.5)] [&_.text-plum-600]:text-plum-900 [&_.text-plum-700]:text-plum-900 [&_.text-plum-800]:text-plum-900 [&_.text-teal-500]:text-plum-900' : 'bg-white text-plum-900 ring-plum-900/10 shadow-[0_30px_60px_-36px_rgba(54,14,57,0.45)]'}`}
             >
               {/* The owl on TOP of the card and large, by request — it was a
                   5rem figure tucked beside the plan's name. */}
@@ -314,51 +398,7 @@ export default function Pricing() {
           <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-plum-700">
             How It Works
           </h2>
-          <div className="mt-12 grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-            <motion.ol
-              initial={reduce ? false : 'off'}
-              whileInView="on"
-              viewport={{ once: true, margin: '-20% 0px' }}
-              className="relative space-y-12 pl-16"
-            >
-              <span aria-hidden className="absolute bottom-6 left-[1.375rem] top-2 w-1 rounded-full bg-plum-100" />
-              <motion.span
-                aria-hidden
-                variants={{ off: { scaleY: 0 }, on: { scaleY: 1 } }}
-                transition={{ duration: 1.8, ease: [0.4, 0, 0.2, 1] }}
-                className="absolute bottom-6 left-[1.375rem] top-2 w-1 origin-top rounded-full bg-gold-500"
-              />
-              {STEPS.map((st, i) => (
-                <li key={st.n} className="relative">
-                  <motion.span
-                    aria-hidden
-                    variants={{ off: { scale: 0, opacity: 0 }, on: { scale: 1, opacity: 1 } }}
-                    transition={{ type: 'spring', stiffness: 380, damping: 20, delay: 0.15 + i * 0.6 }}
-                    className="absolute -left-16 top-0 grid size-12 place-items-center rounded-full bg-plum-800 font-ui text-base font-bold text-gold-500 shadow-[0_6px_0_-2px_var(--color-plum-950)]"
-                  >
-                    {st.n}
-                  </motion.span>
-                  <motion.div
-                    variants={{ off: { opacity: 0, x: 18 }, on: { opacity: 1, x: 0 } }}
-                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.3 + i * 0.6 }}
-                  >
-                    <h3 className="font-ui text-2xl font-bold text-plum-900">{st.title}</h3>
-                    <p className="mt-2 max-w-md font-ui text-lg leading-relaxed text-plum-800">{st.copy}</p>
-                  </motion.div>
-                </li>
-              ))}
-            </motion.ol>
-            <motion.img
-              src={A.secrets.products}
-              alt="An owl working inside the nest, surrounded by screens"
-              loading="lazy"
-              initial={reduce ? false : { opacity: 0, scale: 0.94 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true, margin: '-15% 0px' }}
-              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="mx-auto w-full max-w-[34rem] rounded-[1.75rem] shadow-[0_30px_60px_-30px_rgba(54,14,57,0.6)]"
-            />
-          </div>
+          <HowItWorks />
         </div>
       </section>
 
