@@ -38,6 +38,7 @@ export default function FloatingOwl({
   shadow = true,
   onIntro = null,
   selected = false,
+  hitInset = null,
 }) {
   const reduce = useReducedMotion()
   const frozen = still || reduce
@@ -50,6 +51,13 @@ export default function FloatingOwl({
   // nearer owls (higher depth) react more to the cursor
   const mx = useTransform(px, (v) => v * depth)
   const my = useTransform(py, (v) => v * depth * 0.55)
+
+  const introClick = (e) => {
+    if (!onIntro) return
+    e.stopPropagation()
+    const owlBox = e.currentTarget.closest('[data-owl]') ?? e.currentTarget
+    onIntro(selected ? null : { src, rect: owlBox.getBoundingClientRect() })
+  }
 
   return (
     <motion.div style={{ y, x, rotate }} className={`layer pointer-events-none absolute ${className}`}>
@@ -82,18 +90,12 @@ export default function FloatingOwl({
             compounds with the approach and there is no longer any way to
             undo it. */}
         <motion.div
-          onClick={
-            interactive && onIntro
-              ? (e) => {
-                  e.stopPropagation()
-                  onIntro(selected ? null : { src, rect: e.currentTarget.getBoundingClientRect() })
-                }
-              : undefined
-          }
+          data-owl
           animate={{ scale: selected && interactive ? 1.18 : 1 }}
           transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
           style={{ zIndex: selected && interactive ? 30 : 'auto' }}
-          className={`relative ${interactive ? 'pointer-events-auto cursor-pointer' : ''}`}
+          className={`relative ${interactive && !hitInset ? 'pointer-events-auto cursor-pointer' : ''}`}
+          onClick={interactive && !hitInset ? introClick : undefined}
         >
           {/* `owl-shadow` is `drop-shadow(0 24px 22px ...)`, and a filter
               inside a scaled layer scales with it — at the foreground bird's
@@ -109,6 +111,18 @@ export default function FloatingOwl({
             decoding="async"
             className={`w-full ${shadow ? 'owl-shadow' : ''}`}
           />
+          {/* A big owl's picture is mostly empty corners. `hitInset` limits its
+              clickable area to the bird, so those corners cannot sit on top of
+              the smaller owls behind it and swallow their clicks. */}
+          {interactive && hitInset && (
+            <button
+              type="button"
+              aria-label="Say hello to this owl"
+              onClick={introClick}
+              style={{ position: 'absolute', inset: hitInset }}
+              className="pointer-events-auto cursor-pointer rounded-full"
+            />
+          )}
         </motion.div>
       </motion.div>
     </motion.div>

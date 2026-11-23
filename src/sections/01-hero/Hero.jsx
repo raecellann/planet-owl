@@ -121,13 +121,13 @@ const HERO_OWLS = [
   {
     src: A.owl.flame,
     alt: 'Owl with a flaming crest',
-    className: 'left-[15.4%] top-[54.3%] w-[11.2%]',
+    className: 'left-[18%] top-[54.3%] w-[11.2%] sm:left-[6.5%] sm:top-[57%]',
     rise: 50, spin: 12, depth: 16,
   },
   {
     src: A.owl.astronaut,
     alt: 'Owl in a space helmet',
-    className: 'left-[40.4%] top-[61.7%] w-[8.4%]',
+    className: 'left-[20%] top-[72%] w-[8.4%] sm:left-[37.5%] sm:top-[68%]',
     rise: 62, drift: -16, spin: -10, depth: 8,
   },
   {
@@ -690,6 +690,7 @@ export default function Hero() {
                 spin={9}
                 depth={24}
                 interactive={!broomHuge}
+                hitInset="14% 12% 10% 26%"
                 onIntro={setOwlIntro}
                 selected={owlIntro?.src === A.owl.broom}
                 shadow={!broomHuge}
