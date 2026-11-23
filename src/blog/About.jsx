@@ -97,6 +97,39 @@ function CountUp({ to }) {
   )
 }
 
+const STAT_OWLS = [A.owl.flower, A.owl.crown, A.owl.tophat, A.owl.astronaut]
+
+/**
+ * One figure, out of its box. Pointing at it recounts the number, lifts it,
+ * draws a gold line under it and brings an owl up beside it. It links to the
+ * work it counts.
+ */
+function StatTile({ stat, owl }) {
+  const [run, setRun] = useState(0)
+  return (
+    <li>
+      <a
+        href="#portfolio"
+        onPointerEnter={() => setRun((r) => r + 1)}
+        className="group relative block py-2 no-underline transition-transform duration-300 ease-out hover:-translate-y-1.5 focus-visible:-translate-y-1.5 motion-reduce:transform-none"
+      >
+        <img
+          src={owl}
+          alt=""
+          aria-hidden
+          loading="lazy"
+          className="pointer-events-none absolute right-0 top-0 h-16 w-auto origin-bottom translate-y-3 scale-75 opacity-0 transition-[translate,scale,opacity,rotate] duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:translate-y-0 group-hover:-rotate-6 group-hover:scale-100 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:scale-100 group-focus-visible:opacity-100 sm:h-20"
+        />
+        <p className="font-['Momo_Trust_Display'] text-[clamp(2.6rem,6vw,4.5rem)] leading-none text-plum-700 transition-colors duration-300 group-hover:text-teal-600">
+          <CountUp key={run} to={stat.value} />
+        </p>
+        <span aria-hidden className="mt-3 block h-1 w-full origin-left scale-x-[0.18] rounded-full bg-gold-500 transition-transform duration-500 ease-out group-hover:scale-x-100 group-focus-visible:scale-x-100" />
+        <p className="mt-3 font-ui font-semibold leading-snug text-plum-800">{stat.label}</p>
+      </a>
+    </li>
+  )
+}
+
 /** The flock around the island: the hero's own owls, at different depths. */
 const TEAM = [
   { src: A.owl.tophat, x: 2, y: 10, w: 21 },
@@ -182,14 +215,9 @@ export default function About() {
 
       {/* ------------------------------------------------------ figures -- */}
       <section className="bg-white px-5 pb-14 sm:px-8 sm:pb-20">
-        <ul className="mx-auto grid max-w-[1180px] grid-cols-2 gap-x-6 gap-y-10 rounded-[1.75rem] bg-gold-200 p-8 sm:p-12 lg:grid-cols-4">
-          {STATS.map((s) => (
-            <li key={s.label}>
-              <p className="font-['Momo_Trust_Display'] text-[clamp(2.6rem,6vw,4.5rem)] leading-none text-plum-700">
-                <CountUp to={s.value} />
-              </p>
-              <p className="mt-3 font-ui font-semibold leading-snug text-plum-800">{s.label}</p>
-            </li>
+        <ul className="mx-auto grid max-w-[1180px] grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4">
+          {STATS.map((s, i) => (
+            <StatTile key={s.label} stat={s} owl={STAT_OWLS[i % STAT_OWLS.length]} />
           ))}
         </ul>
       </section>
