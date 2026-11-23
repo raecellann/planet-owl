@@ -361,7 +361,8 @@ export default function Hero() {
   const broomScale = useTransform(
     p,
     P_BROOM,
-    narrow ? to(0.8, 1.0, 1.2, 1.2, 1.5, 1.7) : to(0.8, 1.15, 1.75, 1.75, 3, 3.5),
+    // Phones get the desktop exit too: it holds whole, then grows as it leaves.
+    phone ? to(0.8, 1.05, 1.35, 1.35, 2.6, 3.6) : narrow ? to(0.8, 1.0, 1.2, 1.2, 1.5, 1.7) : to(0.8, 1.15, 1.75, 1.75, 3, 3.5),
   )
 
   /**
@@ -379,7 +380,7 @@ export default function Hero() {
    * is on screen and still. Nothing else in the hero holds still, which is
    * what makes it read as the owl arriving rather than passing through.
    */
-  const broomYNum = useTransform(p, P_BROOM, to(2, -30, -90, -92, -105, -180))
+  const broomYNum = useTransform(p, P_BROOM, phone ? to(2, -18, -42, -44, -52, -100) : to(2, -30, -90, -92, -105, -180))
   const broomY = useMotionTemplate`${broomYNum}vh`
 
   /**
@@ -412,7 +413,7 @@ export default function Hero() {
    *
    * So: it arrives, it sits, it goes.
    */
-  const broomXNum = useTransform(p, P_BROOM, to(0, 0, 0, 0, 4, 40))
+  const broomXNum = useTransform(p, P_BROOM, phone ? to(0, 0, 0, 0, 10, 75) : to(0, 0, 0, 0, 4, 40))
   const broomX = useMotionTemplate`${broomXNum}vw`
 
   /**
