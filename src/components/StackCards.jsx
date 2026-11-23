@@ -31,7 +31,7 @@ export default function StackCards({ heading, headingClass = '', items, tones })
   return (
     <div
       className="[--step:6rem] sm:[--step:4rem]"
-      style={{ '--base': 'max(11.5rem, 50svh - 11rem)' }}
+      style={{ '--base': 'max(2.92vw + max(3.25rem, 4.4vw) + 6rem, 50svh - 11rem)' }}
     >
       <h2
         style={{ top: 'calc(var(--base) - 4.75rem)', marginBottom: `calc(${pile})` }}

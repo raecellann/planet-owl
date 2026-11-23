@@ -273,7 +273,8 @@ export default function Contact() {
                         <input type="date" min={today} value={form.date} onChange={set('date')} className={FIELD} />
                       </Field>
                       <Field label="Preferred Time">
-                        <select value={form.time} onChange={set('time')} required={booked} className={FIELD}>
+                        <span className="relative block">
+                          <select value={form.time} onChange={set('time')} required={booked} className={`${FIELD} cursor-pointer appearance-none pr-12`}>
                           <option value="">Choose a time</option>
                           {SLOTS.map((s) => (
                             <option key={s} value={s}>
@@ -281,6 +282,11 @@ export default function Contact() {
                             </option>
                           ))}
                         </select>
+                          {/* Our own arrow: the browser's sits jammed against the border. */}
+                          <svg viewBox="0 0 24 24" aria-hidden className="pointer-events-none absolute right-4 top-[calc(50%+0.1875rem)] size-5 -translate-y-1/2 text-plum-700" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="m6 9 6 6 6-6" />
+                          </svg>
+                        </span>
                       </Field>
                     </div>
                   </fieldset>

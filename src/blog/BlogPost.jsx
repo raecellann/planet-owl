@@ -82,7 +82,7 @@ export default function BlogPost({ post }) {
         {/* -------------------------------------------------------- body -- */}
         <div className="mx-auto grid max-w-[1180px] gap-10 px-5 pb-8 pt-14 sm:px-8 lg:grid-cols-[13rem_minmax(0,1fr)_9rem] lg:gap-12">
           <nav aria-label="Topics" className="hidden lg:block">
-            <div className="sticky top-32">
+            <div className="sticky top-[calc(2.92vw+max(3.25rem,4.4vw)+2rem)]">
               <p className="font-ui text-xs font-bold uppercase tracking-wider text-plum-900">Topics</p>
               <ul className="mt-4 space-y-3 border-l-2 border-plum-100">
                 {topics.map((t) => (
@@ -108,7 +108,7 @@ export default function BlogPost({ post }) {
             <p className="font-ui text-[1.15rem] font-medium leading-relaxed text-plum-800">{post.excerpt}</p>
 
             {post.sections.map((s) => (
-              <section key={s.id} id={`topic-${s.id}`} className="scroll-mt-32 pt-12">
+              <section key={s.id} id={`topic-${s.id}`} className="scroll-mt-[calc(2.92vw+max(3.25rem,4.4vw)+2rem)] pt-12">
                 <h2 className="font-ui text-[clamp(1.4rem,2.4vw,1.9rem)] font-bold leading-tight text-plum-700">
                   {s.heading}
                 </h2>
@@ -119,7 +119,7 @@ export default function BlogPost({ post }) {
             ))}
 
             {post.faq?.length > 0 && (
-              <section id="topic-faq" className="scroll-mt-32 pt-12">
+              <section id="topic-faq" className="scroll-mt-[calc(2.92vw+max(3.25rem,4.4vw)+2rem)] pt-12">
                 <h2 className="font-ui text-[clamp(1.4rem,2.4vw,1.9rem)] font-bold leading-tight text-plum-700">
                   FAQ
                 </h2>
@@ -153,7 +153,7 @@ export default function BlogPost({ post }) {
           </div>
 
           <aside className="lg:block">
-            <div className="sticky top-32">
+            <div className="sticky top-[calc(2.92vw+max(3.25rem,4.4vw)+2rem)]">
               <p className="font-ui text-xs font-bold uppercase tracking-wider text-plum-900">Share this article</p>
               <div className="mt-4 flex gap-2.5">
                 <ShareLink
