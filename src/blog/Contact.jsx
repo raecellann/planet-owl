@@ -186,7 +186,9 @@ export default function Contact() {
                 alt=""
                 aria-hidden
                 loading="lazy"
-                className="mt-10 hidden w-[min(62%,17rem)] select-none [mask-image:linear-gradient(180deg,#000_95%,transparent_100%)] lg:block"
+                // Larger, by request — it was 17rem and looked lost in the column
+                // under the contact details.
+                className="mt-10 hidden w-[min(95%,27rem)] select-none [mask-image:linear-gradient(180deg,#000_95%,transparent_100%)] lg:block"
               />
             </div>
 
