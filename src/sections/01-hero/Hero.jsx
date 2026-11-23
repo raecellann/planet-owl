@@ -34,7 +34,7 @@ const HERO_MOTION = true
  */
 const ISLAND_BOX =
   'absolute left-1/2 aspect-[1400/1322] ' +
-  'top-[66svh] w-[min(150vw,calc(100svh_*_1.059))] sm:top-[70svh] sm:w-[min(207vw,calc(115svh_*_1.059))] ' +
+  'top-[62svh] w-[min(84vw,calc(100svh_*_1.059))] sm:top-[70svh] sm:w-[min(207vw,calc(115svh_*_1.059))] ' +
   'lg:top-[clamp(34rem,40vw,38rem)] lg:w-[min(115vw,calc(104svh_*_1.059))]'
 
 // Height for the full sticky scroll sequence
@@ -121,13 +121,13 @@ const HERO_OWLS = [
   {
     src: A.owl.flame,
     alt: 'Owl with a flaming crest',
-    className: 'left-[19%] top-[44%] w-[11.2%] sm:left-[11%]',
+    className: 'left-[11%] top-[44%] w-[11.2%]',
     rise: 50, spin: 12, depth: 16,
   },
   {
     src: A.owl.astronaut,
     alt: 'Owl in a space helmet',
-    className: 'left-[77%] top-[-3%] w-[8.4%] sm:left-[80.5%] sm:top-[15%]',
+    className: 'left-[80.5%] top-[15%] w-[8.4%]',
     rise: 62, drift: -16, spin: -10, depth: 8,
   },
   {
@@ -285,7 +285,7 @@ export default function Hero() {
   // Phones: the island is already most of the screen at rest, so the push-in
   // is gentler — at 1.5x it became a crop of the building with the owl's
   // wing filling the frame.
-  const islandScale = useTransform(p, [0, 0.5, 1], narrow ? to(0.9, 1.05, 1.2) : to(0.75, 1.1, 1.5))
+  const islandScale = useTransform(p, [0, 0.5, 1], phone ? to(0.96, 1, 1.02) : narrow ? to(0.9, 1.05, 1.2) : to(0.75, 1.1, 1.5))
   const islandRotate = useTransform(p, [0, 1], to(0, -1.2))
   
   const islandMx = useTransform(px, (v) => v * 18)
