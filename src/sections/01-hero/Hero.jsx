@@ -34,7 +34,7 @@ const HERO_MOTION = true
  */
 const ISLAND_BOX =
   'absolute left-1/2 aspect-[1400/1322] ' +
-  'top-[62svh] w-[min(84vw,calc(100svh_*_1.059))] sm:top-[70svh] sm:w-[min(207vw,calc(115svh_*_1.059))] ' +
+  'top-[max(62svh,25rem)] w-[min(84vw,calc(100svh_*_1.059))] sm:top-[70svh] sm:w-[min(207vw,calc(115svh_*_1.059))] ' +
   'lg:top-[clamp(34rem,40vw,38rem)] lg:w-[min(115vw,calc(104svh_*_1.059))]'
 
 // Height for the full sticky scroll sequence
@@ -508,7 +508,7 @@ export default function Hero() {
             the one thing in here that actually needs to be clickable. */}
         <motion.div
           style={{ y: textY, opacity: textOpacity, filter: textFilter }}
-          className="pointer-events-none absolute inset-x-0 top-0 z-30 flex justify-center px-6 pt-[13rem] sm:pt-[calc(2.92vw+12.25rem)]"
+          className="pointer-events-none absolute inset-x-0 top-0 z-30 flex justify-center px-6 pt-[clamp(6.25rem,17svh,13rem)] sm:pt-[calc(2.92vw+12.25rem)]"
         >
           <div className="flex w-full max-w-4xl flex-col items-center text-center">
             <motion.h1
