@@ -78,7 +78,7 @@ export default function Contact() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    document.title = 'Contact | Planet Owl'
+    document.title = 'Planet Owl'
   }, [])
 
   // Today, in the visitor's own calendar, as the earliest bookable day.

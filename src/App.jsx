@@ -108,7 +108,7 @@ export default function App({ skipIntro = false }) {
 
   useEffect(() => {
     if (!skipIntro) return
-    document.title = 'Planet Owl | Creative Work, Handled by a System of Geniuses'
+    document.title = 'Planet Owl'
     const id = window.location.hash.slice(1)
     const target = id && !id.startsWith('/') ? document.getElementById(id) : null
     // A beat later: the sections have to lay out before there is anywhere

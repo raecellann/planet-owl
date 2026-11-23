@@ -73,7 +73,7 @@ export default function Privacy() {
   const [active, setActive] = useState(TOPICS[0].id)
 
   useEffect(() => {
-    document.title = 'Privacy | Planet Owl'
+    document.title = 'Planet Owl'
   }, [])
 
   // Which section is on screen, for the list's highlight — the same reading

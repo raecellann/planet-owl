@@ -39,7 +39,7 @@ export default function BlogPost({ post }) {
   }, [post.slug])
 
   useEffect(() => {
-    document.title = `${post.title} | Planet Owl`
+    document.title = 'Planet Owl'
   }, [post.title])
 
   const url = typeof window !== 'undefined' ? window.location.href : ''

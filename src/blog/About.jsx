@@ -166,7 +166,7 @@ export default function About() {
   const reduce = useReducedMotion()
 
   useEffect(() => {
-    document.title = 'About | Planet Owl'
+    document.title = 'Planet Owl'
   }, [])
 
   return (

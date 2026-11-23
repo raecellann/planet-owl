@@ -242,7 +242,7 @@ export default function Pricing() {
   const reduce = useReducedMotion()
 
   useEffect(() => {
-    document.title = 'Pricing | Planet Owl'
+    document.title = 'Planet Owl'
   }, [])
 
   return (
