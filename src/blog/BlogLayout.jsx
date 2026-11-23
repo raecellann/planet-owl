@@ -73,7 +73,12 @@ export default function BlogLayout({ children, onBlog = true, newsletter = true,
                 </a>
               </li>
             ))}
-            <li>
+            {/* ONE slot, naming the page you are on. "Blog" used to stay here
+                beside the current page's name on About, Pricing and the
+                rest, which read as two places at once. Off the blog, the
+                blog is still one click away in the footer. */}
+            {(!here || hereIsBlog) && (
+              <li>
               <a
                 href={BLOG_HOME}
                 aria-current={hereIsBlog ? 'page' : undefined}
@@ -82,6 +87,7 @@ export default function BlogLayout({ children, onBlog = true, newsletter = true,
                 Blog
               </a>
             </li>
+            )}
             {here && !hereIsBlog && (
               <li>
                 <a
