@@ -162,12 +162,14 @@ export default function Portfolio() {
             </h2>
           </Reveal>
           <Reveal y={28} delay={0.1}>
-            <p className="mt-5 text-[1.02rem] leading-relaxed text-plum-600">
+            <p className="mt-5 text-[1.02rem] leading-relaxed text-plum-600 md:relative md:left-1/2 md:w-max md:-translate-x-1/2">
               <em className="not-italic font-semibold text-plum-700">
                 “What if we tried something completely different?”
               </em>
-              <br className="hidden sm:block" /> Explore the brands, products, worlds, and digital
-              experiences we have helped bring to life.
+              <br className="hidden sm:block" />{' '}
+              <span className="md:whitespace-nowrap">
+                Explore the brands, products, worlds, and digital experiences we have helped bring to life.
+              </span>
             </p>
           </Reveal>
         </header>

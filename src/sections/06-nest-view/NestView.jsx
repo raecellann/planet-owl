@@ -134,7 +134,7 @@ export default function NestView({ onReveal }) {
    */
   const trackRef = useRef(null)
   const { scrollYProgress } = useScroll({ target: trackRef, offset: ['start start', 'end end'] })
-  const p = useSpring(scrollYProgress, { stiffness: 190, damping: 40, mass: 0.4 })
+  const p = useSpring(scrollYProgress, { stiffness: 70, damping: 26, mass: 0.7 })
 
   const revealed = useRef(false)
   useEffect(
@@ -449,7 +449,7 @@ export default function NestView({ onReveal }) {
   const owlFlyRotate = useTransform(p, [OWL[0], OWL[1], OWL_GO[1]], at(0, 3, 16))
 
   // --- branch · slowest ----------------------------------------------------
-  const branchY = useTransform(p, BEATS, at('-34%', '-29%', '-24%'))
+  const branchY = useTransform(p, BEATS, at('-27%', '-22%', '-17%'))
   const branchScale = useTransform(p, BEATS, at(1, 1.02, 1.06))
 
   // The cave and the city no longer transform. Both were being scaled and
@@ -521,7 +521,7 @@ export default function NestView({ onReveal }) {
         className="pointer-events-none absolute inset-x-0 top-0 h-[calc(27.8vw+2rem)] bg-white sm:h-[calc(19.5vw+2rem)] lg:h-[calc(14.6vw+2rem)]"
       />
 
-      <div ref={trackRef} className="relative h-[200svh]">
+      <div ref={trackRef} className="relative h-[260svh]">
 
         {/* 4 · the branch, anchored to the TRACK's top and bleeding up into
             the section's padding above it.

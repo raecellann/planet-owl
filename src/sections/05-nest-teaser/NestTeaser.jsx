@@ -479,13 +479,13 @@ export default function NestTeaser() {
         </Reveal>
 
         <Reveal y={28} delay={0.1}>
-          <p className="mx-auto mt-[min(3.5vw,2.25rem)] max-w-xl text-[clamp(0.85rem,1.1vw,1.02rem)] leading-relaxed text-plum-700/85">
+          <p className="mx-auto mt-4 max-w-xl text-[clamp(0.85rem,1.1vw,1.02rem)] leading-relaxed text-plum-700/85">
             If you have made it this far, you must be genuinely curious, because our greatest
             secrets have always hatched inside the nest.
           </p>
         </Reveal>
 
-        <Reveal y={24} delay={0.18} className="mt-[min(1.1vw,0.75rem)]">
+        <Reveal y={24} delay={0.18} className="mt-7">
           {/* Points at the nest view — Top Secrets, which this used to open,
               is out of the flow, and a button aimed at a section that is not
               rendered simply does nothing when clicked. */}
