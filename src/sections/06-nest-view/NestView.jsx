@@ -571,7 +571,7 @@ export default function NestView({ onReveal }) {
             className="w-full [mask-image:linear-gradient(180deg,#000_0%,#000_58%,transparent_92%)]"
           />
         </motion.div>
-        <div ref={frameRef} className="sticky top-0 h-[100svh] w-full overflow-hidden">
+        <div ref={frameRef} className="sticky top-0 h-[100lvh] w-full overflow-hidden">
           {/* Centred on the HOLE rather than on the panel's own middle: the
               opening sits 53.5% down the plate, and it is what the visitor
               has to be looking at for the whole sequence. The panel overflows
@@ -591,7 +591,7 @@ export default function NestView({ onReveal }) {
         // `transformOrigin` on the window in the tower.
         ref={panelRef}
         style={{ opacity: shot, x: '-50%', y: panelY, transformOrigin: `${HOLE.x} ${HOLE.y}` }}
-        className={`absolute left-1/2 top-0 w-[max(100%,calc(100svh*1057/1192))] bg-[#140c0a] ${CAVE_RATIO}`}
+        className={`absolute left-1/2 top-0 w-[max(100%,calc(100lvh*1057/1192))] bg-[#140c0a] ${CAVE_RATIO}`}
       >
         {/* INNER CLIPPED CONTAINER FOR BACKGROUNDS */}
         {/* The cave does NOT scale. It is the window the camera looks

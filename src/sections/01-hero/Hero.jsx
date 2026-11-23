@@ -444,12 +444,15 @@ export default function Hero() {
   const nearCloudScale = useTransform(p, [0, 1], to(1, 1.28))
 
   return (
-    <section id="home" ref={sectionRef} className={`relative ${HERO_HEIGHT}`}>
+    <section id="home" ref={sectionRef} className={`relative bg-[#eef3fb] ${HERO_HEIGHT}`}>
       {/* Clicking an owl makes it introduce itself. */}
       <OwlBubble open={owlIntro} onClose={closeOwlIntro} />
       
       {/* Sticky container locks the view during scroll */}
-      <div className="sticky top-0 h-[100svh] w-full overflow-hidden">
+      {/* `lvh`, the height with the phone's address bar hidden. At `svh` the
+          frame stopped short once the bar slid away, and the page behind it
+          showed as a band under the island. */}
+      <div className="sticky top-0 h-[100lvh] w-full overflow-hidden">
         
         {/* 1 · Sky Background */}
         <div className="absolute inset-x-0 top-0 h-full overflow-hidden">
