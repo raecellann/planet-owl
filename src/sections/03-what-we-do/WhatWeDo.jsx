@@ -489,7 +489,27 @@ export default function WhatWeDo() {
               <div
                 className="relative"
                 style={{
-                  '--word': `clamp(2.5rem, calc(min(1594px, 100vw - 4rem) * 0.742 / ${craft.em}), 24rem)`,
+                  // On a phone the word runs the FULL column, edge to edge.
+                  // The 0.742 is the desktop split, where the services list
+                  // stands beside the word and takes the other quarter of the
+                  // row; below `sm` the list is underneath, so that quarter
+                  // was just empty screen to the right of a word that looked
+                  // undersized. `100vw - 2.5rem` is the column (`px-5` either
+                  // side), and dividing by the word's own advance width makes
+                  // every craft end on the same right edge.
+                  '--word': phone
+                    ? `calc((100vw - 2.5rem) / ${craft.em})`
+                    : `clamp(2.5rem, calc(min(1594px, 100vw - 4rem) * 0.742 / ${craft.em}), 24rem)`,
+                  // Held at the TALLEST craft's height on a phone, so the list
+                  // and the dots under it stay put from one swipe to the next.
+                  // Each word is a different size there (they all end on the
+                  // same edge, so the short ones are set larger), and the
+                  // block is 0.5985 of the word (a 1.05 line box less the
+                  // 0.4515 the owl overlaps) plus the owl. 3.393 is Digital,
+                  // the shortest word and so the largest type.
+                  minHeight: phone
+                    ? 'calc((100vw - 2.5rem) / 3.393 * 0.5985 + min(52vw, 16rem))'
+                    : undefined,
                 }}
               >
                 {/* The word is the BACKDROP the owl stands on, not a heading
@@ -626,7 +646,7 @@ export default function WhatWeDo() {
                   // is 43% of a 1.05 line box for every craft - Design's
                   // proportion, applied to all of them.
                   style={{ '--owl': craft.scale, marginTop: 'calc(var(--word) * -0.4515)' }}
-                  className="relative z-10 h-[calc(min(34vw,12.5rem)*var(--owl))] w-auto max-w-none [mask-image:linear-gradient(180deg,#000_95%,transparent_100%)] lg:h-[calc(min(1594px,100vw-4rem)*0.25*var(--owl))]"
+                  className="relative z-10 h-[calc(min(52vw,16rem)*var(--owl))] w-auto sm:h-[calc(min(34vw,12.5rem)*var(--owl))] max-w-none [mask-image:linear-gradient(180deg,#000_95%,transparent_100%)] lg:h-[calc(min(1594px,100vw-4rem)*0.25*var(--owl))]"
                 />
               </div>
 

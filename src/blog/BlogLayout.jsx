@@ -39,18 +39,29 @@ export default function BlogLayout({ children }) {
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-[5vw] sm:pt-5">
-        <nav className="mx-auto flex min-h-[64px] w-full max-w-[1180px] items-center gap-4 rounded-full bg-white py-2 pl-5 pr-3 shadow-[0_12px_34px_-24px_rgba(54,14,57,0.45)] sm:pl-7">
+      {/* The SAME box as the landing page's bar, figure for figure — insets,
+          width, height, padding, logo, link size and CTA are all `Nav.jsx`'s
+          own classes. It had its own (a 1180px cap, 64px tall, fixed `rem`
+          type), so following "Blog" from the landing page made the bar jump
+          to a narrower, shorter pill with smaller lettering. Anything changed
+          there has to be changed here. */}
+      <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-[5vw] sm:pt-[2.92vw] min-[90rem]:px-[17.8vw]">
+        <nav className="mx-auto flex min-h-[72px] w-full max-w-[1758px] items-center rounded-full bg-white py-3.5 pl-4 pr-3 shadow-[0_12px_34px_-24px_rgba(54,14,57,0.45)] sm:min-h-[max(3.25rem,4.4vw)] sm:py-[0.4vw] sm:pl-7 sm:pr-4">
           <a href="#home" className="flex shrink-0 items-center" aria-label="Planet Owl — home">
-            <img src={A.logo} alt="Planet Owl" className="h-7 w-auto sm:h-8" />
+            {/* `h-6` below `sm` is the one figure that is NOT the landing bar's.
+                That bar has a burger on a phone; this one carries "Blog" and
+                the CTA in the same 351px, and at the landing page's `h-8`
+                the row was 25px wider than the pill — the CTA hung off the
+                right-hand end. */}
+            <img src={A.logo} alt="Planet Owl" className="h-6 w-auto sm:h-[max(1.5rem,2vw)]" />
           </a>
 
-          <ul className="ml-auto hidden items-center gap-7 lg:flex">
+          <ul className="ml-auto hidden shrink-0 items-center gap-[max(1rem,2vw)] pl-6 lg:flex">
             {NAV_LINKS.map((l) => (
               <li key={l.href}>
                 <a
                   href={l.href}
-                  className="font-ui text-[0.95rem] font-bold text-plum-700 no-underline transition-colors hover:text-plum-900"
+                  className="font-ui text-[max(0.8rem,1.05vw)] font-bold text-plum-700 no-underline transition-colors hover:text-plum-900"
                 >
                   {l.label}
                 </a>
@@ -60,7 +71,7 @@ export default function BlogLayout({ children }) {
               <a
                 href={BLOG_HOME}
                 aria-current="page"
-                className="font-ui text-[0.95rem] font-bold text-teal-600 no-underline"
+                className="font-ui text-[max(0.8rem,1.05vw)] font-bold text-teal-600 no-underline"
               >
                 Blog
               </a>
@@ -74,7 +85,7 @@ export default function BlogLayout({ children }) {
             Blog
           </a>
 
-          <div className="shrink-0 -translate-y-[3px] lg:ml-2">
+          <div className="ml-2 shrink-0 -translate-y-[3px] sm:ml-4 lg:ml-9">
             <GoldButton
               href="#start"
               withOwl
@@ -82,7 +93,7 @@ export default function BlogLayout({ children }) {
               iconAsBadge
               whileHover={{}}
               onClick={openProject}
-              className="h-11 whitespace-nowrap !px-4 text-sm sm:!px-6 sm:text-base"
+              className="h-10 whitespace-nowrap !px-3 text-[0.8rem] !shadow-[0_6px_0_-2px_var(--color-plum-900),0_16px_28px_-16px_rgba(20,12,10,0.55)] sm:h-[max(2.5rem,3.3vw)] sm:!px-6 sm:text-[max(0.8rem,1.05vw)]"
             >
               Start a Project
             </GoldButton>
@@ -92,27 +103,31 @@ export default function BlogLayout({ children }) {
 
       <main className="bg-white font-ui text-plum-900">{children}</main>
 
-      {/* The newsletter, on the footer's own night ground. The footer opens
-          with a gold scalloped edge and a plane that stands 14vw ABOVE it —
-          both drawn for a dark section to sit on — so the blog ends on that
-          same dark rather than running white straight into them. The bottom
-          padding is the room the plane needs. */}
-      <section className="bg-[linear-gradient(180deg,#ffffff_0%,#24051f_22%)] px-5 pb-[18vw] pt-[clamp(8rem,16vw,14rem)] sm:px-8">
+      {/* The newsletter, on WHITE like the rest of the blog.
+
+          It sat on the footer's night ground — white fading to deep plum, gold
+          type on top — on the theory that the footer's scalloped edge and
+          plane were drawn for a dark section. By request that band is gone:
+          a violet block at the foot of an otherwise white page read as off
+          brand. The footer is told its ground is white (`ground`, below), so
+          the gold scallops rise straight out of the page. The bottom padding
+          is still the room the plane needs. */}
+      <section className="bg-white px-5 pb-[18vw] pt-[clamp(4rem,8vw,7rem)] sm:px-8">
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.8rem,4vw,3rem)] font-normal leading-[1.1] text-gold-500">
+          <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.8rem,4vw,3rem)] font-normal leading-[1.1] text-plum-700">
             Fresh Notes From the Nest
           </h2>
-          <p className="mx-auto mt-4 max-w-xl font-ui leading-relaxed text-gold-400">
+          <p className="mx-auto mt-4 max-w-xl font-ui leading-relaxed text-plum-800">
             New articles on brand, design and creative operations — sent when there is something
             worth reading, and never more often than that.
           </p>
-          <div className="mt-8 text-left [&_p]:text-gold-200">
+          <div className="mt-8 text-left [&_p]:text-plum-700">
             <SignupForm source="blog newsletter" compact />
           </div>
         </div>
       </section>
 
-      <Footer />
+      <Footer ground="white" />
 
       <StartProjectModal open={projectOpen} onClose={() => setProjectOpen(false)} />
     </>

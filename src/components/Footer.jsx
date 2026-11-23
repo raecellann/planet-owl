@@ -16,9 +16,12 @@ import SignupForm from './SignupForm'
  * the whole 1920x863 plate would have left the band unable to run solid to the
  * bottom of the page. Only the top 230px is used — see the asset script.
  */
-export default function Footer() {
+export default function Footer({ ground = 'night' }) {
   return (
-    <footer className="relative bg-[#24051f]">
+    // `ground` is what shows through the scallops of the edge plate, so it has
+    // to be whatever the page above ends on: night on the landing page, white
+    // under the blog.
+    <footer className={`relative ${ground === 'white' ? 'bg-white' : 'bg-[#24051f]'}`}>
       {/* the feathered edge — in flow, transparent above the scallops */}
       <img src={A.footerEdge} alt="" aria-hidden className="block w-full select-none" />
 
