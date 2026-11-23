@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import cloudImg from '../../assets/section 2/image 35 copy.png'
 import BlogCover from './BlogCover'
 import BlogLayout, { CategoryChip } from './BlogLayout'
 import { BLOG_HOME, POSTS, postHref } from './posts'
@@ -58,8 +59,10 @@ export default function BlogPost({ post }) {
     <BlogLayout>
       <article>
         {/* ------------------------------------------------------ header -- */}
-        <header className="bg-[linear-gradient(180deg,#cdd8f4_0%,#dfe7fa_45%,#ffffff_100%)] px-5 pt-[clamp(10rem,15vw,13.5rem)] sm:px-8">
-          <div className="mx-auto max-w-3xl text-center">
+        <header className="relative overflow-hidden bg-white px-5 pt-[clamp(10rem,15vw,13.5rem)] sm:px-8">
+          <img src={cloudImg} alt="" aria-hidden className="pointer-events-none absolute -left-[24vw] top-[6%] w-[max(20rem,48vw)] max-w-none -scale-x-100 select-none opacity-50 max-md:-left-[62vw] [mask-image:linear-gradient(180deg,#000_68%,transparent_98%)]" />
+          <img src={cloudImg} alt="" aria-hidden className="pointer-events-none absolute -right-[25vw] top-[14%] w-[max(20rem,48vw)] max-w-none select-none opacity-45 max-md:-right-[64vw] [mask-image:linear-gradient(180deg,#000_68%,transparent_98%)]" />
+          <div className="relative mx-auto max-w-3xl text-center">
             <div className="flex items-center justify-center gap-4">
               <CategoryChip className="!bg-teal-500 !text-white">{post.category}</CategoryChip>
               <span className="font-ui text-sm text-plum-600">{post.readMinutes} min read</span>
@@ -72,7 +75,7 @@ export default function BlogPost({ post }) {
           <BlogCover
             cover={post.cover}
             title={post.title}
-            className="mx-auto mt-10 max-w-4xl rounded-[1.75rem] shadow-[0_30px_60px_-30px_rgba(54,14,57,0.55)]"
+            className="relative mx-auto mt-10 max-w-4xl rounded-[1.75rem] shadow-[0_30px_60px_-30px_rgba(54,14,57,0.55)]"
           />
         </header>
 

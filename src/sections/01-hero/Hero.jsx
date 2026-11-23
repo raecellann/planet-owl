@@ -121,13 +121,13 @@ const HERO_OWLS = [
   {
     src: A.owl.flame,
     alt: 'Owl with a flaming crest',
-    className: 'left-[18%] top-[54.3%] w-[11.2%] sm:left-[11%] sm:top-[44%]',
+    className: 'left-[19%] top-[44%] w-[11.2%] sm:left-[11%]',
     rise: 50, spin: 12, depth: 16,
   },
   {
     src: A.owl.astronaut,
     alt: 'Owl in a space helmet',
-    className: 'left-[20%] top-[72%] w-[8.4%] sm:left-[80.5%] sm:top-[15%]',
+    className: 'left-[77%] top-[-3%] w-[8.4%] sm:left-[80.5%] sm:top-[15%]',
     rise: 62, drift: -16, spin: -10, depth: 8,
   },
   {
