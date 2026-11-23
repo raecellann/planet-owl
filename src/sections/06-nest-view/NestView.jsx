@@ -543,7 +543,7 @@ export default function NestView({ onReveal }) {
           <img
             src={A.nest.branch}
             alt=""
-            loading="lazy"
+            loading="eager"
             decoding="async"
             className="w-full [mask-image:linear-gradient(180deg,#000_0%,#000_58%,transparent_92%)]"
           />

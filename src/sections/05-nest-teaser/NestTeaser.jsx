@@ -303,7 +303,8 @@ function Feather({ left, top, vw, cap, secs, dir, lift }) {
             loading="lazy"
             decoding="async"
             onPointerEnter={touch}
-            className="pointer-events-auto block h-full w-auto cursor-pointer saturate-100 transition-[filter] duration-300 hover:saturate-[1.75]"
+            onPointerDown={touch}
+            className="pointer-events-auto block h-full w-auto cursor-pointer touch-manipulation saturate-100 transition-[filter] duration-300 hover:saturate-[1.75]"
           />
         </motion.div>
       </motion.div>
@@ -399,7 +400,7 @@ export default function NestTeaser() {
           wizard still take their own pointer first; a feather only answers
           where there is nothing else to. */}
       {!reduce && (
-        <div aria-hidden className="pointer-events-none absolute inset-0 z-10 overflow-hidden">
+        <div aria-hidden className="pointer-events-none absolute inset-0 z-[25] overflow-hidden">
           {/* Two elements per feather: the outer box carries the slow turn,
               the image inside it carries the HOVER. On one element the two
               would fight over `rotate` — the flutter would cancel the turn

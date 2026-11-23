@@ -152,6 +152,10 @@ export default function App({ skipIntro = false }) {
         <WhatWeDo />
         <TheFlock />
         <NestTeaser />
+        {/* One dark ground under the whole nest run. These sections fade to
+            transparent where they overlap, and without it the page's plum
+            background showed through those fades as purple bands. */}
+        <div className="bg-[#140c0a]">
         <NestView onReveal={() => setSecretsRevealed(true)} />
         {/* Pulled up a full viewport so its first screen sits BEHIND the nest
             view's pinned frame rather than after it.
@@ -177,6 +181,7 @@ export default function App({ skipIntro = false }) {
           </div>
         )}
         <FinalCTA />
+        </div>
       </main>
 
       <Footer />

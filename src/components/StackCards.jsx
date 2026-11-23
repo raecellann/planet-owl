@@ -19,19 +19,30 @@ export default function StackCards({ heading, headingClass = '', items, tones })
   const n = items.length
   // The last card's real height, so the heading is released on the same pixel
   // as the pile. Off by even a little, it slides toward the cards at the end.
-  const lastCard = useRef(null)
+  const list = useRef(null)
   const [lastH, setLastH] = useState(288)
+  // Every card takes the height of the tallest. The pile only leaves as one
+  // when they match: a shorter first card was released early, and slid up
+  // over the heading.
   useEffect(() => {
-    if (!lastCard.current) return
-    const ro = new ResizeObserver(([e]) => setLastH(e.target.offsetHeight))
-    ro.observe(lastCard.current)
-    return () => ro.disconnect()
-  }, [])
+    const measure = () => {
+      const cards = [...(list.current?.querySelectorAll(':scope > li[data-card]') ?? [])]
+      if (!cards.length) return
+      cards.forEach((c) => (c.style.minHeight = ''))
+      const tallest = Math.max(...cards.map((c) => c.offsetHeight))
+      cards.forEach((c) => (c.style.minHeight = `${tallest}px`))
+      setLastH(tallest)
+    }
+    measure()
+    document.fonts?.ready.then(measure)
+    window.addEventListener('resize', measure)
+    return () => window.removeEventListener('resize', measure)
+  }, [items])
   const pile = `(${n - 1} * var(--step) + ${lastH}px)`
   return (
     <div
-      className="[--step:6rem] sm:[--step:4rem]"
-      style={{ '--base': 'max(2.92vw + max(3.25rem, 4.4vw) + 6rem, 50svh - 11rem)' }}
+      className="[--step:4.75rem] sm:[--step:4rem]"
+      style={{ '--base': 'max(max(5.25rem, 2.92vw + max(3.25rem, 4.4vw)) + 5.75rem, 50svh - 11rem)' }}
     >
       <h2
         style={{ top: 'calc(var(--base) - 4.75rem)', marginBottom: `calc(${pile})` }}
@@ -39,11 +50,11 @@ export default function StackCards({ heading, headingClass = '', items, tones })
       >
         {heading}
       </h2>
-      <ul style={{ marginTop: `calc(-1 * ${pile})` }}>
+      <ul ref={list} style={{ marginTop: `calc(-1 * ${pile})` }}>
         {items.map((it, i) => (
           <li
             key={it.title}
-            ref={i === n - 1 ? lastCard : undefined}
+            data-card
             style={{
               top: `calc(var(--base) + ${i} * var(--step))`,
               marginBottom: `calc(${n - 1 - i} * var(--step))`,

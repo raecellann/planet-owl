@@ -701,7 +701,8 @@ function Quote({ copyRef }) {
       // The reveal is timed now, so the hold comes from its delay rather
       // than from over-covering.
       const dense = img.offsetHeight * 0.15
-      const pullUp = Math.max(0, untransformedTop - copy.getBoundingClientRect().top + dense)
+      // No curtain on a phone: the copy is too tall for the plate to lift off in time.
+      const pullUp = window.innerWidth < 640 ? 0 : Math.max(0, untransformedTop - copy.getBoundingClientRect().top + dense)
       pullUpMV.set(pullUp)
       // Flipped on the first measurement and left alone after: it is what
       // lets `imgY` start applying the pull-up, and what releases the slide
@@ -746,7 +747,7 @@ function Quote({ copyRef }) {
     // entrance translate is dropped for the same reason: it lands on the same
     // element as `imgY`'s own pull-up and would shift the curtain out of the
     // position the measurement just put it in.
-    <Reveal y={0} delay={0.1} onMount className="relative z-20 mx-auto -mt-[6%] w-full">
+    <Reveal y={0} delay={0.1} onMount className="relative z-20 mx-auto mt-4 w-full sm:-mt-[6%]">
       {/* Everything that belongs ON the plate — the image, its hotspot
           button and the testimonial it opens — moves as ONE rigid unit via
           `imgY`, not just the `<img>` alone. The button and figure are
