@@ -438,7 +438,8 @@ export default function NestView({ onReveal }) {
   // plane was shrinking into a background that was itself rushing forward,
   // and neither move could be seen for the other.
   const owlFlyX = useTransform(p, [OWL[0], OWL[1], OWL_GO[1]], at('0%', '-6%', '-500%'))
-  const owlFlyY = useTransform(p, [OWL[0], OWL[1], OWL_GO[1]], at('0%', '6%', '26%'))
+  // Out past the side of the screen on a rising line.
+  const owlFlyY = useTransform(p, [OWL[0], OWL[1], OWL_GO[1]], at('0%', '6%', '-150%'))
   // He carries on GROWING as he leaves rather than easing back down. His
   // exit overlaps the start of the city's push (`OWL_GO` runs to 0.58,
   // `PUSH` opens at 0.52), and for those frames the two have to be doing the

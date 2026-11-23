@@ -122,10 +122,18 @@ function PlaneSteps() {
   const decideOn = useTransform(s, [0.42, 0.54], [0, 1])
   const stayOn = useTransform(s, [0.7, 0.82], [0, 1])
   const shown = [tryOn, decideOn, stayOn]
+  const lineA = useTransform(s, [0.2, 0.4], [0, 1])
+  const lineB = useTransform(s, [0.46, 0.68], [0, 1])
 
   return (
     <div ref={ref} className="relative h-28 w-full shrink-0 md:w-[27rem]">
-      <ol className="grid h-full grid-cols-3 place-items-center font-ui text-sm font-bold">
+      <span aria-hidden className="absolute left-[16.6%] top-1/2 h-0.5 w-[33.4%] -translate-y-1/2 overflow-hidden">
+        <motion.span style={reduce ? undefined : { scaleX: lineA }} className="block h-full origin-left bg-plum-800" />
+      </span>
+      <span aria-hidden className="absolute left-1/2 top-1/2 h-0.5 w-[33.4%] -translate-y-1/2 overflow-hidden">
+        <motion.span style={reduce ? undefined : { scaleX: lineB }} className="block h-full origin-left bg-plum-800" />
+      </span>
+      <ol className="relative grid h-full grid-cols-3 place-items-center font-ui text-sm font-bold">
         {['Try', 'Decide', 'Stay'].map((t, i) => (
           <motion.li key={t} style={reduce ? undefined : { opacity: shown[i] }} className="rounded-full bg-plum-800 px-4 py-2 text-white">
             {t}
@@ -173,7 +181,7 @@ function HowItWorks() {
   }, [])
 
   return (
-    <div className="mt-12 grid gap-12 lg:grid-cols-2 lg:gap-16">
+    <div className="mt-6 grid gap-12 lg:grid-cols-2 lg:gap-16">
       <ol className="relative pl-16">
         {STEPS.map((st, i) => (
           <li
@@ -382,14 +390,14 @@ export default function Pricing() {
                 <motion.span
                   aria-hidden
                   variants={{ off: { scaleY: 0 }, on: { scaleY: 1, transition: { duration: 1.3, delay: 0.35, ease: 'easeInOut' } } }}
-                  className="absolute bottom-2 left-[0.38rem] top-2 w-0.5 origin-top bg-plum-900/50"
+                  className="absolute bottom-[0.6rem] left-[0.3125rem] top-[0.6rem] w-1 origin-top rounded-full bg-plum-800"
                 />
                 {['Month 1', 'Month 2', 'Month 3', 'Month 4'].map((m, i) => (
                   <li key={m} className="relative font-ui font-semibold">
                     <motion.span
                       aria-hidden
                       variants={{ off: { scale: 0 }, on: { scale: 1, transition: { type: 'spring', stiffness: 420, damping: 18, delay: 0.35 + i * 0.36 } } }}
-                      className="absolute -left-6 top-1 size-3.5 rounded-full bg-plum-800"
+                      className="absolute -left-6 top-1 z-10 size-3.5 rounded-full bg-plum-800"
                     />
                     {m}
                   </li>
@@ -434,10 +442,14 @@ export default function Pricing() {
           every pass. */}
       <section className="bg-white px-5 py-14 sm:px-8 sm:py-20">
         <div className="mx-auto max-w-[1320px]">
-          <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-plum-700">
-            How It <span className="font-[family-name:var(--font-pop)] text-gold-500 [text-shadow:0_3px_0_var(--color-plum-800)]">Hatches</span>
-          </h2>
-          <HowItWorks />
+          {/* Inside one wrapper with the roadmap, so the title stays pinned
+              under the navbar for all three steps. */}
+          <div>
+            <h2 className="sticky top-[calc(max(5.25rem,2.92vw+max(3.25rem,4.4vw))+0.5rem)] z-20 bg-white py-3 font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-plum-700">
+              How It Hatches
+            </h2>
+            <HowItWorks />
+          </div>
         </div>
       </section>
 

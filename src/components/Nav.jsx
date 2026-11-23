@@ -108,11 +108,11 @@ export default function Nav({ entered = true }) {
         // `layout` prop. `layout` animates size with a scale transform, which
         // stretched the rounded ends into an oval (and the logo with them)
         // mid-animation. Animating the actual width keeps the pill a pill.
-        // Collapsed width = logo (278x60 plate, so 4.634x its height) plus
+        // Collapsed width = logo (820x133, so 6.166x its height) plus
         // the collapsed padding either side, plus 2px of slack.
         style={{
           maxWidth: collapsed
-            ? 'calc(max(1.5rem, 2vw) * 4.634 + 2 * max(1.2rem, 1.4vw) + 2px)'
+            ? 'calc(max(1.5rem, 2vw) * 6.166 + 2 * max(1.2rem, 1.4vw) + 2px)'
             : 'min(1758px, 100%)',
           transition: 'max-width 0.9s cubic-bezier(0.4, 0, 0.2, 1)',
         }}
