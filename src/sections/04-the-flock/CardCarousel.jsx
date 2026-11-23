@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { animate, motion, useMotionValue, useTransform } from 'motion/react'
 
-/** Past this much of a card's width, the release counts as a page turn. */
-const THRESHOLD = 0.2
+/** How far (px) a drag has to go to turn the page. */
+const SWIPE_DISTANCE = 48
 /** Flick velocity that turns the page regardless of distance travelled. */
-const FLICK = 380
+const FLICK = 420
 /** How far the off-centre cards shrink and dim. */
 const MIN_SCALE = 0.7
 const MIN_BRIGHTNESS = 0.55
@@ -99,14 +99,14 @@ export default function CardCarousel({ items, renderItem, className = '', label 
       dragging.current = false
       const m = measure()
       if (!m || !m.step) return
-      const moved = (m.offset - x.get()) / m.step - index
-      const flicked = Math.abs(info.velocity.x) > FLICK
+      // The same pull as the What We Do slider: a short, deliberate swipe.
+      const { offset, velocity } = info
       let delta = 0
-      if (moved > THRESHOLD || (flicked && info.velocity.x < 0)) delta = 1
-      else if (moved < -THRESHOLD || (flicked && info.velocity.x > 0)) delta = -1
+      if (offset.x <= -SWIPE_DISTANCE || velocity.x <= -FLICK) delta = 1
+      else if (offset.x >= SWIPE_DISTANCE || velocity.x >= FLICK) delta = -1
       settle(index + delta)
     },
-    [measure, x, index, settle],
+    [measure, index, settle],
   )
 
   const loop = [...items, ...items, ...items]
@@ -162,27 +162,15 @@ export default function CardCarousel({ items, renderItem, className = '', label 
           by screen readers, but are clipped out of view. Deleting them
           outright would have made the roles past the first unreachable for
           anyone not using a pointer. */}
-      {/* On touch screens nothing else says the row moves, so it gets arrows,
-          one dot per role, and a short hint. */}
-      <div className="relative z-10 mt-5 flex flex-col items-center gap-2 lg:hidden">
-        <div className="flex items-center gap-3">
-          <button type="button" aria-label="Previous role" onClick={() => settle(index - 1)} className="grid size-10 place-items-center rounded-full bg-plum-800 text-gold-400 transition-transform active:scale-90">
-            <svg viewBox="0 0 24 24" aria-hidden className="size-5" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"><path d="m15 6-6 6 6 6" /></svg>
+      {/* The same dots as What We Do: one per role, the current one a bar. */}
+      <div role="tablist" aria-label="Roles" className="relative z-10 mt-3 flex items-center justify-center lg:hidden">
+        {items.map((item, d) => (
+          <button key={item.id} type="button" role="tab" aria-selected={d === active} aria-label={`Show role ${d + 1} of ${n}`} onClick={() => settle(n + d)} className="grid h-11 place-items-center px-1.5">
+            <span className={`block h-2 rounded-full transition-all duration-300 ease-out ${d === active ? 'w-7 bg-plum-800' : 'w-2 bg-plum-800/30'}`} />
           </button>
-          <div className="flex items-center">
-            {items.map((item, d) => (
-              <button key={item.id} type="button" aria-label={`Show role ${d + 1} of ${n}`} aria-current={d === active ? 'true' : undefined} onClick={() => settle(n + d)} className="grid h-8 place-items-center px-1">
-                <span className={`block h-2 rounded-full transition-all duration-300 ${d === active ? 'w-6 bg-plum-800' : 'w-2 bg-plum-800/35'}`} />
-              </button>
-            ))}
-          </div>
-          <button type="button" aria-label="Next role" onClick={() => settle(index + 1)} className="grid size-10 place-items-center rounded-full bg-plum-800 text-gold-400 transition-transform active:scale-90">
-            <svg viewBox="0 0 24 24" aria-hidden className="size-5" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"><path d="m9 6 6 6-6 6" /></svg>
-          </button>
-        </div>
-        <p className="font-ui text-sm font-semibold text-plum-800">Swipe to see more roles</p>
+        ))}
       </div>
-      <div className="hidden lg:block lg:sr-only">
+      <div className="sr-only">
         <button type="button" onClick={() => settle(index - 1)}>
           Previous role
         </button>

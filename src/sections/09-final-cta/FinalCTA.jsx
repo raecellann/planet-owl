@@ -57,7 +57,7 @@ export default function FinalCTA() {
     // rather than as a new colour arriving.
     <section
       id="start"
-      className="relative z-0 -mt-[22svh] overflow-hidden bg-[linear-gradient(180deg,rgba(20,12,10,0)_0%,#140c0a_15%,#140c0a_82%,#1c0819_93%,#24051f_100%)] pb-24 pt-[calc(6rem+22svh)] sm:pb-32 sm:pt-[calc(8rem+22svh)]"
+      className="relative z-0 -mt-[22svh] overflow-hidden bg-[linear-gradient(180deg,rgba(20,12,10,0)_0%,#140c0a_15%,#140c0a_82%,#1c0819_93%,#24051f_100%)] pb-24 pt-[calc(1.5rem+22svh)] sm:pb-32 sm:pt-[calc(8rem+22svh)]"
     >
       {/* ---------------------------------------------------- the depth --
           A bloom behind the headline that falls off to nothing, in the BRANCH's
@@ -127,10 +127,17 @@ export default function FinalCTA() {
           {/* Two lines from `sm` up: the container is wide enough for the
               longer second line, and `nowrap` on each half stops either one
               breaking again. Phones still wrap naturally. */}
-          <h2 className="font-ui text-[clamp(1.9rem,4.6vw,3.35rem)] font-bold leading-[1.1] text-gold-500">
-            <span className="sm:whitespace-nowrap">Ready to Build Something</span>
-            <br className="hidden sm:block" />{' '}
-            <span className="sm:whitespace-nowrap">the Internet Has Not Seen Yet?</span>
+          <h2 className="font-ui text-[clamp(1.45rem,7.2vw,1.9rem)] font-bold leading-[1.15] text-gold-500 sm:text-[clamp(1.9rem,4.6vw,3.35rem)] sm:leading-[1.1]">
+            {/* Three set lines on a phone, two from `sm` up. */}
+            <span className="sm:hidden">
+              <span className="block whitespace-nowrap">Ready to Build</span>
+              <span className="block whitespace-nowrap">Something the Internet</span>
+              <span className="block whitespace-nowrap">Has Not Seen Yet?</span>
+            </span>
+            <span className="hidden sm:inline">
+              <span className="block whitespace-nowrap">Ready to Build Something</span>
+              <span className="block whitespace-nowrap">the Internet Has Not Seen Yet?</span>
+            </span>
           </h2>
         </Reveal>
         <Reveal y={30} delay={0.1}>

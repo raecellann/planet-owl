@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useMotionValue, useReducedMotion, useScroll, useTransform } from 'motion/react'
-import { A } from '../../lib/assets'
+import { A, nestSrcSet } from '../../lib/assets'
 import Reveal from '../../components/ui/Reveal'
 import { PHONE, useMediaQuery } from '../../lib/useMediaQuery'
 import CursorPlayBadge, { useCursorPlayBadge } from '../../components/ui/CursorPlayBadge'
@@ -351,7 +351,7 @@ export default function TopSecrets() {
   return (
     <section
       id="top-secrets"
-      className="relative overflow-hidden bg-[linear-gradient(180deg,rgba(20,12,10,0)_0%,#140c0a_5%,#110701_12%,#110701_90%,#140c0a_100%)] pb-24 pt-[clamp(5rem,9vw,8rem)] sm:pb-32"
+      className="relative overflow-hidden bg-[linear-gradient(180deg,rgba(20,12,10,0)_0%,#140c0a_5%,#110701_12%,#110701_90%,#140c0a_100%)] pb-2 pt-[clamp(5rem,9vw,8rem)] sm:pb-32"
     >
       {/* The heading is now the composed render from Figma (Group 2087325445.png)
           which has the text baked in with the vine wrapping around it.
@@ -786,7 +786,7 @@ function Quote({ copyRef }) {
             stacked on the first, thinning the leaves that are supposed to
             be doing the covering. */}
         <img
-          src={A.nest.brands}
+          {...nestSrcSet(A.nest.brands, 1400)}
           alt="A nest holding a Maserati Formula 1 car, Cartier watches, a Makita drill, Nike trainers and buckets of fried chicken"
           loading="lazy"
           decoding="async"

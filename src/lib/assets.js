@@ -6,6 +6,16 @@ const asset = (file) => `${base}assets/${file}`
  * Everything in `public/assets` is produced by `npm run assets` from the raw
  * exports in `assets/`. Cut-outs ship as WebP; flat UI bits stay PNG/JPG.
  */
+/**
+ * A `srcSet` for the heaviest nest art: phones take the 1100px copy (about a
+ * third of the bytes), larger screens the full plate.
+ */
+export const nestSrcSet = (src, width) => ({
+  src,
+  srcSet: `${src.replace('.webp', '-m.webp')} 1100w, ${src} ${width}w`,
+  sizes: '(max-width: 640px) 360px, 100vw',
+})
+
 export const A = {
   sky: asset('sky.jpg'),
   cloud: asset('cloud-wisp.webp'),

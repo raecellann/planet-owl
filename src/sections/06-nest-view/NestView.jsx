@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useReducedMotion, useScroll, useSpring, useTransform } from 'motion/react'
-import { A } from '../../lib/assets'
+import { A, nestSrcSet } from '../../lib/assets'
 
 /**
  * The cave plate's own proportions. `UpdatedCave.png` replaced the original
@@ -374,6 +374,28 @@ export default function NestView({ onReveal }) {
       window.removeEventListener('resize', check)
     }
   }, [])
+  // The heavy plates stay off the network until the nest is a screen or two
+  // away, then load and decode ahead of arrival so nothing pops in mid-shot.
+  useEffect(() => {
+    const track = trackRef.current
+    if (!track) return undefined
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return
+        io.disconnect()
+        ;[nestSrcSet(A.nest.branch, 1800), nestSrcSet(A.nest.cave, 1920), nestSrcSet(A.nest.cityBlur, 2200), { src: A.owl.planeFly }].forEach((a) => {
+          const im = new Image()
+          if (a.sizes) im.sizes = a.sizes
+          if (a.srcSet) im.srcset = a.srcSet
+          im.src = a.src
+          im.decode?.().catch(() => {})
+        })
+      },
+      { rootMargin: '180% 0px' },
+    )
+    io.observe(track)
+    return () => io.disconnect()
+  }, [])
   const atHole = dims.f / 2 - 0.535 * dims.h
   const atPane = dims.f / 2 - 0.439 * dims.h
   const panelY = useTransform(p, (v) => {
@@ -564,9 +586,9 @@ export default function NestView({ onReveal }) {
           className="pointer-events-none absolute left-1/2 top-0 z-40 w-[200%] max-w-none origin-top select-none sm:w-[140%] lg:w-[105%]"
         >
           <img
-            src={A.nest.branch}
+            {...nestSrcSet(A.nest.branch, 1800)}
             alt=""
-            loading="eager"
+            loading="lazy"
             decoding="async"
             className="w-full [mask-image:linear-gradient(180deg,#000_0%,#000_58%,transparent_92%)]"
           />
@@ -679,7 +701,7 @@ export default function NestView({ onReveal }) {
             className="absolute inset-x-0 top-[23%] z-0 h-[61%] overflow-hidden"
           >
             <img
-              src={A.nest.cityBlur}
+              {...nestSrcSet(A.nest.cityBlur, 2200)}
               alt="A sunlit boulevard of domed buildings, seen through the opening in the tree"
               loading="lazy"
               decoding="async"
@@ -745,7 +767,7 @@ export default function NestView({ onReveal }) {
             className="pointer-events-none absolute inset-0 z-20"
           >
             <img
-              src={A.nest.cave}
+              {...nestSrcSet(A.nest.cave, 1920)}
               alt=""
               loading="lazy"
               decoding="async"

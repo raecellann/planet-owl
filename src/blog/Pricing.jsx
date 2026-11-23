@@ -168,16 +168,16 @@ function HowItWorks() {
 
   return (
     <div ref={track} className={reduce ? '' : 'h-[220svh]'}>
-      <div className={`flex flex-col pb-6 pt-[calc(max(5.25rem,2.92vw+max(3.25rem,4.4vw))+1.75rem)] lg:pb-[16svh] ${reduce ? '' : 'sticky top-0 h-[100svh]'}`}>
-        <div className="grid min-h-0 flex-1 grid-rows-[auto_minmax(0,1fr)] gap-4 lg:grid-cols-2 lg:grid-rows-1 lg:gap-16">
+      <div className={`flex flex-col pb-2 pt-[calc(max(5.25rem,2.92vw+max(3.25rem,4.4vw))+0.75rem)] lg:pb-[16svh] lg:pt-[calc(max(5.25rem,2.92vw+max(3.25rem,4.4vw))+1.75rem)] ${reduce ? '' : 'sticky top-0 h-[100svh]'}`}>
+        <div className="grid min-h-0 flex-1 grid-rows-[auto_minmax(0,1fr)] gap-1 lg:grid-cols-2 lg:grid-rows-1 lg:gap-16">
           {/* The title sits directly on top of the first stop. */}
           <div className="flex flex-col lg:justify-center">
           <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-plum-700">
             How It Hatches
           </h2>
-          <ol className="mt-6 flex flex-col">
+          <ol className="mt-3 flex flex-col lg:mt-6">
             {STEPS.map((st, i) => (
-              <li key={st.n} className="relative min-h-16 pl-16 last:min-h-12">
+              <li key={st.n} className="relative min-h-14 pl-16 last:min-h-12 lg:min-h-16">
                 {i < STEPS.length - 1 && (
                   <span aria-hidden className={`absolute bottom-0 left-[1.4375rem] top-12 w-0.5 transition-colors duration-500 ${i < active ? 'bg-gold-500' : 'bg-plum-100'}`} />
                 )}
@@ -193,7 +193,7 @@ function HowItWorks() {
                   {st.title}
                 </h3>
                 <div className={`grid transition-[grid-template-rows,opacity] duration-500 ease-out ${i === active || reduce ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
-                  <p className="max-w-md overflow-hidden pb-4 font-ui leading-relaxed text-plum-800">{st.copy}</p>
+                  <p className="max-w-md overflow-hidden pb-2 font-ui leading-snug text-plum-800 lg:pb-4 lg:leading-relaxed">{st.copy}</p>
                 </div>
               </li>
             ))}
@@ -210,7 +210,7 @@ function HowItWorks() {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={reduce ? undefined : { opacity: 0, y: -18, scale: 0.97 }}
                 transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                className="max-h-full w-auto max-w-full object-contain lg:max-h-[26rem]"
+                className="h-full max-h-full w-auto max-w-full object-contain lg:h-auto lg:max-h-[26rem]"
               />
             </AnimatePresence>
           </div>
