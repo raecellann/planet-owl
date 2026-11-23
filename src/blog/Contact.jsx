@@ -275,7 +275,7 @@ export default function Contact() {
                       a plain message. */}
                   <fieldset ref={bookingRef} id="book-a-call" className="mt-7 scroll-mt-32 rounded-2xl bg-gold-200 p-4 sm:p-5">
                     <legend className="sr-only">Book a call</legend>
-                    <p className="font-ui text-base font-bold text-plum-900">Book a call (optional)</p>
+                    <p className="font-ui text-base font-bold text-plum-900">Book a call</p>
                     <div className="mt-4 grid gap-4 sm:grid-cols-2">
                       <Field label="Preferred Date">
                         <DatePicker min={today} value={form.date} onChange={(date) => setForm((f) => ({ ...f, date }))} />
@@ -286,7 +286,7 @@ export default function Contact() {
                     </div>
                   </fieldset>
 
-                  <Field label="Message" className="mt-6">
+                  <Field label="Message (optional)" className="mt-6">
                     <textarea rows={5} value={form.message} onChange={set('message')} placeholder="Tell us about your project" className={`${FIELD} resize-y`} />
                   </Field>
 
