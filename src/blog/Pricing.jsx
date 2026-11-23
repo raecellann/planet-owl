@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from 'motion/react'
 import BlogLayout from './BlogLayout'
 import { A } from '../lib/assets'
 import Faq from '../components/Faq'
+import cloudImg from '../../assets/section 2/image 35 copy.png'
 
 /**
  * The pricing page, at `#/pricing`.
@@ -270,8 +271,15 @@ export default function Pricing() {
       </section>
 
       {/* --------------------------------------------------------- FAQ -- */}
-      <section className="bg-gold-200 px-5 py-14 sm:px-8 sm:py-20">
-        <div className="mx-auto max-w-[1320px]">
+      {/* White with clouds off the edges, by request — it sat on a pale
+          yellow band. The clouds stop short of the 1320px column, so they
+          frame the questions rather than sitting under them. */}
+      <section className="relative overflow-hidden bg-white px-5 py-14 sm:px-8 sm:py-20">
+        <img src={cloudImg} alt="" aria-hidden loading="lazy" style={{ left: 'min(-12vw, calc(50vw - 660px - 26vw))' }} className="pointer-events-none absolute top-[6%] w-[max(12rem,24vw)] max-w-none -scale-x-100 opacity-55" />
+        <img src={cloudImg} alt="" aria-hidden loading="lazy" style={{ right: 'min(-10vw, calc(50vw - 660px - 20vw))' }} className="pointer-events-none absolute top-[30%] w-[max(10rem,18vw)] max-w-none opacity-50" />
+        <img src={cloudImg} alt="" aria-hidden loading="lazy" style={{ right: 'min(-14vw, calc(50vw - 660px - 30vw))' }} className="pointer-events-none absolute bottom-[-6%] w-[max(13rem,28vw)] max-w-none opacity-45" />
+        <img src={cloudImg} alt="" aria-hidden loading="lazy" style={{ left: 'min(-8vw, calc(50vw - 660px - 15vw))' }} className="pointer-events-none absolute bottom-[8%] w-[max(8rem,13vw)] max-w-none opacity-50" />
+        <div className="relative mx-auto max-w-[1320px]">
           <Faq tone="light" askHref="#/contact" />
         </div>
       </section>
