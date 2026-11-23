@@ -127,15 +127,13 @@ export default function Pricing() {
             >
               {/* The owl on TOP of the card and large, by request — it was a
                   5rem figure tucked beside the plan's name. */}
-              <img src={p.owl} alt="" aria-hidden loading="lazy" className="mx-auto h-44 w-auto object-contain sm:h-48" />
-              <p
-                className={`mt-6 self-start rounded-full px-3 py-1.5 font-ui text-xs font-bold uppercase tracking-wide ${
-                  p.featured ? 'bg-gold-500 text-plum-900' : 'bg-plum-100 text-plum-800'
-                }`}
-              >
+              {/* The tag first, and gold on every card — by request. It sat
+                  under the owl, and was lilac on three of the four. */}
+              <p className="self-start rounded-full bg-gold-500 px-3 py-1.5 font-ui text-xs font-bold uppercase tracking-wide text-plum-900">
                 {p.tag}
               </p>
-              <h2 className={`mt-4 font-['Momo_Trust_Display'] text-3xl font-normal ${p.featured ? 'text-gold-500' : 'text-plum-700'}`}>
+              <img src={p.owl} alt="" aria-hidden loading="lazy" className="mx-auto mt-5 h-44 w-auto object-contain sm:h-48" />
+              <h2 className={`mt-5 font-['Momo_Trust_Display'] text-3xl font-normal ${p.featured ? 'text-gold-500' : 'text-plum-700'}`}>
                 {p.name}
               </h2>
               <p className="mt-4 font-ui">
