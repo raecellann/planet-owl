@@ -60,8 +60,8 @@ const TONES = {
     title: 'text-plum-700',
     lead: 'text-plum-800',
     rule: 'border-plum-900/15',
-    q: 'text-plum-900',
-    a: 'text-plum-800',
+    q: 'text-plum-700',
+    a: 'text-plum-700',
     mark: 'text-teal-600',
   },
 }

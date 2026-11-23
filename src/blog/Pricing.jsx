@@ -89,6 +89,18 @@ const STEPS = [
   { n: '03', title: 'Keep the flock on it', copy: 'Stay on the plan month to month, and step up to the next one when you need another craft.' },
 ]
 
+const TILE = {
+  off: { opacity: 0, y: 28, scale: 0.97 },
+  on: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
+}
+
+const TILES = [
+  { title: 'One flock.', copy: 'Design, digital, development and AI under one roof.', tone: 'bg-white' },
+  { title: 'Move up a plan.', copy: 'Need another craft? Step up to the next one.', tone: 'bg-white' },
+  { title: 'Built for your brand.', copy: 'Refined in the nest before it reaches you.', tone: 'bg-white' },
+  { title: 'Custom scope.', copy: 'Parliament is shaped around what you are building.', tone: 'bg-teal-400' },
+]
+
 const Check = ({ className = '' }) => (
   <svg viewBox="0 0 24 24" aria-hidden className={`size-5 shrink-0 ${className}`} fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
     <path d="M5 12.5l4.5 4.5L19 7.5" />
@@ -104,8 +116,12 @@ export default function Pricing() {
 
   return (
     <BlogLayout onBlog={false} newsletter={false} page={{ label: 'Pricing', href: '#/pricing' }}>
-      <header className="bg-[linear-gradient(180deg,#cdd8f4_0%,#dfe7fa_45%,#ffffff_100%)] px-5 pb-12 pt-[clamp(8rem,12vw,10.5rem)] text-center sm:px-8">
-        <div className="mx-auto max-w-3xl">
+      <header className="relative overflow-hidden bg-white px-5 pb-20 pt-[clamp(10rem,15vw,13.5rem)] text-center sm:px-8 sm:pb-24">
+        <img src={cloudImg} alt="" aria-hidden style={{ left: 'min(-16vw, calc(50vw - 384px - 34vw))' }} className="pointer-events-none absolute top-[9%] w-[max(13rem,31vw)] max-w-none -scale-x-100 opacity-55" />
+        <img src={cloudImg} alt="" aria-hidden style={{ right: 'min(-6vw, calc(50vw - 384px - 17vw))' }} className="pointer-events-none absolute top-[24%] w-[max(7rem,12vw)] max-w-none opacity-40" />
+        <img src={cloudImg} alt="" aria-hidden style={{ right: 'min(-15vw, calc(50vw - 384px - 33vw))' }} className="pointer-events-none absolute bottom-[-12%] w-[max(12rem,27vw)] max-w-none opacity-45" />
+        <img src={cloudImg} alt="" aria-hidden style={{ left: 'min(-4vw, calc(50vw - 384px - 12vw))' }} className="pointer-events-none absolute bottom-[8%] w-[max(5rem,8vw)] max-w-none opacity-30" />
+        <div className="relative mx-auto max-w-3xl">
           <h1 className="font-['Momo_Trust_Display'] text-[clamp(2rem,5vw,3.8rem)] font-normal leading-[1.08] text-plum-700">
             One Nest. Pick How Much of It You Need.
           </h1>
@@ -116,12 +132,12 @@ export default function Pricing() {
         </div>
       </header>
 
-      <section className="bg-white px-5 pb-12 sm:px-8">
+      <section className="bg-white px-5 pb-24 sm:px-8 sm:pb-32">
         <ul className="mx-auto grid max-w-[1320px] gap-5 sm:grid-cols-2 xl:grid-cols-4">
           {PLANS.map((p) => (
             <li
               key={p.name}
-              className={`flex flex-col rounded-[1.75rem] p-7 ring-1 ${p.featured ? 'bg-white text-plum-900 ring-[3px] ring-gold-500 shadow-[0_30px_60px_-30px_rgba(54,14,57,0.5)]' : 'bg-white text-plum-900 ring-plum-900/10 shadow-[0_30px_60px_-36px_rgba(54,14,57,0.45)]'}`}
+              className={`flex flex-col rounded-[1.75rem] p-7 ring-1 ${p.featured ? 'bg-white text-plum-900 ring-[3px] ring-plum-700 shadow-[0_30px_60px_-30px_rgba(54,14,57,0.5)]' : 'bg-white text-plum-900 ring-plum-900/10 shadow-[0_30px_60px_-36px_rgba(54,14,57,0.45)]'}`}
             >
               {/* The owl on TOP of the card and large, by request — it was a
                   5rem figure tucked beside the plan's name. */}
@@ -178,12 +194,12 @@ export default function Pricing() {
           section must not clip (`overflow` stays visible) or the pinning
           stops working. (A plan-by-craft comparison table sat above this;
           it is gone, by request.) */}
-      <section className="bg-plum-800 px-5 pb-24 pt-14 sm:px-8 sm:pb-32 sm:pt-20">
+      <section className="bg-plum-800 px-5 pb-24 pt-20 sm:px-8 sm:pb-32 sm:pt-28">
         <div className="mx-auto max-w-[1320px]">
           <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-gold-500">
             Standard Issue on Every Plan
           </h2>
-          <div className="mt-10">
+          <div className="mt-14">
             <StackCards
               tones={['bg-white text-plum-800', 'bg-gold-200 text-plum-900', 'bg-[#e7b248] text-plum-900']}
               items={STANDARD.map((g) => ({
@@ -209,35 +225,48 @@ export default function Pricing() {
           <h2 className="mt-24 text-center font-['Momo_Trust_Display'] text-[clamp(1.9rem,4vw,3.2rem)] font-normal leading-[1.1] text-gold-500">
             Simple Plans. No Guesswork.
           </h2>
-          <div className="mt-10 grid gap-4 md:grid-cols-3">
-            <div className="rounded-[1.5rem] bg-teal-400 p-6 text-plum-900 md:row-span-2">
+          {/* Tiles rise in one after another when the grid scrolls into view,
+              then the two small diagrams inside them play. */}
+          <motion.div
+            initial={reduce ? false : 'off'}
+            whileInView="on"
+            viewport={{ once: true, margin: '-15% 0px' }}
+            variants={{ on: { transition: { staggerChildren: 0.12 } } }}
+            className="mt-10 grid gap-4 md:grid-cols-3"
+          >
+            <motion.div variants={TILE} whileHover={reduce ? undefined : { y: -6 }} className="rounded-[1.5rem] bg-teal-400 p-6 text-plum-900 md:row-span-2">
               <h3 className="font-ui text-xl font-bold">Month by month.</h3>
               <p className="mt-2 font-ui leading-snug">One flat price on your plan, billed monthly.</p>
-              <ol className="mt-6 space-y-4 border-l-2 border-plum-900/40 pl-5">
-                {['Month 1', 'Month 2', 'Month 3', 'Month 4'].map((m) => (
-                  <li key={m} className="relative font-ui font-semibold before:absolute before:-left-[1.72rem] before:top-1 before:size-3.5 before:rounded-full before:bg-plum-800">
+              <ol className="relative mt-6 space-y-4 pl-6">
+                <motion.span
+                  aria-hidden
+                  variants={{ off: { scaleY: 0 }, on: { scaleY: 1, transition: { duration: 1.3, delay: 0.35, ease: 'easeInOut' } } }}
+                  className="absolute bottom-2 left-[0.38rem] top-2 w-0.5 origin-top bg-plum-900/50"
+                />
+                {['Month 1', 'Month 2', 'Month 3', 'Month 4'].map((m, i) => (
+                  <li key={m} className="relative font-ui font-semibold">
+                    <motion.span
+                      aria-hidden
+                      variants={{ off: { scale: 0 }, on: { scale: 1, transition: { type: 'spring', stiffness: 420, damping: 18, delay: 0.35 + i * 0.36 } } }}
+                      className="absolute -left-6 top-1 size-3.5 rounded-full bg-plum-800"
+                    />
                     {m}
                   </li>
                 ))}
               </ol>
-            </div>
-            <div className="rounded-[1.5rem] bg-white p-6 text-plum-900">
-              <h3 className="font-ui text-xl font-bold">One flock.</h3>
-              <p className="mt-2 font-ui leading-snug text-plum-800">Design, digital, development and AI under one roof.</p>
-            </div>
-            <div className="rounded-[1.5rem] bg-white p-6 text-plum-900">
-              <h3 className="font-ui text-xl font-bold">Move up anytime.</h3>
-              <p className="mt-2 font-ui leading-snug text-plum-800">Need another craft? Step up to the next plan.</p>
-            </div>
-            <div className="rounded-[1.5rem] bg-white p-6 text-plum-900">
-              <h3 className="font-ui text-xl font-bold">Built for your brand.</h3>
-              <p className="mt-2 font-ui leading-snug text-plum-800">Refined in the nest before it reaches you.</p>
-            </div>
-            <div className="rounded-[1.5rem] bg-teal-400 p-6 text-plum-900">
-              <h3 className="font-ui text-xl font-bold">Custom scope.</h3>
-              <p className="mt-2 font-ui leading-snug">Parliament is shaped around what you are building.</p>
-            </div>
-            <div className="rounded-[1.5rem] bg-gold-500 p-6 text-plum-900 md:col-span-3">
+            </motion.div>
+            {TILES.map((t) => (
+              <motion.div
+                key={t.title}
+                variants={TILE}
+                whileHover={reduce ? undefined : { y: -6 }}
+                className={`rounded-[1.5rem] p-6 text-plum-900 ${t.tone}`}
+              >
+                <h3 className="font-ui text-xl font-bold">{t.title}</h3>
+                <p className="mt-2 font-ui leading-snug">{t.copy}</p>
+              </motion.div>
+            ))}
+            <motion.div variants={TILE} whileHover={reduce ? undefined : { y: -6 }} className="rounded-[1.5rem] bg-gold-500 p-6 text-plum-900 md:col-span-3">
               <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
                 <div>
                   <h3 className="font-ui text-xl font-bold">Free 2-week trial.</h3>
@@ -246,14 +275,25 @@ export default function Pricing() {
                 <ol className="flex items-center gap-3 font-ui text-sm font-bold">
                   {['Try', 'Decide', 'Stay'].map((t, i) => (
                     <li key={t} className="flex items-center gap-3">
-                      {i > 0 && <span aria-hidden className="h-0.5 w-8 bg-plum-900/50" />}
-                      <span className="rounded-full bg-plum-800 px-4 py-2 text-white">{t}</span>
+                      {i > 0 && (
+                        <motion.span
+                          aria-hidden
+                          variants={{ off: { scaleX: 0 }, on: { scaleX: 1, transition: { duration: 0.4, delay: 0.5 + i * 0.5 } } }}
+                          className="h-0.5 w-8 origin-left bg-plum-900/60"
+                        />
+                      )}
+                      <motion.span
+                        variants={{ off: { opacity: 0, scale: 0.7 }, on: { opacity: 1, scale: 1, transition: { type: 'spring', stiffness: 380, damping: 20, delay: 0.55 + i * 0.5 } } }}
+                        className="rounded-full bg-plum-800 px-4 py-2 text-white"
+                      >
+                        {t}
+                      </motion.span>
                     </li>
                   ))}
                 </ol>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
