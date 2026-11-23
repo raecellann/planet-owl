@@ -146,23 +146,40 @@ function NestHotspot({ review, open, onToggle, play }) {
             over the dot itself, so the mark is always visibly live. The
             old objection to a ring here was to a STATIC halo, a second
             circle parked round the first; these never rest at any size.
-            Stopped while the card is open — the dot has done its job. */}
+            Stopped while the card is open — the dot has done its job.
+
+            SLOW, and with no edge anywhere in the loop. Each ring used to
+            start at 65% opacity and run 1.8s, so every time it wrapped it
+            jumped from nothing straight back to a bright disc on the dot — a
+            blink at the end of each pulse, three dots at once. Now a ring
+            starts invisible, swells in over the first quarter of its run and
+            fades out over the rest, so the wrap happens while it is at zero
+            and cannot be seen. 3.6s a cycle, the two rings half a cycle
+            apart, and `initial` holds the delayed one at zero rather than
+            parked as a solid dot until its turn comes. */}
         {!open && (
           <>
-            {[0, 0.9].map((delay) => (
+            {[0, 1.8].map((delay) => (
               <motion.span
                 key={delay}
                 aria-hidden
                 className="pointer-events-none absolute size-[38%] rounded-full bg-white"
-                animate={{ scale: [1, 3.4], opacity: [0.65, 0] }}
-                transition={{ duration: 1.8, delay, repeat: Infinity, ease: 'easeOut' }}
+                initial={{ scale: 1, opacity: 0 }}
+                animate={{ scale: [1, 3.2], opacity: [0, 0.45, 0] }}
+                transition={{
+                  duration: 3.6,
+                  delay,
+                  repeat: Infinity,
+                  ease: 'easeOut',
+                  opacity: { duration: 3.6, delay, repeat: Infinity, ease: 'easeInOut', times: [0, 0.25, 1] },
+                }}
               />
             ))}
             <motion.span
               aria-hidden
               className="pointer-events-none absolute size-[38%] rounded-full bg-white shadow-[0_0_10px_2px_rgba(255,255,255,0.6)]"
-              animate={{ scale: [1, 1.25, 1], opacity: [0.85, 1, 0.85] }}
-              transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+              animate={{ scale: [1, 1.15, 1], opacity: [0.85, 1, 0.85] }}
+              transition={{ duration: 3.6, repeat: Infinity, ease: 'easeInOut' }}
             />
           </>
         )}

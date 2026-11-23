@@ -152,6 +152,22 @@
     overflow-x: clip;
   }
 
+  /* Each section lapped one pixel over the one above it.
+
+     Section heights are fractional — they come out of `vw`, `svh` and line
+     boxes (1518.88px, 600.71px...), so the boundary between two of them
+     falls part-way through a device pixel. A phone at 3x antialiases that
+     row instead of snapping it: each neighbour covers a share of it and the
+     rest is the plum <body> showing through, a dark hairline across the page
+     at every seam, most visible where both sides are white or lavender.
+
+     One pixel of overlap means the row is always wholly inside the lower
+     section. In `base`, so a section that sets its own top margin (the final
+     CTA's `-mt-[22svh]`) keeps it — utilities outrank this layer. */
+  main > section + section {
+    margin-top: -1px;
+  }
+
   h1,
   h2,
   h3,

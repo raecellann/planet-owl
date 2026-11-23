@@ -21,6 +21,24 @@ const LAUNCH = 1.9
 const CLOUD_FADE =
   '[mask-image:radial-gradient(ellipse_85%_75%_at_50%_50%,#000_55%,transparent_100%)]'
 
+/**
+ * The box each cloud layer is laid out in.
+ *
+ * Every puff is placed and sized as a share of its layer's WIDTH, which was
+ * the screen. That composes on a landscape window, where the near bank comes
+ * out taller than the screen and buries the lower half of the plane. On a
+ * portrait phone the same shares are a third of the size against a screen
+ * twice as tall: the clouds shrank to wisps along the bottom and the plane,
+ * which is meant to be sitting IN them, hung in open sky.
+ *
+ * Below `sm` the layer is sized off the screen's HEIGHT instead — 180svh
+ * wide, the 1.8:1 of the landscape frame the scene was composed on — and
+ * centred, so every puff stands as tall against a phone as it does against a
+ * desktop and the screen is a window onto the middle of the bank. From `sm`
+ * up the layer is the screen, as before.
+ */
+const STAGE = 'inset-y-0 left-[calc(50%-90svh)] w-[180svh] sm:left-0 sm:w-full'
+
 export default function Intro({ onEnter, onDone }) {
   const reduce = useReducedMotion()
   const p = useMotionValue(0)
@@ -155,7 +173,7 @@ export default function Intro({ onEnter, onDone }) {
       <motion.div
         aria-hidden
         style={{ x: farX, scale: farScale }}
-        className="pointer-events-none absolute inset-0 z-10"
+        className={`pointer-events-none absolute ${STAGE} z-10`}
       >
         <img src={cloudPuffImg} alt="" className="absolute left-[16%] top-[6%] w-[34%] opacity-45 blur-[3px]" />
         <img src={cloudPuffImg} alt="" className="absolute -right-[6%] top-[16%] w-[30%] -scale-x-100 opacity-40 blur-[4px]" />
@@ -167,7 +185,7 @@ export default function Intro({ onEnter, onDone }) {
       <motion.div
         aria-hidden
         style={{ x: midX, scale: midScale, opacity: midOpacity }}
-        className="pointer-events-none absolute inset-0 z-20"
+        className={`pointer-events-none absolute ${STAGE} z-20`}
       >
         <img src={cloudPuffImg} alt="" className="absolute -left-[14%] top-[40%] w-[58%] opacity-80" />
         <img src={cloudPuffImg} alt="" className="absolute -right-[18%] top-[30%] w-[54%] -scale-x-100 opacity-70" />
@@ -175,7 +193,7 @@ export default function Intro({ onEnter, onDone }) {
         <img 
           src={cloudPuffImg} 
           alt="" 
-          className="absolute left-[46vw] top-[18%] w-[50vw] opacity-80" 
+          className="absolute left-[46%] top-[18%] w-[50%] opacity-80" 
         />
 
         <img src={cloudPuffImg} alt="" className="absolute left-[20%] top-[45%] w-[45%] opacity-60 blur-[1px]" />
@@ -195,14 +213,14 @@ export default function Intro({ onEnter, onDone }) {
         alt="An owl pilot flying a green propeller plane through the clouds"
         fetchPriority="high"
         style={{ x: jetX, y: jetY, scale: jetScale, scaleX: -1, rotate: jetRotate, opacity }}
-        className="pointer-events-none absolute left-[73%] top-[42%] z-30 w-[52vw] max-w-none -translate-x-1/2 -translate-y-1/2 select-none drop-shadow-[0_25px_35px_rgba(54,14,57,0.25)]"
+        className="pointer-events-none absolute left-[54%] top-[42%] z-30 w-[100vw] max-w-none sm:left-[73%] sm:w-[52vw] -translate-x-1/2 -translate-y-1/2 select-none drop-shadow-[0_25px_35px_rgba(54,14,57,0.25)]"
       />
 
       {/* 4 · Near Clouds & Veil */}
       <motion.div
         aria-hidden
         style={{ x: nearX, scale: nearScale, opacity: nearOpacity }}
-        className="pointer-events-none absolute inset-0 z-40"
+        className={`pointer-events-none absolute ${STAGE} z-40`}
       >
         <img src={cloudPuffImg} alt="" className="absolute -left-[22%] top-[78%] w-[66%] opacity-75" />
         <img src={cloudPuffImg} alt="" className="absolute -right-[26%] top-[82%] w-[72%] -scale-x-100 opacity-65" />

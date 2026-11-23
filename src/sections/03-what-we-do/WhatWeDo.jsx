@@ -2,6 +2,7 @@ import { useCallback, useRef, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { A } from '../../lib/assets'
 import Reveal from '../../components/ui/Reveal'
+import { PHONE, useMediaQuery } from '../../lib/useMediaQuery'
 import cloudImg from '../../../assets/section 2/image 35 copy.png'
 import ribbonImg from '../../../assets/container/Group 2087325444.png'
 
@@ -163,11 +164,37 @@ const SLIDE = {
   exit: { opacity: 0, transition: OUT },
 }
 
+/**
+ * On a PHONE the crafts are a slider: swiped, not stepped through with arrows.
+ *
+ * The arrows were tried twice there — as a pair under the list, then split to
+ * the two edges of the screen — and neither sat right: a phone has no room
+ * beside the slide for them, so they end up as two gold discs on a row of
+ * their own under it. A finger on the slide is the control people reach for
+ * anyway, so below `sm` the slide is dragged sideways and the row under it is
+ * a set of dots saying which of the four is showing.
+ *
+ * Because the hand moves it, the change travels here where the desktop one
+ * only fades: the incoming craft arrives from the side it was pulled from and
+ * the outgoing one leaves the other way. `custom` is the direction, +1 for
+ * the next craft and -1 for the previous. The parts still fade in on their
+ * own delays inside it, so it is the same assembly, carried a short distance.
+ */
+const SWIPE = {
+  enter: (dir) => ({ opacity: 1, x: dir * 56 }),
+  center: { opacity: 1, x: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
+  exit: (dir) => ({ opacity: 0, x: dir * -56, transition: OUT }),
+}
+/** How far (px) or how fast (px/s) a drag has to go to count as a swipe. */
+const SWIPE_DISTANCE = 48
+const SWIPE_VELOCITY = 420
+
 /** SECTION 3 — what we do, one craft at a time. */
 export default function WhatWeDo() {
   const [[i, dir], setSlide] = useState([0, 1])
   const [sweeping, setSweeping] = useState(false)
   const reduce = useReducedMotion()
+  const phone = useMediaQuery(PHONE)
   const craft = CRAFTS[i]
 
   // The two puffs drift OUT toward their own edges as the section scrolls
@@ -193,9 +220,22 @@ export default function WhatWeDo() {
       // nothing completes — without the timer the arrows would lock after
       // one press.
       setTimeout(() => setSweeping(false), 1250)
-      setSlide(([prev]) => [(prev + step + CRAFTS.length) % CRAFTS.length, step])
+      // `Math.sign`: a dot can jump more than one craft, and the direction is
+      // a side to arrive from, not a distance.
+      setSlide(([prev]) => [(prev + step + CRAFTS.length) % CRAFTS.length, Math.sign(step)])
     },
     [sweeping],
+  )
+
+  // Straight to a craft, for the dots. The direction is whichever way that
+  // craft lies from the current one, so the slide travels the way the dots
+  // read.
+  const goTo = useCallback(
+    (index) => {
+      if (index === i) return
+      go(index - i)
+    },
+    [go, i],
   )
 
   return (
@@ -229,7 +269,19 @@ export default function WhatWeDo() {
     // reaches INTO — rather than by shortening that reach and undercutting
     // the "crossing the gold band" effect its own placement is built for.
     <section ref={sectionRef} id="what-we-do" className="relative overflow-hidden bg-white pb-[11vw] pt-12 sm:pt-32">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[linear-gradient(180deg,#dfe7fa_0%,rgba(255,255,255,0)_100%)]" />
+      {/* The lavender the portfolio ends on, let go of gradually.
+
+          It was a straight ramp, `#dfe7fa` to nothing over 160px. The colours
+          met exactly, but the SLOPE did not: the portfolio above is all but
+          flat by its last screen, and this started brightening at full rate
+          on the very first pixel. A kink like that reads as an edge — a faint
+          line across the page exactly on the seam, with a lighter band under
+          it — even though no two neighbouring pixels differ by much.
+
+          The stops below are the same fade on an ease-in-out, so it leaves
+          the seam level and only then lets go, and it runs 14rem rather than
+          10 to keep the middle of the curve no steeper than the ramp was. */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-56 bg-[linear-gradient(180deg,rgb(223_231_250)_0%,rgb(223_231_250/0.98)_10%,rgb(223_231_250/0.9)_22%,rgb(223_231_250/0.74)_36%,rgb(223_231_250/0.5)_52%,rgb(223_231_250/0.26)_68%,rgb(223_231_250/0.1)_82%,rgb(223_231_250/0.02)_93%,rgb(223_231_250/0)_100%)]" />
 
       {/* The puff, on the section's own right edge with exactly half of it
           showing.
@@ -400,10 +452,26 @@ export default function WhatWeDo() {
             <motion.div
               key={craft.title}
               custom={dir}
-              variants={reduce ? undefined : SLIDE}
+              variants={reduce ? undefined : phone ? SWIPE : SLIDE}
               initial="enter"
               animate="center"
               exit="exit"
+              // The swipe. `dragSnapToOrigin` springs the slide back if the
+              // pull was too short to count; a pull that does count changes
+              // the craft, and the slide leaves from wherever the finger let
+              // go of it. `touch-pan-y` (in the class below) is what keeps a
+              // vertical scroll that starts on the slide a scroll: the
+              // browser keeps the up-and-down axis and hands over only the
+              // sideways one.
+              drag={phone ? 'x' : false}
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.3}
+              dragSnapToOrigin
+              onDragEnd={(_, info) => {
+                const { offset, velocity } = info
+                if (offset.x <= -SWIPE_DISTANCE || velocity.x <= -SWIPE_VELOCITY) go(1)
+                else if (offset.x >= SWIPE_DISTANCE || velocity.x >= SWIPE_VELOCITY) go(-1)
+              }}
               /* 1232fr / 277fr with a 5.33% gap — the inspector's own numbers.
                  Title block X 122 W 1232, list X 1439 W 277, so the gap between
                  them is 1439 - (122 + 1232) = 85, and 85 / 1594 = 5.33% of the
@@ -414,7 +482,7 @@ export default function WhatWeDo() {
                  It was `1.05fr 1fr`, which handed the list 47% of the row where
                  the design gives it 17%. That is what opened the "dead gap" the
                  old comment blamed on the column being too wide. */
-              className="relative grid content-start gap-6 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end lg:absolute lg:inset-0 lg:grid-cols-[minmax(0,1232fr)_minmax(0,277fr)] lg:items-start lg:gap-[5.33%]"
+              className="relative grid touch-pan-y content-start gap-6 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end lg:absolute lg:inset-0 lg:grid-cols-[minmax(0,1232fr)_minmax(0,277fr)] lg:items-start lg:gap-[5.33%]"
             >
               {/* `--word` is the craft's own type size, published here so the
                   OWL can be placed against it. See its `marginTop`. */}
@@ -583,7 +651,13 @@ export default function WhatWeDo() {
                 // The list is the last part in, so it is what releases the
                 // arrows for the next press.
                 onAnimationComplete={() => setSweeping(false)}
-                className="sm:pb-4 lg:pb-0 lg:pt-10"
+                // The floor is the LONGEST list (Develop's eight lines at
+                // this size), on phones only. The rail is in flow there, so a
+                // six-line craft made the section two lines shorter than an
+                // eight-line one and the dots under it jumped with every
+                // swipe. From `sm` up the list sits beside the owl and its
+                // length moves nothing.
+                className="max-sm:min-h-[10.5rem] sm:pb-4 lg:pb-0 lg:pt-10"
               >
                 {craft.items.map((item) => (
                   <li
@@ -643,10 +717,36 @@ export default function WhatWeDo() {
             {/* `mt-12` (~half an inch) drops the pair lower against the rail
                 without touching the lift math above — that negative margin is
                 sized off the rail/owl and shifting it would move both. */}
-            {/* On phones the pair is split — previous on the left edge, next
-                on the right — by client request, rather than sitting together
-                under the list. From `sm` up they are a pair again. */}
-            <div className="relative mt-6 flex items-center justify-between gap-[clamp(0.75rem,1.25vw,1.5rem)] sm:justify-start lg:mt-12">
+            {/* Phones get the dots instead — see `SWIPE`. One per craft, the
+                current one drawn as a gold bar, each a real button so the
+                slider can be worked without a swipe (and by a screen reader,
+                which cannot swipe a slide). The button is 2.75rem tall for
+                the thumb; the mark inside it is the small thing you see. */}
+            <div
+              role="tablist"
+              aria-label="Crafts"
+              className="-mt-1 flex items-center justify-center sm:hidden"
+            >
+              {CRAFTS.map((c, n) => (
+                <button
+                  key={c.title}
+                  type="button"
+                  role="tab"
+                  aria-selected={n === i}
+                  aria-label={c.title}
+                  onClick={() => goTo(n)}
+                  className="grid h-11 place-items-center px-1.5"
+                >
+                  <span
+                    className={`block h-2 rounded-full transition-all duration-300 ease-out ${
+                      n === i ? 'w-7 bg-gold-500' : 'w-2 bg-plum-700/25'
+                    }`}
+                  />
+                </button>
+              ))}
+            </div>
+            {/* From `sm` up, the pair of arrows. */}
+            <div className="relative mt-6 hidden items-center gap-[clamp(0.75rem,1.25vw,1.5rem)] sm:flex lg:mt-12">
               <Arrow
                 label={`Previous craft, ${CRAFTS[(i - 1 + CRAFTS.length) % CRAFTS.length].title}`}
                 onClick={() => go(-1)}
