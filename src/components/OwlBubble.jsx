@@ -70,7 +70,7 @@ export default function OwlBubble({ open, onClose }) {
           exit={{ opacity: 0, scale: 0.92 }}
           transition={{ type: 'spring', stiffness: 420, damping: 26 }}
           style={{ left: pos.left, top: pos.top }}
-          className="fixed z-[70] w-[min(18rem,calc(100vw-1.5rem))] rounded-2xl border-2 border-plum-700 bg-white p-4 text-left shadow-[0_18px_34px_-16px_rgba(54,14,57,0.65)]"
+          className="fixed z-[70] w-[min(18rem,calc(100vw-1.5rem))] rounded-2xl bg-white p-4 text-left shadow-[0_18px_34px_-16px_rgba(54,14,57,0.65)]"
         >
           <p className="font-['Momo_Trust_Display'] text-lg leading-tight text-plum-700">Hoot! I am {intro.name}.</p>
           <p className="mt-1 font-ui text-sm leading-snug text-plum-800">{intro.does}</p>

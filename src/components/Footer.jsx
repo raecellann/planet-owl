@@ -296,9 +296,12 @@ export default function Footer({ ground = 'night' }) {
                 <a
                   key={l.label}
                   href={l.href}
-                  className="font-ui text-sm font-semibold text-plum-800 transition-colors hover:text-plum-950 sm:text-base"
+                  data-label={l.label}
+                  // The navbar's hover: the label swaps to Luckiest Guy, with
+                  // the wider face's width reserved so the row does not shift.
+                  className="btn-type active:!shadow-none relative block text-sm font-semibold text-plum-800 no-underline transition-colors before:invisible before:block before:font-[family-name:var(--font-pop)] before:font-normal before:content-[attr(data-label)] hover:text-plum-950 sm:text-base"
                 >
-                  {l.label}
+                  <span className="absolute inset-0 flex items-center justify-center whitespace-nowrap">{l.label}</span>
                 </a>
               ))}
             </nav>
