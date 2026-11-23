@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import BlogLayout from './BlogLayout'
 import { A } from '../lib/assets'
+import { WORK } from '../sections/02-portfolio/work'
 
 /**
  * The About page, at `#/about`.
@@ -10,9 +11,14 @@ import { A } from '../lib/assets'
  * was no About copy to work from. So every claim here is one the landing page
  * already makes: the description in `index.html`, the four crafts in What We
  * Do, the three promises in Top Secrets, the ribbon's "No guesswork". It
- * deliberately carries NO numbers, dates, names or places — no founding year,
- * client count or team size — because none were supplied and an About page is
- * the last place to invent them. Add them here when the studio has them.
+ * carries no dates, names or places — no founding year, team size or
+ * satisfaction score — because none were supplied and an About page is the
+ * last place to invent them.
+ *
+ * The NUMBERS it does carry are counted, not written: see `STATS`. The client
+ * asked for figures like the reference's, and said to count them from the
+ * portfolio, so each one is a tally of what `work.js` actually holds and
+ * moves by itself when an album is added.
  *
  * Arranged after the reference the client sent: an opening statement, who we
  * are, what we do as a row of cards, how we work, and a closing ask.
@@ -43,6 +49,50 @@ const CRAFTS = [
     items: ['AI Assistants', 'Chatbots', 'Automation', 'Generative AI', 'Analytics', 'Integration'],
   },
 ]
+
+/**
+ * The figures band — every one counted from the portfolio data at build time.
+ *
+ *   projects     albums on the Portfolio section
+ *   pieces       every image and film across those albums
+ *   storefronts  the live stores linked from the Shopify album
+ *   crafts       the four in What We Do
+ *
+ * Nothing here is a rounded-up or aspirational number. If a figure looks
+ * small, the fix is more work in the portfolio, not a bigger number here.
+ */
+const STATS = [
+  { value: WORK.length, label: 'Projects in our portfolio' },
+  { value: WORK.reduce((n, w) => n + w.items.length, 0), label: 'Pieces of work on show' },
+  {
+    value: WORK.reduce((n, w) => n + w.items.filter((i) => i.link).length, 0),
+    label: 'Live storefronts and sites linked',
+  },
+  { value: 4, label: 'Crafts under one roof' },
+]
+
+/** Counts up from zero the first time it scrolls into view. */
+function CountUp({ to }) {
+  const reduce = useReducedMotion()
+  const [shown, setShown] = useState(reduce ? to : 0)
+  return (
+    <motion.span
+      onViewportEnter={() => {
+        if (reduce || shown === to) return
+        const start = performance.now()
+        const tick = (now) => {
+          const p = Math.min(1, (now - start) / 1100)
+          setShown(Math.round(to * (1 - (1 - p) ** 3)))
+          if (p < 1) requestAnimationFrame(tick)
+        }
+        requestAnimationFrame(tick)
+      }}
+      viewport={{ once: true, margin: '-10% 0px' }}
+    >
+      {shown}
+    </motion.span>
+  )
+}
 
 const PROMISES = [
   {
@@ -103,6 +153,20 @@ export default function About() {
             className="w-full rounded-[1.75rem] object-cover shadow-[0_30px_60px_-30px_rgba(54,14,57,0.5)]"
           />
         </div>
+      </section>
+
+      {/* ------------------------------------------------------ figures -- */}
+      <section className="bg-white px-5 pb-14 sm:px-8 sm:pb-20">
+        <ul className="mx-auto grid max-w-[1180px] grid-cols-2 gap-x-6 gap-y-10 rounded-[1.75rem] bg-gold-200 p-8 sm:p-12 lg:grid-cols-4">
+          {STATS.map((s) => (
+            <li key={s.label}>
+              <p className="font-['Momo_Trust_Display'] text-[clamp(2.6rem,6vw,4.5rem)] leading-none text-plum-700">
+                <CountUp to={s.value} />
+              </p>
+              <p className="mt-3 font-ui font-semibold leading-snug text-plum-800">{s.label}</p>
+            </li>
+          ))}
+        </ul>
       </section>
 
       {/* --------------------------------------------------- what we do --

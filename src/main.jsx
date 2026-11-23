@@ -6,6 +6,7 @@ import BlogPost from './blog/BlogPost.jsx'
 import Privacy from './blog/Privacy.jsx'
 import Contact from './blog/Contact.jsx'
 import About from './blog/About.jsx'
+import Pricing from './blog/Pricing.jsx'
 import { findPost } from './blog/posts.js'
 import './index.css'
 
@@ -36,6 +37,7 @@ probe.remove()
  *
  *   #/blog          the index
  *   #/blog/<slug>   one article
+ *   #/pricing       the plans and prices (same arrangement)
  *   #/about         the about page (same arrangement)
  *   #/contact       the contact / book-a-call page (same arrangement)
  *   #/privacy       the privacy page (same frame as the blog, so it rides the
@@ -55,6 +57,7 @@ const parseRoute = () => {
   if (/^#\/privacy\/?$/.test(window.location.hash)) return { blog: true, slug: null, privacy: true }
   if (/^#\/contact\/?$/.test(window.location.hash)) return { blog: true, slug: null, contact: true }
   if (/^#\/about\/?$/.test(window.location.hash)) return { blog: true, slug: null, about: true }
+  if (/^#\/pricing\/?$/.test(window.location.hash)) return { blog: true, slug: null, pricing: true }
   const m = window.location.hash.match(/^#\/blog(?:\/([^/?#]+))?\/?$/)
   return m ? { blog: true, slug: m[1] ? decodeURIComponent(m[1]) : null } : { blog: false }
 }
@@ -79,12 +82,13 @@ function Root() {
     if (!route.blog) return
     seenBlog.current = true
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
-    if (!route.slug && !route.privacy && !route.contact && !route.about) document.title = 'Blog — Planet Owl'
-  }, [route.blog, route.slug, route.privacy, route.contact, route.about])
+    if (!route.slug && !route.privacy && !route.contact && !route.about && !route.pricing) document.title = 'Blog — Planet Owl'
+  }, [route.blog, route.slug, route.privacy, route.contact, route.about, route.pricing])
 
   if (route.privacy) return <Privacy />
   if (route.contact) return <Contact />
   if (route.about) return <About />
+  if (route.pricing) return <Pricing />
   if (route.blog) {
     const post = route.slug ? findPost(route.slug) : null
     // An unknown slug falls back to the index rather than to an empty page.
