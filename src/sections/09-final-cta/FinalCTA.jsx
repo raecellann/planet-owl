@@ -116,7 +116,7 @@ export default function FinalCTA() {
       {/* The FAQ, in the dark stretch above the ask — by request. It fills
           what was a long empty run of night between the nest and the
           headline, and the ask below is still what the section ends on. */}
-      <div className="relative mx-auto mb-24 max-w-[1440px] px-5 sm:mb-32 sm:px-[5vw]">
+      <div className="relative mx-auto mb-36 max-w-[1440px] px-5 sm:mb-52 sm:px-[5vw]">
         <Reveal y={40}>
           <Faq tone="dark" />
         </Reveal>

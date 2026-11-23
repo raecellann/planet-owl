@@ -46,13 +46,14 @@ export const FAQS = [
 const TONES = {
   dark: {
     title: 'text-gold-500',
-    lead: 'text-gold-400',
-    // Brand colours only, by request: the questions were plain white on
-    // the dark, which is not a colour this site uses for type. Gold for the
-    // questions, the pale gold for answers, teal for the marks.
+    lead: 'text-gold-500',
+    // ONE gold for all the type — `gold-500`, the colour of the numbered
+    // copy in Top Secrets just above ("01 Make Your Brand...") — by request,
+    // so the FAQ reads as the same voice as the section it follows. It had
+    // been white, then three different golds. The plus and cross stay teal.
     rule: 'border-gold-500/30',
-    q: 'text-gold-400',
-    a: 'text-gold-200',
+    q: 'text-gold-500',
+    a: 'text-gold-500',
     mark: 'text-teal-400',
   },
   light: {
