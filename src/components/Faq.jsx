@@ -66,7 +66,9 @@ const TONES = {
   },
 }
 
-export default function Faq({ tone = 'light', className = '' }) {
+/* `askHref`: the pages in the blog frame have no Start a Project listener,
+   so there "ask the owls" is a link (to the contact page) instead. */
+export default function Faq({ tone = 'light', className = '', askHref = null }) {
   const [open, setOpen] = useState(0)
   const reduce = useReducedMotion()
   const t = TONES[tone]
@@ -80,9 +82,15 @@ export default function Faq({ tone = 'light', className = '' }) {
         </h2>
         <p className={`mt-5 max-w-md font-ui text-lg leading-relaxed ${t.lead}`}>
           The questions we hear most. Anything else,{' '}
-          <button type="button" onClick={openStartProject} className="font-semibold underline">
-            ask the owls
-          </button>
+          {askHref ? (
+            <a href={askHref} className="font-semibold text-inherit underline">
+              ask the owls
+            </a>
+          ) : (
+            <button type="button" onClick={openStartProject} className="font-semibold underline">
+              ask the owls
+            </button>
+          )}
           .
         </p>
         <img

@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import BlogLayout from './BlogLayout'
 import { A } from '../lib/assets'
+import Faq from '../components/Faq'
 
 /**
  * The pricing page, at `#/pricing`.
@@ -59,6 +60,49 @@ const PLANS = [
   },
 ]
 
+/**
+ * Which craft each plan reaches — the comparison table. Derived from `PLANS`
+ * (each plan adds one craft), written out so the table can name the rows.
+ */
+const COMPARE = [
+  { craft: 'Design', detail: 'Logos, brand identity, packaging, social graphics, UI/UX', from: 0 },
+  { craft: 'Digital', detail: 'Video editing, 3D motion, content, social media ads, SEO', from: 1 },
+  { craft: 'Develop', detail: 'Websites, web and mobile apps, e-commerce, CMS, maintenance', from: 2 },
+  { craft: 'AI Tech', detail: 'AI assistants, chatbots, automation, custom software, analytics', from: 3 },
+]
+
+/**
+ * "On every plan" — only things the site already says or that follow from how
+ * the plans are built. No turnaround, revision count or guarantee: those have
+ * not been set (see the note at the top).
+ */
+const STANDARD = [
+  {
+    title: 'The Team',
+    items: ['The same flock on your brand, month to month', 'Design, digital, development and AI under one roof', 'One place to send every request'],
+  },
+  {
+    title: 'The Work',
+    items: ['No guesswork. No revisions. No changes.', 'Refined in the nest before it reaches you', 'Built around your brand, not a template'],
+  },
+  {
+    title: 'The Plan',
+    items: ['Billed monthly', 'Starts with a free 2-week trial', 'Move up a plan when you need another craft'],
+  },
+]
+
+const STEPS = [
+  { n: '01', title: 'Tell us what you need', copy: 'Leave your email or send the details on the contact page. Book a call if you would rather talk it through.' },
+  { n: '02', title: 'Start your free 2 weeks', copy: 'We set you up on the plan that fits and get to work, so you can see how the nest handles your brand.' },
+  { n: '03', title: 'Keep the flock on it', copy: 'Stay on the plan month to month, and step up to the next one when you need another craft.' },
+]
+
+const Check = ({ className = '' }) => (
+  <svg viewBox="0 0 24 24" aria-hidden className={`size-5 shrink-0 ${className}`} fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M5 12.5l4.5 4.5L19 7.5" />
+  </svg>
+)
+
 export default function Pricing() {
   useEffect(() => {
     document.title = 'Pricing — Planet Owl'
@@ -68,8 +112,7 @@ export default function Pricing() {
     <BlogLayout onBlog={false} newsletter={false} page={{ label: 'Pricing', href: '#/pricing' }}>
       <header className="bg-[linear-gradient(180deg,#cdd8f4_0%,#dfe7fa_45%,#ffffff_100%)] px-5 pb-12 pt-[clamp(8rem,12vw,10.5rem)] text-center sm:px-8">
         <div className="mx-auto max-w-3xl">
-          <p className="font-ui text-base font-bold text-teal-600">Pricing</p>
-          <h1 className="mt-3 font-['Momo_Trust_Display'] text-[clamp(2rem,5vw,3.8rem)] font-normal leading-[1.08] text-plum-700">
+          <h1 className="font-['Momo_Trust_Display'] text-[clamp(2rem,5vw,3.8rem)] font-normal leading-[1.08] text-plum-700">
             One Nest. Pick How Much of It You Need.
           </h1>
           <p className="mx-auto mt-5 max-w-2xl font-ui text-lg leading-relaxed text-plum-800">
@@ -138,6 +181,111 @@ export default function Pricing() {
           ))}
         </ul>
       </section>
+
+      {/* ---------------------------------------------------- compare -- */}
+      <section className="bg-white px-5 pb-16 pt-6 sm:px-8">
+        <div className="mx-auto max-w-[1320px]">
+          <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-plum-700">
+            What Each Plan Covers
+          </h2>
+          <div className="mt-8 overflow-x-auto rounded-[1.5rem] ring-1 ring-plum-900/10">
+            <table className="w-full min-w-[640px] border-collapse text-left font-ui">
+              <thead>
+                <tr className="bg-plum-800 text-white">
+                  <th scope="col" className="px-6 py-4 text-sm font-bold uppercase tracking-wide">Craft</th>
+                  {PLANS.map((p) => (
+                    <th key={p.name} scope="col" className="px-4 py-4 text-center text-base font-bold">
+                      {p.name}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {COMPARE.map((row, r) => (
+                  <tr key={row.craft} className={r % 2 ? 'bg-plum-100/40' : 'bg-white'}>
+                    <th scope="row" className="px-6 py-5 align-top">
+                      <span className="block text-lg font-bold text-plum-900">{row.craft}</span>
+                      <span className="mt-1 block text-sm font-normal leading-snug text-plum-800">{row.detail}</span>
+                    </th>
+                    {PLANS.map((p, i) => (
+                      <td key={p.name} className="px-4 py-5 text-center align-middle">
+                        {i >= row.from ? (
+                          <>
+                            <Check className="mx-auto text-teal-500" />
+                            <span className="sr-only">Included</span>
+                          </>
+                        ) : (
+                          <span className="text-plum-300" aria-label="Not included">—</span>
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+                <tr className="bg-gold-200">
+                  <th scope="row" className="px-6 py-5 text-lg font-bold text-plum-900">Monthly</th>
+                  {PLANS.map((p) => (
+                    <td key={p.name} className="px-4 py-5 text-center text-lg font-bold text-plum-900">
+                      {p.from ? 'from ' : ''}
+                      {p.price}
+                    </td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      {/* ---------------------------------------------- on every plan -- */}
+      <section className="bg-plum-800 px-5 py-14 sm:px-8 sm:py-20">
+        <div className="mx-auto max-w-[1320px]">
+          <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-gold-500">
+            Standard Issue on Every Plan
+          </h2>
+          <ul className="mt-10 grid gap-5 lg:grid-cols-3">
+            {STANDARD.map((g) => (
+              <li key={g.title} className="rounded-[1.5rem] bg-white p-7">
+                <h3 className="font-ui text-xl font-bold text-plum-900">{g.title}</h3>
+                <ul className="mt-4 space-y-3">
+                  {g.items.map((item) => (
+                    <li key={item} className="flex items-start gap-2.5 font-ui leading-snug text-plum-800">
+                      <Check className="mt-0.5 text-teal-500" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* ------------------------------------------------ how it works -- */}
+      <section className="bg-white px-5 py-14 sm:px-8 sm:py-20">
+        <div className="mx-auto max-w-[1320px]">
+          <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-plum-700">
+            How It Works
+          </h2>
+          <ol className="mt-10 grid gap-8 lg:grid-cols-3">
+            {STEPS.map((st) => (
+              <li key={st.n} className="border-t-4 border-gold-500 pt-6">
+                <p className="font-['Momo_Trust_Display'] text-4xl leading-none text-teal-600">{st.n}</p>
+                <h3 className="mt-3 font-ui text-xl font-bold text-plum-900">{st.title}</h3>
+                <p className="mt-2 font-ui leading-relaxed text-plum-800">{st.copy}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* --------------------------------------------------------- FAQ -- */}
+      <section className="bg-gold-200 px-5 py-14 sm:px-8 sm:py-20">
+        <div className="mx-auto max-w-[1320px]">
+          <Faq tone="light" askHref="#/contact" />
+        </div>
+      </section>
+
+      <div className="bg-white pt-14" />
 
       {/* -------------------------------------------------- custom plan -- */}
       <section className="bg-white px-5 pb-10 sm:px-8">

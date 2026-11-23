@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import BlogLayout from './BlogLayout'
 import { A } from '../lib/assets'
 import { WORK } from '../sections/02-portfolio/work'
+import cloudImg from '../../assets/section 2/image 35 copy.png'
 
 /**
  * The About page, at `#/about`.
@@ -123,8 +124,12 @@ export default function About() {
       <header className="bg-[linear-gradient(180deg,#cdd8f4_0%,#dfe7fa_45%,#ffffff_100%)] px-5 pb-14 pt-[clamp(8rem,12vw,10.5rem)] sm:px-8">
         <div className="mx-auto max-w-[1180px]">
           <h1 className="max-w-4xl font-['Momo_Trust_Display'] text-[clamp(2rem,5vw,4rem)] font-normal leading-[1.08] text-plum-700">
-            Creative Work, Handled by <span className="text-gold-600">a System of Geniuses</span>
+            Meet the Owls <span className="text-gold-600">Behind the Work</span>
           </h1>
+          <p className="mt-5 max-w-2xl font-ui text-lg leading-relaxed text-plum-800">
+            One studio, four crafts, and a flock that would rather build the thing than talk about
+            it.
+          </p>
         </div>
       </header>
 
@@ -146,12 +151,19 @@ export default function About() {
               you.
             </p>
           </div>
-          <img
-            src={A.flock.wide}
-            alt="The Planet Owl flock at work"
-            loading="lazy"
-            className="w-full rounded-[1.75rem] object-cover shadow-[0_30px_60px_-30px_rgba(54,14,57,0.5)]"
-          />
+          {/* The studio's own wizard on a patch of sky, by request — this was
+              a stock-looking photograph of a woman at a laptop, the one
+              picture on the page that was not Planet Owl's own artwork. */}
+          <div className="relative overflow-hidden rounded-[1.75rem] bg-[linear-gradient(180deg,#cdd8f4_0%,#eef3fb_70%,#ffffff_100%)] px-6 pt-10 shadow-[0_30px_60px_-30px_rgba(54,14,57,0.5)]">
+            <img src={cloudImg} alt="" aria-hidden className="pointer-events-none absolute -left-[18%] top-[8%] w-[62%] max-w-none opacity-70" />
+            <img src={cloudImg} alt="" aria-hidden className="pointer-events-none absolute -right-[22%] top-[38%] w-[70%] max-w-none -scale-x-100 opacity-60" />
+            <img
+              src={A.owl.wizardLg}
+              alt="The Planet Owl wizard, in a starred hat with a wand"
+              loading="lazy"
+              className="relative mx-auto block h-[min(70vw,24rem)] w-auto object-contain [mask-image:linear-gradient(180deg,#000_94%,transparent_100%)]"
+            />
+          </div>
         </div>
       </section>
 
