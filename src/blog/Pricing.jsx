@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { motion, useReducedMotion } from 'motion/react'
 import BlogLayout from './BlogLayout'
 import { A } from '../lib/assets'
 import Faq from '../components/Faq'
@@ -93,6 +94,8 @@ const Check = ({ className = '' }) => (
 )
 
 export default function Pricing() {
+  const reduce = useReducedMotion()
+
   useEffect(() => {
     document.title = 'Pricing — Planet Owl'
   }, [])
@@ -215,21 +218,53 @@ export default function Pricing() {
         </div>
       </section>
 
-      {/* ------------------------------------------------ how it works -- */}
+      {/* ------------------------------------------------ how it works --
+          A ROADMAP that draws itself, by request ("animated, like an
+          explainer"). It was three still columns. Now a gold line runs
+          through three numbered stops; when the section scrolls into view
+          the line draws from the first stop to the last, and each stop and
+          its text arrive as the line reaches them. Across from `lg` up,
+          down the left edge below it. Once only — it does not replay on
+          every pass. */}
       <section className="bg-white px-5 py-14 sm:px-8 sm:py-20">
         <div className="mx-auto max-w-[1320px]">
           <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-plum-700">
             How It Works
           </h2>
-          <ol className="mt-10 grid gap-8 lg:grid-cols-3">
-            {STEPS.map((st) => (
-              <li key={st.n} className="border-t-4 border-gold-500 pt-6">
-                <p className="font-['Momo_Trust_Display'] text-4xl leading-none text-teal-600">{st.n}</p>
-                <h3 className="mt-3 font-ui text-xl font-bold text-plum-900">{st.title}</h3>
-                <p className="mt-2 font-ui leading-relaxed text-plum-800">{st.copy}</p>
+          <motion.ol
+            initial={reduce ? false : 'off'}
+            whileInView="on"
+            viewport={{ once: true, margin: '-20% 0px' }}
+            className="relative mt-12 grid gap-12 pl-14 lg:grid-cols-3 lg:gap-10 lg:pl-0 lg:pt-20"
+          >
+            {/* the road: vertical on phones, horizontal from `lg` */}
+            <span aria-hidden className="absolute bottom-2 left-[1.375rem] top-2 w-1 rounded-full bg-plum-100 lg:bottom-auto lg:left-0 lg:right-0 lg:top-[1.625rem] lg:h-1 lg:w-auto" />
+            <motion.span
+              aria-hidden
+              variants={{ off: { scaleX: 0, scaleY: 0 }, on: { scaleX: 1, scaleY: 1 } }}
+              transition={{ duration: 1.8, ease: [0.4, 0, 0.2, 1] }}
+              className="absolute bottom-2 left-[1.375rem] top-2 w-1 origin-top rounded-full bg-gold-500 lg:bottom-auto lg:left-0 lg:right-0 lg:top-[1.625rem] lg:h-1 lg:w-auto lg:origin-left"
+            />
+            {STEPS.map((st, i) => (
+              <li key={st.n} className="relative">
+                <motion.span
+                  aria-hidden
+                  variants={{ off: { scale: 0, opacity: 0 }, on: { scale: 1, opacity: 1 } }}
+                  transition={{ type: 'spring', stiffness: 380, damping: 20, delay: 0.15 + i * 0.6 }}
+                  className="absolute -left-14 top-0 grid size-12 place-items-center rounded-full bg-plum-800 font-ui text-base font-bold text-gold-500 shadow-[0_6px_0_-2px_var(--color-plum-950)] lg:-top-20 lg:left-0"
+                >
+                  {st.n}
+                </motion.span>
+                <motion.div
+                  variants={{ off: { opacity: 0, y: 18 }, on: { opacity: 1, y: 0 } }}
+                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.3 + i * 0.6 }}
+                >
+                  <h3 className="font-ui text-2xl font-bold text-plum-900">{st.title}</h3>
+                  <p className="mt-2 max-w-sm font-ui text-lg leading-relaxed text-plum-800">{st.copy}</p>
+                </motion.div>
               </li>
             ))}
-          </ol>
+          </motion.ol>
         </div>
       </section>
 
@@ -240,28 +275,6 @@ export default function Pricing() {
         </div>
       </section>
 
-      <div className="bg-white pt-14" />
-
-      {/* -------------------------------------------------- custom plan -- */}
-      <section className="bg-white px-5 pb-10 sm:px-8">
-        <div className="mx-auto grid max-w-[1320px] items-center gap-8 rounded-[1.75rem] bg-[#e7b248] p-8 sm:p-12 lg:grid-cols-[minmax(0,1fr)_auto]">
-          <div>
-            <p className="font-['Momo_Trust_Display'] text-[clamp(1.6rem,3.2vw,2.5rem)] leading-tight text-plum-900">
-              Need something that does not fit a plan?
-            </p>
-            <p className="mt-3 max-w-2xl font-ui leading-relaxed text-plum-900/85">
-              Tell us what you are building and we will put together one that does. Book a call or
-              send us the details.
-            </p>
-          </div>
-          <a
-            href="#/contact"
-            className="btn-type inline-flex h-12 items-center justify-center rounded-full bg-plum-800 px-7 font-ui font-semibold text-white no-underline shadow-[0_6px_0_-2px_var(--color-plum-950)] transition-colors hover:bg-plum-700"
-          >
-            Contact Us
-          </a>
-        </div>
-      </section>
     </BlogLayout>
   )
 }
