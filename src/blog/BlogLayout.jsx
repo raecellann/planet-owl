@@ -69,40 +69,17 @@ export default function BlogLayout({ children, onBlog = true, newsletter = true,
           <ul className="ml-auto hidden shrink-0 items-center gap-[max(1rem,2vw)] pl-6 lg:flex">
             {NAV_LINKS.map((l) => (
               <li key={l.href}>
-                <a
-                  href={l.href}
-                  className="font-ui text-[max(0.8rem,1.05vw)] font-bold text-plum-700 no-underline transition-colors hover:text-plum-900"
-                >
-                  {l.label}
-                </a>
+                <BarLink href={l.href} label={l.label} />
               </li>
             ))}
-            {/* ONE slot, naming the page you are on. "Blog" used to stay here
-                beside the current page's name on About, Pricing and the
-                rest, which read as two places at once. Off the blog, the
-                blog is still one click away in the footer. */}
-            {(!here || hereIsBlog) && (
-              <li>
-              <a
-                href={BLOG_HOME}
-                aria-current={hereIsBlog ? 'page' : undefined}
-                className={`font-ui text-[max(0.8rem,1.05vw)] font-bold no-underline ${hereIsBlog ? 'text-teal-600' : 'text-plum-700 transition-colors hover:text-plum-900'}`}
-              >
-                Blog
-              </a>
+            {/* ONE slot, naming the page you are on. */}
+            <li>
+              {here ? (
+                <BarLink href={here.href} label={here.label} current />
+              ) : (
+                <BarLink href={BLOG_HOME} label="Blog" />
+              )}
             </li>
-            )}
-            {here && !hereIsBlog && (
-              <li>
-                <a
-                  href={here.href}
-                  aria-current="page"
-                  className="font-ui text-[max(0.8rem,1.05vw)] font-bold text-teal-600 no-underline"
-                >
-                  {here.label}
-                </a>
-              </li>
-            )}
           </ul>
 
           {/* Below `lg` the bar is the LANDING page's own: the logo and the
@@ -121,6 +98,7 @@ export default function BlogLayout({ children, onBlog = true, newsletter = true,
                 iconSrc={A.buttonOwl}
                 iconAsBadge
                 whileHover={{}}
+                reserveHoverWidth
                 onClick={openProject}
                 className="h-[max(2.5rem,3.3vw)] whitespace-nowrap text-[max(0.8rem,1.05vw)] !shadow-[0_6px_0_-2px_var(--color-plum-900),0_16px_28px_-16px_rgba(20,12,10,0.55)]"
               >
@@ -243,6 +221,26 @@ export default function BlogLayout({ children, onBlog = true, newsletter = true,
 
       <StartProjectModal open={projectOpen} onClose={() => setProjectOpen(false)} />
     </>
+  )
+}
+
+/**
+ * One link in the bar, with the landing page's hover: the label swaps to
+ * Luckiest Guy. An invisible copy in that wider face reserves the width, so
+ * the swap does not push the neighbouring links sideways.
+ */
+function BarLink({ href, label, current = false }) {
+  return (
+    <a
+      href={href}
+      data-label={label}
+      aria-current={current ? 'page' : undefined}
+      className={`btn-type active:!shadow-none relative block text-[max(0.8rem,1.05vw)] font-bold no-underline transition-colors before:invisible before:block before:font-[family-name:var(--font-pop)] before:font-normal before:content-[attr(data-label)] ${
+        current ? 'text-teal-600' : 'text-plum-700 hover:text-plum-900'
+      }`}
+    >
+      <span className="absolute inset-0 flex items-center justify-center whitespace-nowrap">{label}</span>
+    </a>
   )
 }
 
