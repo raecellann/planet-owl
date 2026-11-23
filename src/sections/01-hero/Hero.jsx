@@ -8,6 +8,7 @@ import {
   useSpring,
   useTransform,
 } from 'motion/react'
+import OwlBubble from '../../components/OwlBubble'
 import { A, openStartProject } from '../../lib/assets'
 import Island from './Island'
 import FloatingOwl from './FloatingOwl'
@@ -176,6 +177,8 @@ export default function Hero() {
    * way back out the click does not need a position at all.
    */
   const [zoom, setZoom] = useState(null)
+  const [owlIntro, setOwlIntro] = useState(null)
+  const closeOwlIntro = useCallback(() => setOwlIntro(null), [])
   const toggleZoom = useCallback((e) => {
     // Read the geometry HERE, not inside the updater below: a state updater
     // runs during the next render, by which time React has cleared
@@ -441,6 +444,8 @@ export default function Hero() {
 
   return (
     <section id="home" ref={sectionRef} className={`relative ${HERO_HEIGHT}`}>
+      {/* Clicking an owl makes it introduce itself. */}
+      <OwlBubble open={owlIntro} onClose={closeOwlIntro} />
       
       {/* Sticky container locks the view during scroll */}
       <div className="sticky top-0 h-[100svh] w-full overflow-hidden">
@@ -520,7 +525,7 @@ export default function Hero() {
               transition={{ duration: 0.9, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
               className="text-shadow-soft mt-[min(1rem,1.8svh)] max-w-xl font-ui text-[clamp(0.85rem,min(1.1vw,1.8svh),1.05rem)] font-normal leading-relaxed text-plum-600"
             >
-              Every design is refined before it reaches you — so you get{' '}
+              Every design is refined before it reaches you, so you get{' '}
               <br className="hidden sm:block" />
               faster output, cleaner results, and zero chaos.
             </motion.p>
@@ -610,7 +615,7 @@ export default function Hero() {
         >
           <motion.div {...zoomLayer}>
             {HERO_OWLS.map((owl) => (
-              <FloatingOwl key={owl.src} progress={p} px={px} py={py} still={frozen} {...owl} />
+              <FloatingOwl key={owl.src} progress={p} px={px} py={py} still={frozen} {...owl} onIntro={setOwlIntro} selected={owlIntro?.src === owl.src} />
             ))}
           </motion.div>
         </motion.div>
@@ -685,6 +690,8 @@ export default function Hero() {
                 spin={9}
                 depth={24}
                 interactive={!broomHuge}
+                onIntro={setOwlIntro}
+                selected={owlIntro?.src === A.owl.broom}
                 shadow={!broomHuge}
               />
             </motion.div>

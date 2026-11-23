@@ -75,7 +75,7 @@ const SECRETS = [
   {
     n: '01',
     title: ['Make Your Brand', 'Impossible to Ignore'],
-    copy: 'We blend bold design, storytelling, content and immersive experiences to turn attention into genuine connection — so people do not just notice your brand, they remember it.',
+    copy: 'We blend bold design, storytelling, content and immersive experiences to turn attention into genuine connection, so people do not just notice your brand, they remember it.',
     art: A.secrets.attention,
     alt: 'An owl in a nest hung with film lights, cameras and a boom, mid-shoot',
     glow: false,
@@ -230,7 +230,7 @@ function NestHotspot({ review, open, onToggle, play }) {
               <>
                 <img
                   src={A.nestTestimonial}
-                  alt="Rated 5 out of 5. “They approached design the same way we approach racing every detail engineered for performance and elegance.” — Cyril Blais, CEO, Maserati Formula E"
+                  alt="Rated 5 out of 5. “They approached design the same way we approach racing every detail engineered for performance and elegance.” Cyril Blais, CEO, Maserati Formula E"
                   loading="lazy"
                   draggable={false}
                   className="block w-full select-none drop-shadow-[0_20px_36px_rgba(0,0,0,0.55)]"
@@ -310,7 +310,7 @@ const NEST_REVIEWS = [
     y: '58.9%',
     brand: 'Jollibee',
     label: 'the Jollibee testimonial',
-    quote: 'They understood the brand before we finished explaining it — and then showed us a version of it we had not thought of.',
+    quote: 'They understood the brand before we finished explaining it, and then showed us a version of it we had not thought of.',
   },
   {
     id: 'cartier',

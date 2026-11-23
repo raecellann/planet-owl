@@ -37,7 +37,7 @@ export default function BlogPost({ post }) {
   }, [post.slug])
 
   useEffect(() => {
-    document.title = `${post.title} — Planet Owl`
+    document.title = `${post.title} | Planet Owl`
   }, [post.title])
 
   const jump = (id) => document.getElementById(`topic-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -59,7 +59,7 @@ export default function BlogPost({ post }) {
     <BlogLayout>
       <article>
         {/* ------------------------------------------------------ header -- */}
-        <header className="bg-[linear-gradient(180deg,#cdd8f4_0%,#dfe7fa_45%,#ffffff_100%)] px-5 pt-[clamp(8rem,12vw,10.5rem)] sm:px-8">
+        <header className="bg-[linear-gradient(180deg,#cdd8f4_0%,#dfe7fa_45%,#ffffff_100%)] px-5 pt-[clamp(10rem,15vw,13.5rem)] sm:px-8">
           <div className="mx-auto max-w-3xl text-center">
             <div className="flex items-center justify-center gap-4">
               <CategoryChip className="!bg-teal-500 !text-white">{post.category}</CategoryChip>
@@ -140,7 +140,7 @@ export default function BlogPost({ post }) {
                 Want this running for your brand?
               </p>
               <p className="mt-3 max-w-xl font-ui leading-relaxed text-plum-900/85">
-                Tell us what you are building. We will show you how the nest would handle it — refined
+                Tell us what you are building. We will show you how the nest would handle it, refined
                 before it reaches you.
               </p>
               <a

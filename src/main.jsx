@@ -82,7 +82,7 @@ function Root() {
     if (!route.blog) return
     seenBlog.current = true
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
-    if (!route.slug && !route.privacy && !route.contact && !route.about && !route.pricing) document.title = 'Blog — Planet Owl'
+    if (!route.slug && !route.privacy && !route.contact && !route.about && !route.pricing) document.title = 'Blog | Planet Owl'
   }, [route.blog, route.slug, route.privacy, route.contact, route.about, route.pricing])
 
   if (route.privacy) return <Privacy />

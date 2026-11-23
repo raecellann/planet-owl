@@ -23,7 +23,7 @@ export const POSTS = [
     readMinutes: 6,
     title: 'What “Always-On” Marketing Really Asks of Your Creative Pipeline',
     excerpt:
-      'Feeds do not pause and campaigns no longer end. That changes what a creative team is for — from producing great moments to supplying a steady, on-brand stream. Here is what that asks of the pipeline behind it.',
+      'Feeds do not pause and campaigns no longer end. That changes what a creative team is for, from producing great moments to supplying a steady, on-brand stream. Here is what that asks of the pipeline behind it.',
     cover: {
       theme: 'gold',
       owl: A.owl.digital,
@@ -42,7 +42,7 @@ export const POSTS = [
         heading: 'Campaigns Used to End. Now Nothing Does.',
         blocks: [
           {
-            p: 'For a long time marketing ran in bursts. A launch, a season, a sale — each with a start date, a peak, and a quiet stretch afterwards where the team could breathe, review and plan the next one. Creative work was shaped around those bursts: a big brief, a big push, a big delivery.',
+            p: 'For a long time marketing ran in bursts. A launch, a season, a sale, each with a start date, a peak, and a quiet stretch afterwards where the team could breathe, review and plan the next one. Creative work was shaped around those bursts: a big brief, a big push, a big delivery.',
           },
           {
             p: 'Always-on marketing removes the quiet stretch. Social feeds want something new every day. Email sequences keep sending. Paid ads fatigue in weeks, not quarters, and need fresh variations to keep performing. Search content builds slowly and never stops needing to be fed. Every channel you add is another mouth, and none of them close on weekends.',
@@ -69,7 +69,7 @@ export const POSTS = [
           },
           {
             quote:
-              'Always-on does not need bursts of brilliant work. It needs brilliant work to be ordinary — repeatable, on time, and recognisably yours.',
+              'Always-on does not need bursts of brilliant work. It needs brilliant work to be ordinary: repeatable, on time, and recognisably yours.',
           },
         ],
       },
@@ -78,7 +78,7 @@ export const POSTS = [
         heading: 'What an Always-On Pipeline Actually Needs',
         blocks: [
           {
-            p: 'The fix is rarely “more designers”. Adding hands to a pipeline that leaks just makes a bigger leak. What changes the outcome is structure — a few unglamorous things done every single time.',
+            p: 'The fix is rarely “more designers”. Adding hands to a pipeline that leaks just makes a bigger leak. What changes the outcome is structure: a few unglamorous things done every single time.',
           },
           {
             steps: [
@@ -96,7 +96,7 @@ export const POSTS = [
               },
               {
                 title: 'A steady rhythm',
-                copy: 'A known weekly capacity and a visible queue. Predictable beats heroic — you can plan a calendar around a rhythm, and you cannot plan around a rescue.',
+                copy: 'A known weekly capacity and a visible queue. Predictable beats heroic. You can plan a calendar around a rhythm, and you cannot plan around a rescue.',
               },
             ],
           },
@@ -115,7 +115,7 @@ export const POSTS = [
             ],
           },
           {
-            p: 'If the answer to any of them is no, the problem is not effort. Your team is almost certainly working hard already. The problem is that the pipeline was designed for a kind of marketing that no longer exists — and that part can be rebuilt.',
+            p: 'If the answer to any of them is no, the problem is not effort. Your team is almost certainly working hard already. The problem is that the pipeline was designed for a kind of marketing that no longer exists, and that part can be rebuilt.',
           },
         ],
       },
@@ -127,7 +127,7 @@ export const POSTS = [
       },
       {
         q: 'Does always-on mean lower quality?',
-        a: 'It should not. It means quality has to come from the system — clear briefs, a real brand system, review built in — rather than from last-minute effort on each individual piece.',
+        a: 'It should not. It means quality has to come from the system: clear briefs, a real brand system and built-in review, rather than from last-minute effort on each individual piece.',
       },
     ],
   },
@@ -138,7 +138,7 @@ export const POSTS = [
     readMinutes: 5,
     title: 'How to Scale Design Output Without Burning Out Your Team',
     excerpt:
-      'More requests, same people. Most teams answer that with longer hours, which works for about a month. There is a better order to do things in — and it starts with what you stop doing.',
+      'More requests, same people. Most teams answer that with longer hours, which works for about a month. There is a better order to do things in, and it starts with what you stop doing.',
     cover: {
       theme: 'plum',
       owl: A.owl.develop,
@@ -163,7 +163,7 @@ export const POSTS = [
             p: 'Then the costs arrive together. Work goes out with small mistakes, so it comes back. Coming back means it is now competing with new work. People stop suggesting ideas because there is no room to try them. Somebody good resigns, and their workload lands on whoever is left.',
           },
           {
-            p: 'Overtime is a loan against your team, and the interest is steep. Scaling properly means getting more out of the same hours — not adding more hours.',
+            p: 'Overtime is a loan against your team, and the interest is steep. Scaling properly means getting more out of the same hours, not adding more hours.',
           },
         ],
       },
@@ -176,7 +176,7 @@ export const POSTS = [
           },
           {
             list: [
-              'Chasing missing information — the size, the copy, the logo file, the deadline.',
+              'Chasing missing information: the size, the copy, the logo file, the deadline.',
               'Rebuilding things that already exist, because nobody could find the last version.',
               'Revision rounds caused by a brief that was never clear in the first place.',
               'Switching between six half-finished tasks instead of finishing two.',
@@ -200,7 +200,7 @@ export const POSTS = [
               },
               {
                 title: 'Templatise what repeats',
-                copy: 'If you make it more than twice, it deserves a template. Social formats, email headers, ad sizes — design the system once and fill it in afterwards.',
+                copy: 'If you make it more than twice, it deserves a template. Social formats, email headers, ad sizes: design the system once and fill it in afterwards.',
               },
               {
                 title: 'Limit work in progress',
@@ -212,7 +212,7 @@ export const POSTS = [
               },
               {
                 title: 'Send the overflow somewhere built for it',
-                copy: 'Keep your team on the work only they can do — the thinking, the brand, the big ideas — and hand the steady production stream to a partner whose whole system is designed for volume.',
+                copy: 'Keep your team on the work only they can do (the thinking, the brand, the big ideas) and hand the steady production stream to a partner whose whole system is designed for volume.',
               },
             ],
           },
@@ -267,7 +267,7 @@ export const POSTS = [
         heading: 'The Usual Way: You Are the Quality Check',
         blocks: [
           {
-            p: 'In most creative relationships the client is the reviewer. Work arrives, you spot what is off — the wrong logo version, the headline that does not fit, the colour that is nearly but not quite yours — you write it up, and you wait for round two.',
+            p: 'In most creative relationships the client is the reviewer. Work arrives, you spot what is off (the wrong logo version, the headline that does not fit, the colour that is nearly but not quite yours), you write it up, and you wait for round two.',
           },
           {
             p: 'It is so common that it feels normal. But think about what it means: you are doing quality control on work you are paying someone else to get right. Every round is your time, your attention, and a day lost on the calendar.',
@@ -283,13 +283,13 @@ export const POSTS = [
           },
           {
             list: [
-              'Against the brief — does it do the job it was asked to do, in the format and size it was asked for?',
-              'Against the brand — type, colour, tone, spacing, the small rules that make it recognisably yours.',
-              'Against itself — is it actually good? Would we be proud to sign it?',
+              'Against the brief: does it do the job it was asked to do, in the format and size it was asked for?',
+              'Against the brand: type, colour, tone, spacing, the small rules that make it recognisably yours.',
+              'Against itself: is it actually good? Would we be proud to sign it?',
             ],
           },
           {
-            quote: 'Your feedback should be about direction and taste — never about catching mistakes.',
+            quote: 'Your feedback should be about direction and taste, never about catching mistakes.',
           },
         ],
       },

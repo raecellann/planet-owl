@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import BlogLayout from './BlogLayout'
 import { A } from '../lib/assets'
 import { WORK } from '../sections/02-portfolio/work'
 import StackCards from '../components/StackCards'
+import OwlBubble, { OWL_INTROS } from '../components/OwlBubble'
 
 /**
  * The About page, at `#/about`.
@@ -97,19 +98,21 @@ function CountUp({ to }) {
 
 /** The flock around the island: the hero's own owls, at different depths. */
 const TEAM = [
-  { src: A.owl.tophat, x: '2%', y: '10%', w: '21%' },
-  { src: A.owl.crown, x: '25%', y: '0%', w: '19%' },
-  { src: A.owl.flower, x: '72%', y: '3%', w: '22%' },
-  { src: A.owl.pumpkin, x: '0%', y: '47%', w: '20%' },
-  { src: A.owl.flame, x: '79%', y: '40%', w: '20%' },
-  { src: A.owl.astronaut, x: '17%', y: '66%', w: '22%' },
-  { src: A.owl.float, x: '48%', y: '43%', w: '42%' },
+  { src: A.owl.tophat, x: 2, y: 10, w: 21 },
+  { src: A.owl.crown, x: 25, y: 0, w: 19 },
+  { src: A.owl.flower, x: 72, y: 3, w: 22 },
+  { src: A.owl.pumpkin, x: 0, y: 47, w: 20 },
+  { src: A.owl.flame, x: 79, y: 40, w: 20 },
+  { src: A.owl.astronaut, x: 17, y: 66, w: 22 },
+  { src: A.owl.wizard, x: 50, y: 45, w: 38 },
 ]
+
+
 
 const PROMISES = [
   {
     title: 'Make your brand impossible to ignore',
-    copy: 'We blend bold design, storytelling, content and immersive experiences to turn attention into genuine connection — so people do not just notice your brand, they remember it.',
+    copy: 'We blend bold design, storytelling, content and immersive experiences to turn attention into genuine connection, so people do not just notice your brand, they remember it.',
   },
   {
     title: 'Turn ambitious ideas into seamless products',
@@ -123,34 +126,24 @@ const PROMISES = [
 
 export default function About() {
   const [craft, setCraft] = useState(0)
+  const [owl, setOwl] = useState(null)
+
+  const closeOwl = useCallback(() => setOwl(null), [])
   const reduce = useReducedMotion()
 
   useEffect(() => {
-    document.title = 'About — Planet Owl'
+    document.title = 'About | Planet Owl'
   }, [])
 
   return (
     <BlogLayout onBlog={false} newsletter={false} page={{ label: 'About', href: '#/about' }}>
-      {/* ------------------------------------------------------ opening -- */}
-      <header className="bg-[linear-gradient(180deg,#cdd8f4_0%,#dfe7fa_45%,#ffffff_100%)] px-5 pb-14 pt-[clamp(8rem,12vw,10.5rem)] sm:px-8">
-        <div className="mx-auto max-w-[1180px]">
-          <h1 className="max-w-4xl font-['Momo_Trust_Display'] text-[clamp(2rem,5vw,4rem)] font-normal leading-[1.08] text-plum-700">
-            Meet the Owls <span className="text-gold-600">Behind the Work</span>
-          </h1>
-          <p className="mt-5 max-w-2xl font-ui text-lg leading-relaxed text-plum-800">
-            One studio, four crafts, and a flock that would rather build the thing than talk about
-            it.
-          </p>
-        </div>
-      </header>
-
       {/* --------------------------------------------------- who we are -- */}
-      <section className="bg-white px-5 py-14 sm:px-8 sm:py-20">
+      <section className="bg-white px-5 pb-14 pt-[clamp(10rem,15vw,13.5rem)] sm:px-8 sm:pb-20">
         <div className="mx-auto grid max-w-[1180px] items-center gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-16">
           <div>
-            <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-plum-700">
-              Who We Are
-            </h2>
+            <h1 className="font-['Momo_Trust_Display'] text-[clamp(2rem,4.6vw,3.6rem)] font-normal leading-[1.08] text-plum-700">
+              Meet the Owls Behind the Work
+            </h1>
             <p className="mt-5 font-ui text-lg leading-relaxed text-plum-800">
               Planet Owl is a creative studio. We build identities, websites, apps, AI solutions and
               immersive experiences for brands that rise above the ordinary.
@@ -158,23 +151,30 @@ export default function About() {
             <p className="mt-4 font-ui text-lg leading-relaxed text-plum-800">
               We call the team the flock and the studio the nest. Design, development, digital and
               AI sit under one roof, so an idea does not have to be handed from one agency to the
-              next to become real — it is shaped, built and refined in one place before it reaches
+              next to become real. It is shaped, built and refined in one place before it reaches
               you.
             </p>
           </div>
           {/* The whole team on the studio's island, as on the hero. */}
-          <div role="img" aria-label="The Planet Owl team of owls flying around the studio's floating island" className="relative mx-auto aspect-[1/0.92] w-full max-w-[38rem]">
+          <div className="relative mx-auto aspect-[1/0.92] w-full max-w-[38rem]">
             <img src={A.island} alt="" loading="lazy" className="absolute bottom-[3%] left-[10%] w-[80%]" />
             {TEAM.map((o) => (
-              <img
+              <button
                 key={o.src}
-                src={o.src}
-                alt=""
-                loading="lazy"
-                style={{ left: o.x, top: o.y, width: o.w }}
-                className="absolute transition-transform duration-300 hover:-translate-y-2"
-              />
+                type="button"
+                aria-expanded={owl?.src === o.src}
+                aria-label={`Say hello to ${OWL_INTROS[o.src].name}`}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setOwl(owl?.src === o.src ? null : { src: o.src, rect: e.currentTarget.getBoundingClientRect() })
+                }}
+                style={{ left: `${o.x}%`, top: `${o.y}%`, width: `${o.w}%` }}
+                className={`absolute cursor-pointer rounded-full transition-transform duration-300 hover:-translate-y-2 ${owl?.src === o.src ? 'z-10 scale-110' : ''}`}
+              >
+                <img src={o.src} alt="" loading="lazy" className="block w-full" />
+              </button>
             ))}
+            <OwlBubble open={owl} onClose={closeOwl} />
           </div>
         </div>
       </section>

@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useReducedMotion } from 'motion/react'
 import BlogLayout from './BlogLayout'
 import { CONTACT_EMAIL, submitContact } from '../lib/signup'
 import { A } from '../lib/assets'
@@ -76,7 +77,7 @@ export default function Contact() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    document.title = 'Contact — Planet Owl'
+    document.title = 'Contact | Planet Owl'
   }, [])
 
   // Today, in the visitor's own calendar, as the earliest bookable day.
@@ -111,9 +112,34 @@ export default function Contact() {
 
   const booked = Boolean(form.date)
 
+  // "Book a call" on the left: glide to the block, pulse a purple ring round
+  // it so the eye lands there, and put the cursor in the date field.
+  const bookingRef = useRef(null)
+  const reduceMotion = useReducedMotion()
+  const goToBooking = (e) => {
+    e.preventDefault()
+    const box = bookingRef.current
+    if (!box) return
+    box.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' })
+    setTimeout(() => {
+      box.querySelector('input')?.focus({ preventScroll: true })
+      const ring = (a) => `0 0 0 5px rgba(86, 35, 84, ${a})`
+      box.animate(
+        [
+          { boxShadow: ring(0), transform: 'scale(1)' },
+          { boxShadow: ring(0.85), transform: reduceMotion ? 'scale(1)' : 'scale(1.025)' },
+          { boxShadow: ring(0.15), transform: 'scale(1)' },
+          { boxShadow: ring(0.85), transform: reduceMotion ? 'scale(1)' : 'scale(1.025)' },
+          { boxShadow: ring(0), transform: 'scale(1)' },
+        ],
+        { duration: 1600, easing: 'ease-in-out' },
+      )
+    }, reduceMotion ? 0 : 520)
+  }
+
   return (
     <BlogLayout onBlog={false} newsletter={false} page={{ label: 'Contact', href: '#/contact' }}>
-      <div className="relative overflow-hidden bg-white px-5 pb-10 pt-[clamp(8rem,12vw,10.5rem)] sm:px-8">
+      <div className="relative overflow-hidden bg-white px-5 pb-10 pt-[clamp(10rem,15vw,13.5rem)] sm:px-8">
         {CLOUDS.map((c, i) => (
           <img
             key={i}
@@ -147,7 +173,7 @@ export default function Contact() {
                     <rect x="3.5" y="5" width="17" height="15" rx="2.5" />
                     <path d="M3.5 9.5h17M8 3v4M16 3v4" />
                   </Icon>
-                  <a href="#book" onClick={(e) => { e.preventDefault(); document.getElementById('book-a-call')?.scrollIntoView({ behavior: 'smooth', block: 'center' }) }} className="font-semibold text-plum-900 no-underline hover:text-plum-700">
+                  <a href="#book" onClick={goToBooking} className="font-semibold text-plum-900 no-underline hover:text-plum-700">
                     Book a call
                   </a>
                 </li>
@@ -239,7 +265,7 @@ export default function Contact() {
 
                   {/* The booking. Optional: leave the date empty and this is
                       a plain message. */}
-                  <fieldset id="book-a-call" className="mt-7 rounded-2xl bg-gold-200 p-4 sm:p-5">
+                  <fieldset ref={bookingRef} id="book-a-call" className="mt-7 scroll-mt-32 rounded-2xl bg-gold-200 p-4 sm:p-5">
                     <legend className="sr-only">Book a call</legend>
                     <p className="font-ui text-base font-bold text-plum-900">Book a call (optional)</p>
                     <div className="mt-4 grid gap-4 sm:grid-cols-2">

@@ -480,7 +480,7 @@ export default function NestTeaser() {
 
         <Reveal y={28} delay={0.1}>
           <p className="mx-auto mt-[min(3.5vw,2.25rem)] max-w-xl text-[clamp(0.85rem,1.1vw,1.02rem)] leading-relaxed text-plum-700/85">
-            If you have made it this far, you must be genuinely curious — because our greatest
+            If you have made it this far, you must be genuinely curious, because our greatest
             secrets have always hatched inside the nest.
           </p>
         </Reveal>

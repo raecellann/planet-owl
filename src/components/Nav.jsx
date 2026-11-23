@@ -197,7 +197,7 @@ export default function Nav({ entered = true }) {
         <a
           href="#home"
           className="flex shrink-0 items-center"
-          aria-label="Planet Owl — home"
+          aria-label="Planet Owl home"
         >
           <img
             src={A.logo}

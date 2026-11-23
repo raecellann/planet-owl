@@ -52,7 +52,7 @@ export async function submitSignup({ email, source = 'site' }) {
   if (!isValidEmail(address)) throw new Error('That does not look like an email address.')
 
   if (ENDPOINT === 'mailto') {
-    const subject = encodeURIComponent('Free 2-week trial request — Planet Owl')
+    const subject = encodeURIComponent('Free 2-week trial request | Planet Owl')
     const body = encodeURIComponent(
       `Hi Planet Owl,\n\nI'd like to start a project / claim the free 2-week trial.\n\nMy email: ${address}\nSent from: ${source}\n`,
     )
@@ -64,7 +64,7 @@ export async function submitSignup({ email, source = 'site' }) {
     email: address,
     source,
     page: typeof window !== 'undefined' ? window.location.href : '',
-    _subject: 'New 2-week trial request — Planet Owl',
+    _subject: 'New 2-week trial request | Planet Owl',
   }
   if (ACCESS_KEY) payload.access_key = ACCESS_KEY
 
@@ -113,8 +113,8 @@ export async function submitContact(fields) {
 
   const wantsCall = Boolean(fields.date)
   const subject = wantsCall
-    ? `Call request for ${fields.date}${fields.time ? ` at ${fields.time}` : ''} — Planet Owl`
-    : 'New contact message — Planet Owl'
+    ? `Call request for ${fields.date}${fields.time ? ` at ${fields.time}` : ''} | Planet Owl`
+    : 'New contact message | Planet Owl'
 
   if (ENDPOINT === 'mailto') {
     const lines = Object.entries(fields)

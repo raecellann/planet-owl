@@ -57,7 +57,7 @@ export default function BlogLayout({ children, onBlog = true, newsletter = true,
           there has to be changed here. */}
       <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-[5vw] sm:pt-[2.92vw] min-[90rem]:px-[17.8vw]">
         <nav className="mx-auto flex min-h-[72px] w-full max-w-[1758px] items-center rounded-full bg-white py-3.5 pl-4 pr-3 shadow-[0_12px_34px_-24px_rgba(54,14,57,0.45)] sm:min-h-[max(3.25rem,4.4vw)] sm:py-[0.4vw] sm:pl-7 sm:pr-4">
-          <a href="#home" className="flex shrink-0 items-center" aria-label="Planet Owl — home">
+          <a href="#home" className="flex shrink-0 items-center" aria-label="Planet Owl home">
             {/* `h-6` below `sm` is the one figure that is NOT the landing bar's.
                 That bar has a burger on a phone; this one carries "Blog" and
                 the CTA in the same 351px, and at the landing page's `h-8`
@@ -229,7 +229,7 @@ export default function BlogLayout({ children, onBlog = true, newsletter = true,
             Fresh Notes From the Nest
           </h2>
           <p className="mx-auto mt-4 max-w-xl font-ui leading-relaxed text-plum-800">
-            New articles on brand, design and creative operations — sent when there is something
+            New articles on brand, design and creative operations, sent when there is something
             worth reading, and never more often than that.
           </p>
           <div className="mt-8 text-left [&_p]:text-plum-700">

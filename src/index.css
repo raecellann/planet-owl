@@ -27,12 +27,12 @@
 }
 
 @theme {
-  --font-display: 'Fredoka', 'Segoe UI Rounded', ui-rounded, system-ui, sans-serif;
-  --font-body: 'Nunito', ui-rounded, system-ui, sans-serif;
+  --font-display: 'Momo Trust Sans', system-ui, sans-serif;
+  --font-body: 'Momo Trust Sans', system-ui, sans-serif;
 
   /* The button pair: resting face, and the one it snaps to while pressed. */
-  --font-ui: 'Momo Trust Sans', 'Fredoka', ui-rounded, system-ui, sans-serif;
-  --font-pop: 'Luckiest Guy', 'Fredoka', ui-rounded, system-ui, sans-serif;
+  --font-ui: 'Momo Trust Sans', system-ui, sans-serif;
+  --font-pop: 'Luckiest Guy', 'Momo Trust Sans', system-ui, sans-serif;
 
   /* Brand palette sampled from the Planet Owl assets */
   --color-plum-950: #24051f;

@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from 'react'
+
 /**
  * A heading and cards that pile up under it as the page scrolls.
  *
@@ -15,7 +17,17 @@
  */
 export default function StackCards({ heading, headingClass = '', items, tones }) {
   const n = items.length
-  const pile = `(${n - 1} * var(--step) + 18rem)`
+  // The last card's real height, so the heading is released on the same pixel
+  // as the pile. Off by even a little, it slides toward the cards at the end.
+  const lastCard = useRef(null)
+  const [lastH, setLastH] = useState(288)
+  useEffect(() => {
+    if (!lastCard.current) return
+    const ro = new ResizeObserver(([e]) => setLastH(e.target.offsetHeight))
+    ro.observe(lastCard.current)
+    return () => ro.disconnect()
+  }, [])
+  const pile = `(${n - 1} * var(--step) + ${lastH}px)`
   return (
     <div
       className="[--step:6rem] sm:[--step:4rem]"
@@ -23,14 +35,15 @@ export default function StackCards({ heading, headingClass = '', items, tones })
     >
       <h2
         style={{ top: 'calc(var(--base) - 4.75rem)', marginBottom: `calc(${pile})` }}
-        className={`sticky ${headingClass}`}
+        className={`sticky flex h-[4.75rem] items-start ${headingClass}`}
       >
         {heading}
       </h2>
-      <ul style={{ marginTop: `calc(2.5rem - ${pile})` }}>
+      <ul style={{ marginTop: `calc(-1 * ${pile})` }}>
         {items.map((it, i) => (
           <li
             key={it.title}
+            ref={i === n - 1 ? lastCard : undefined}
             style={{
               top: `calc(var(--base) + ${i} * var(--step))`,
               marginBottom: `calc(${n - 1 - i} * var(--step))`,

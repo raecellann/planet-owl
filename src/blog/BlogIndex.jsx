@@ -48,10 +48,10 @@ export default function BlogIndex() {
 
         <div className="relative mx-auto max-w-4xl text-center">
           <h1 className="font-['Momo_Trust_Display'] text-[clamp(2rem,4.8vw,3.6rem)] font-normal leading-[1.08] text-plum-700">
-            Notes From the Nest — Bright Ideas, Hatched Weekly
+            Notes From the Nest: Bright Ideas, Hatched Weekly
           </h1>
           <p className="mx-auto mt-5 max-w-2xl font-ui text-[clamp(0.95rem,1.25vw,1.15rem)] leading-relaxed text-plum-600">
-            Straight talk on brand, design and the creative operations behind them — what works,
+            Straight talk on brand, design and the creative operations behind them: what works,
             what breaks, and how to get more good work out of the team you already have.
           </p>
 

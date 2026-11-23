@@ -71,7 +71,7 @@ export default function Privacy() {
   const [active, setActive] = useState(TOPICS[0].id)
 
   useEffect(() => {
-    document.title = 'Privacy — Planet Owl'
+    document.title = 'Privacy | Planet Owl'
   }, [])
 
   // Which section is on screen, for the list's highlight — the same reading
@@ -94,7 +94,7 @@ export default function Privacy() {
   return (
     <BlogLayout onBlog={false} newsletter={false} page={{ label: 'Privacy', href: '#/privacy' }}>
       <article>
-        <header className="bg-white px-5 pb-10 pt-[clamp(8rem,12vw,10.5rem)] sm:px-8">
+        <header className="bg-white px-5 pb-10 pt-[clamp(10rem,15vw,13.5rem)] sm:px-8">
           <div className="mx-auto max-w-3xl text-center">
             <h1 className="font-['Momo_Trust_Display'] text-[clamp(1.9rem,4.2vw,3.2rem)] font-normal leading-[1.12] text-plum-700">
               Privacy Policy

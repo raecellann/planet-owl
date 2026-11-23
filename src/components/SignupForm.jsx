@@ -31,8 +31,8 @@ export default function SignupForm({ source = 'footer', compact = false, autoFoc
       setState('sent')
       setMessage(
         via === 'mailto'
-          ? 'Your mail app should have opened with the message ready — just hit send.'
-          : `Thanks — we will be in touch at ${email.trim()}.`,
+          ? 'Your mail app should have opened with the message ready. Just hit send.'
+          : `Thanks, we will be in touch at ${email.trim()}.`,
       )
       onSent?.(email.trim())
     } catch (err) {

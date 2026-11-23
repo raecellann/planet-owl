@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { motion, useReducedMotion, useTransform } from 'motion/react'
 
 /**
@@ -37,10 +36,11 @@ export default function FloatingOwl({
   depth = 0,
   interactive = true,
   shadow = true,
+  onIntro = null,
+  selected = false,
 }) {
   const reduce = useReducedMotion()
   const frozen = still || reduce
-  const [zoomed, setZoomed] = useState(false)
   const to = (from, target) => (frozen ? [from, from] : [from, target])
 
   const y = useTransform(progress, [0, 1], to(0, rise))
@@ -82,10 +82,17 @@ export default function FloatingOwl({
             compounds with the approach and there is no longer any way to
             undo it. */}
         <motion.div
-          onClick={interactive ? () => setZoomed((z) => !z) : undefined}
-          animate={{ scale: zoomed && interactive ? 1.6 : 1 }}
-          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          style={{ zIndex: zoomed && interactive ? 30 : 'auto' }}
+          onClick={
+            interactive && onIntro
+              ? (e) => {
+                  e.stopPropagation()
+                  onIntro(selected ? null : { src, rect: e.currentTarget.getBoundingClientRect() })
+                }
+              : undefined
+          }
+          animate={{ scale: selected && interactive ? 1.18 : 1 }}
+          transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+          style={{ zIndex: selected && interactive ? 30 : 'auto' }}
           className={`relative ${interactive ? 'pointer-events-auto cursor-pointer' : ''}`}
         >
           {/* `owl-shadow` is `drop-shadow(0 24px 22px ...)`, and a filter

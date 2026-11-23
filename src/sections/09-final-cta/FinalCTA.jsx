@@ -140,7 +140,7 @@ export default function FinalCTA() {
               lighter than the heading's `gold-500`, so the two read as a pair
               rather than as one flat block of the same colour. */}
           <p className="mx-auto mt-5 max-w-xl font-ui leading-relaxed text-gold-400">
-            Bring us the ambitious idea — the complex one that still feels just out of reach. We will
+            Bring us the ambitious idea, the complex one that still feels just out of reach. We will
             help shape it, build it, and turn it into something real.
           </p>
         </Reveal>
