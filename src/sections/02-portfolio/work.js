@@ -83,7 +83,7 @@ const BRANDS = [
     id: 'twin-rams',
     title: 'Twin Rams',
     kind: 'Website & social campaign',
-    alt: 'The Twin Rams website homepage: "Ready to Go Global?" in gold on black',
+    alt: 'The Twin Rams website homepage: "Ready to Go Global?" beside a faceted blue ram',
     tags: ['website', 'graphic', '3d'],
     href: 'https://twinrams-15306d0638f838d532279042f3e093.webflow.io/',
     links: {
