@@ -83,9 +83,12 @@ const BRANDS = [
     id: 'twin-rams',
     title: 'Twin Rams',
     kind: 'Website & social campaign',
-    alt: 'A faceted blue ram mounted on a racing car under the line "Official Regional Search Partner"',
+    alt: 'The Twin Rams website homepage: "Ready to Go Global?" in gold on black',
     tags: ['website', 'graphic', '3d'],
     href: 'https://twinrams-15306d0638f838d532279042f3e093.webflow.io/',
+    links: {
+      '00-website': { label: 'Twin Rams website', href: 'https://twinrams-15306d0638f838d532279042f3e093.webflow.io/' },
+    },
   },
   {
     id: 'slothpilot',
