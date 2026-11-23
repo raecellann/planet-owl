@@ -38,7 +38,7 @@ const ISLAND_BOX =
   'lg:top-[clamp(34rem,40vw,38rem)] lg:w-[min(115vw,calc(104svh_*_1.059))]'
 
 // Height for the full sticky scroll sequence
-const HERO_HEIGHT = 'h-[220svh] lg:h-[300svh]'
+const HERO_HEIGHT = 'h-[185svh] sm:h-[220svh] lg:h-[300svh]'
 
 /**
  * How far a click into the island pushes in. 2.6 is about as far as the plate
@@ -280,7 +280,7 @@ export default function Hero() {
   // third of the hero's scroll still to go — and what was left was a full
   // screen of empty cloud before the next section arrived. -54 finishes with
   // the island filling the window, and it leaves with the page instead.
-  const islandYNum = useTransform(p, [0, 0.5, 1], phone ? to(0, -30, -54) : to(0, -45, -110))
+  const islandYNum = useTransform(p, [0, 0.5, 1], phone ? to(0, -24, -28) : to(0, -45, -110))
   const islandY = useMotionTemplate`${islandYNum}vh`
   // Phones: the island is already most of the screen at rest, so the push-in
   // is gentler — at 1.5x it became a crop of the building with the owl's

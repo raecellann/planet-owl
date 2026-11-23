@@ -268,20 +268,10 @@ export default function WhatWeDo() {
     // a little to spare, and does it here — on the section the plane
     // reaches INTO — rather than by shortening that reach and undercutting
     // the "crossing the gold band" effect its own placement is built for.
-    <section ref={sectionRef} id="what-we-do" className="relative overflow-hidden bg-white pb-[11vw] pt-12 sm:pt-32">
-      {/* The lavender the portfolio ends on, let go of gradually.
-
-          It was a straight ramp, `#dfe7fa` to nothing over 160px. The colours
-          met exactly, but the SLOPE did not: the portfolio above is all but
-          flat by its last screen, and this started brightening at full rate
-          on the very first pixel. A kink like that reads as an edge — a faint
-          line across the page exactly on the seam, with a lighter band under
-          it — even though no two neighbouring pixels differ by much.
-
-          The stops below are the same fade on an ease-in-out, so it leaves
-          the seam level and only then lets go, and it runs 14rem rather than
-          10 to keep the middle of the curve no steeper than the ramp was. */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-56 bg-[linear-gradient(180deg,rgb(223_231_250)_0%,rgb(223_231_250/0.98)_10%,rgb(223_231_250/0.9)_22%,rgb(223_231_250/0.74)_36%,rgb(223_231_250/0.5)_52%,rgb(223_231_250/0.26)_68%,rgb(223_231_250/0.1)_82%,rgb(223_231_250/0.02)_93%,rgb(223_231_250/0)_100%)]" />
+    <section ref={sectionRef} id="what-we-do" className="relative -mt-px overflow-hidden bg-[linear-gradient(180deg,#dfe7fa_0,#e0e8fa_1.4rem,#e2e9fb_3.08rem,#e7edfb_4.9rem,#eff3fd_7rem,#f7f9fe_9.1rem,#fcfdff_10.92rem,#feffff_12.6rem,#ffffff_14rem)] pb-[11vw] pt-12 sm:pt-32">
+      {/* The lavender the portfolio ends on is part of this section's own
+          opaque background. As a see-through overlay on white, the section's
+          first pixel row blended with that white and drew a faint line. */}
 
       {/* The puff, on the section's own right edge with exactly half of it
           showing.

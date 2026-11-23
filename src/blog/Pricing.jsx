@@ -168,12 +168,14 @@ function HowItWorks() {
 
   return (
     <div ref={track} className={reduce ? '' : 'h-[220svh]'}>
-      <div className={`flex flex-col pb-6 pt-[calc(max(5.25rem,2.92vw+max(3.25rem,4.4vw))+2.75rem)] lg:pt-[calc(max(5.25rem,2.92vw+max(3.25rem,4.4vw))+clamp(2.25rem,12svh,7.5rem))] ${reduce ? '' : 'sticky top-0 h-[100svh]'}`}>
-        <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-plum-700">
-          How It Hatches
-        </h2>
-        <div className="mt-6 grid min-h-0 flex-1 grid-rows-[auto_minmax(0,1fr)] gap-4 lg:grid-cols-2 lg:grid-rows-1 lg:gap-16">
-          <ol className="flex flex-col lg:justify-center">
+      <div className={`flex flex-col pb-6 pt-[calc(max(5.25rem,2.92vw+max(3.25rem,4.4vw))+1.75rem)] ${reduce ? '' : 'sticky top-0 h-[100svh]'}`}>
+        <div className="grid min-h-0 flex-1 grid-rows-[auto_minmax(0,1fr)] gap-4 lg:grid-cols-2 lg:grid-rows-1 lg:gap-16">
+          {/* The title sits directly on top of the first stop. */}
+          <div className="flex flex-col lg:justify-center">
+          <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-plum-700">
+            How It Hatches
+          </h2>
+          <ol className="mt-6 flex flex-col">
             {STEPS.map((st, i) => (
               <li key={st.n} className="relative min-h-16 pl-16 last:min-h-12">
                 {i < STEPS.length - 1 && (
@@ -196,6 +198,7 @@ function HowItWorks() {
               </li>
             ))}
           </ol>
+          </div>
           <div className="relative flex min-h-0 items-center justify-center">
             <AnimatePresence mode="wait" initial={false}>
               <motion.img
