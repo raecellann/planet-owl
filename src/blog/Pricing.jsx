@@ -61,17 +61,6 @@ const PLANS = [
 ]
 
 /**
- * Which craft each plan reaches — the comparison table. Derived from `PLANS`
- * (each plan adds one craft), written out so the table can name the rows.
- */
-const COMPARE = [
-  { craft: 'Design', detail: 'Logos, brand identity, packaging, social graphics, UI/UX', from: 0 },
-  { craft: 'Digital', detail: 'Video editing, 3D motion, content, social media ads, SEO', from: 1 },
-  { craft: 'Develop', detail: 'Websites, web and mobile apps, e-commerce, CMS, maintenance', from: 2 },
-  { craft: 'AI Tech', detail: 'AI assistants, chatbots, automation, custom software, analytics', from: 3 },
-]
-
-/**
  * "On every plan" — only things the site already says or that follow from how
  * the plans are built. No turnaround, revision count or guarantee: those have
  * not been set (see the note at the top).
@@ -182,74 +171,40 @@ export default function Pricing() {
         </ul>
       </section>
 
-      {/* ---------------------------------------------------- compare -- */}
-      <section className="bg-white px-5 pb-16 pt-6 sm:px-8">
-        <div className="mx-auto max-w-[1320px]">
-          <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-plum-700">
-            What Each Plan Covers
-          </h2>
-          <div className="mt-8 overflow-x-auto rounded-[1.5rem] ring-1 ring-plum-900/10">
-            <table className="w-full min-w-[640px] border-collapse text-left font-ui">
-              <thead>
-                <tr className="bg-plum-800 text-white">
-                  <th scope="col" className="px-6 py-4 text-sm font-bold uppercase tracking-wide">Craft</th>
-                  {PLANS.map((p) => (
-                    <th key={p.name} scope="col" className="px-4 py-4 text-center text-base font-bold">
-                      {p.name}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {COMPARE.map((row, r) => (
-                  <tr key={row.craft} className={r % 2 ? 'bg-plum-100/40' : 'bg-white'}>
-                    <th scope="row" className="px-6 py-5 align-top">
-                      <span className="block text-lg font-bold text-plum-900">{row.craft}</span>
-                      <span className="mt-1 block text-sm font-normal leading-snug text-plum-800">{row.detail}</span>
-                    </th>
-                    {PLANS.map((p, i) => (
-                      <td key={p.name} className="px-4 py-5 text-center align-middle">
-                        {i >= row.from ? (
-                          <>
-                            <Check className="mx-auto text-teal-500" />
-                            <span className="sr-only">Included</span>
-                          </>
-                        ) : (
-                          <span className="text-plum-300" aria-label="Not included">—</span>
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-                <tr className="bg-gold-200">
-                  <th scope="row" className="px-6 py-5 text-lg font-bold text-plum-900">Monthly</th>
-                  {PLANS.map((p) => (
-                    <td key={p.name} className="px-4 py-5 text-center text-lg font-bold text-plum-900">
-                      {p.from ? 'from ' : ''}
-                      {p.price}
-                    </td>
-                  ))}
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
+      {/* ---------------------------------------------- on every plan --
+          STACKED, by request ("stack sticky scrolling, so it won't be
+          static"). Each panel is `position: sticky` and pins a little lower
+          than the one before it, so as the page scrolls the next panel
+          slides up and settles on top, leaving the previous one's top edge
+          showing behind it — a deck being dealt rather than three boxes in
+          a row.
 
-      {/* ---------------------------------------------- on every plan -- */}
-      <section className="bg-plum-800 px-5 py-14 sm:px-8 sm:py-20">
+          The offsets clear the fixed nav (8.5rem) and step by 1.75rem. The
+          section must not clip (`overflow` stays visible) or the pinning
+          stops working. (A plan-by-craft comparison table sat above this;
+          it is gone, by request.) */}
+      <section className="bg-plum-800 px-5 pb-24 pt-14 sm:px-8 sm:pb-32 sm:pt-20">
         <div className="mx-auto max-w-[1320px]">
           <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-gold-500">
             Standard Issue on Every Plan
           </h2>
-          <ul className="mt-10 grid gap-5 lg:grid-cols-3">
-            {STANDARD.map((g) => (
-              <li key={g.title} className="rounded-[1.5rem] bg-white p-7">
-                <h3 className="font-ui text-xl font-bold text-plum-900">{g.title}</h3>
-                <ul className="mt-4 space-y-3">
+          <ul className="mt-10 space-y-8">
+            {STANDARD.map((g, i) => (
+              <li
+                key={g.title}
+                style={{ top: `calc(8.5rem + ${i * 1.75}rem)` }}
+                className="sticky grid min-h-[17rem] items-center gap-6 rounded-[1.75rem] bg-white p-8 shadow-[0_-22px_44px_-26px_rgba(20,5,20,0.85)] sm:p-12 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] lg:gap-12"
+              >
+                <div>
+                  <p className="font-['Momo_Trust_Display'] text-5xl leading-none text-teal-600">0{i + 1}</p>
+                  <h3 className="mt-3 font-['Momo_Trust_Display'] text-[clamp(1.8rem,3.4vw,2.8rem)] font-normal leading-none text-plum-700">
+                    {g.title}
+                  </h3>
+                </div>
+                <ul className="space-y-4">
                   {g.items.map((item) => (
-                    <li key={item} className="flex items-start gap-2.5 font-ui leading-snug text-plum-800">
-                      <Check className="mt-0.5 text-teal-500" />
+                    <li key={item} className="flex items-start gap-3 font-ui text-lg leading-snug text-plum-800">
+                      <Check className="mt-1 text-teal-500" />
                       {item}
                     </li>
                   ))}
