@@ -268,7 +268,7 @@ export default function Pricing() {
           {PLANS.map((p) => (
             <li
               key={p.name}
-              className={`flex flex-col rounded-[1.75rem] p-7 ring-1 ${p.featured ? 'bg-teal-600 text-white ring-teal-600 shadow-[0_30px_60px_-30px_rgba(54,14,57,0.5)] [&_.text-plum-600]:text-white [&_.text-plum-700]:text-white [&_.text-plum-800]:text-white [&_.text-plum-900]:text-white [&_.text-teal-500]:text-gold-400' : 'bg-white text-plum-900 ring-plum-900/10 shadow-[0_30px_60px_-36px_rgba(54,14,57,0.45)]'}`}
+              className={`group flex flex-col rounded-[1.75rem] p-7 ring-1 transition-[translate,box-shadow] duration-300 ease-out hover:-translate-y-2.5 hover:!shadow-[0_38px_60px_-26px_rgba(54,14,57,0.6)] motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${p.featured ? 'bg-teal-600 text-white ring-teal-600 shadow-[0_30px_60px_-30px_rgba(54,14,57,0.5)] [&_.text-plum-600]:text-white [&_.text-plum-700]:text-white [&_.text-plum-800]:text-white [&_.text-plum-900]:text-white [&_.text-teal-500]:text-gold-400' : 'bg-white text-plum-900 ring-plum-900/10 shadow-[0_30px_60px_-36px_rgba(54,14,57,0.45)]'}`}
             >
               {/* The owl on TOP of the card and large, by request — it was a
                   5rem figure tucked beside the plan's name. */}
@@ -277,7 +277,7 @@ export default function Pricing() {
               <p className="self-start rounded-full bg-gold-500 px-3 py-1.5 font-ui text-xs font-bold uppercase tracking-wide !text-plum-900">
                 {p.tag}
               </p>
-              <img src={p.owl} alt="" aria-hidden loading="lazy" className="mx-auto mt-5 h-44 w-auto object-contain sm:h-48" />
+              <img src={p.owl} alt="" aria-hidden loading="lazy" className="mx-auto mt-5 h-44 w-auto origin-bottom object-contain transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:-translate-y-1.5 group-hover:-rotate-3 group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:transform-none sm:h-48" />
               <h2 className={`mt-5 font-['Momo_Trust_Display'] text-3xl font-normal text-plum-700`}>
                 {p.name}
               </h2>
