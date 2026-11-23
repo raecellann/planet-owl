@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
+import cloudImg from '../../assets/section 2/image 35 copy.png'
 import { motion } from 'motion/react'
-import { A } from '../lib/assets'
 import BlogCover from './BlogCover'
 import BlogLayout, { CategoryChip } from './BlogLayout'
 import { CATEGORIES, POSTS, formatDate, postHref } from './posts'
@@ -32,19 +32,11 @@ export default function BlogIndex() {
   return (
     <BlogLayout>
       {/* ------------------------------------------------------- the hero -- */}
-      <section className="relative overflow-hidden bg-[linear-gradient(180deg,#cdd8f4_0%,#dfe7fa_55%,#ffffff_100%)] px-5 pb-[clamp(9rem,18vw,15rem)] pt-[clamp(8rem,13vw,11rem)] sm:px-8">
-        <img
-          src={A.cloud}
-          alt=""
-          aria-hidden
-          className="pointer-events-none absolute -left-[10%] top-[18%] w-[38%] -scale-x-100 select-none opacity-70 [mask-image:linear-gradient(180deg,#000_45%,transparent_92%)]"
-        />
-        <img
-          src={A.cloud}
-          alt=""
-          aria-hidden
-          className="pointer-events-none absolute -right-[12%] top-[26%] w-[42%] select-none opacity-70 [mask-image:linear-gradient(180deg,#000_45%,transparent_92%)]"
-        />
+      <section className="relative overflow-hidden bg-white px-5 pb-[clamp(9rem,18vw,15rem)] pt-[clamp(8rem,13vw,11rem)] sm:px-8">
+        {/* Big whole clouds on plain white. Their outer halves run past the
+            screen edge, and no mask slices them off inside the page. */}
+        <img src={cloudImg} alt="" aria-hidden className="pointer-events-none absolute -left-[20vw] top-[6%] w-[max(22rem,50vw)] max-w-none -scale-x-100 select-none opacity-50 [mask-image:linear-gradient(180deg,#000_68%,transparent_98%)]" />
+        <img src={cloudImg} alt="" aria-hidden className="pointer-events-none absolute -right-[22vw] top-[12%] w-[max(22rem,50vw)] max-w-none select-none opacity-45 [mask-image:linear-gradient(180deg,#000_68%,transparent_98%)]" />
 
         <div className="relative mx-auto max-w-4xl text-center">
           <h1 className="font-['Momo_Trust_Display'] text-[clamp(2rem,4.8vw,3.6rem)] font-normal leading-[1.08] text-plum-700">
