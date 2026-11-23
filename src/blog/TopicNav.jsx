@@ -21,7 +21,9 @@ export function jumpToTopic(id) {
  */
 export function MobileTopicBar({ topics, active, label }) {
   const stripRef = useRef(null)
+  const barRef = useRef(null)
   const [top, setTop] = useState(84)
+  const [veil, setVeil] = useState({ on: false, height: 0 })
 
   useEffect(() => {
     const read = () => {
@@ -33,6 +35,25 @@ export function MobileTopicBar({ topics, active, label }) {
     return () => window.removeEventListener('resize', read)
   }, [])
 
+  // While the strip is pinned, a soft frosted veil runs from the top of the
+  // screen to just below it, so text fades out behind the navigation.
+  useEffect(() => {
+    const read = () => {
+      const bar = barRef.current
+      if (!bar) return
+      const r = bar.getBoundingClientRect()
+      const end = bar.parentElement.getBoundingClientRect().bottom
+      setVeil({ on: r.top <= top + 1 && end > r.bottom + 24, height: Math.round(r.bottom + 22) })
+    }
+    read()
+    window.addEventListener('scroll', read, { passive: true })
+    window.addEventListener('resize', read)
+    return () => {
+      window.removeEventListener('scroll', read)
+      window.removeEventListener('resize', read)
+    }
+  }, [top])
+
   useEffect(() => {
     const strip = stripRef.current
     const chip = strip?.querySelector('[aria-current="true"]')
@@ -41,7 +62,13 @@ export function MobileTopicBar({ topics, active, label }) {
   }, [active])
 
   return (
-    <nav aria-label={label} style={{ top }} className="sticky z-30 mt-6 bg-white/95 py-2 backdrop-blur lg:hidden">
+    <>
+    <div
+      aria-hidden
+      style={{ height: veil.height }}
+      className={`pointer-events-none fixed inset-x-0 top-0 z-20 bg-white/75 backdrop-blur-md transition-opacity duration-300 [mask-image:linear-gradient(180deg,#000_78%,transparent)] lg:hidden ${veil.on ? 'opacity-100' : 'opacity-0'}`}
+    />
+    <nav ref={barRef} aria-label={label} style={{ top }} className="sticky z-30 mt-6 py-1.5 lg:hidden">
       <div ref={stripRef} className="relative flex gap-2 overflow-x-auto px-5 [scrollbar-width:none] sm:px-8 [&::-webkit-scrollbar]:hidden">
         {topics.map((t) => (
           <button
@@ -58,5 +85,6 @@ export function MobileTopicBar({ topics, active, label }) {
         ))}
       </div>
     </nav>
+    </>
   )
 }

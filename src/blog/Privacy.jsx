@@ -96,8 +96,8 @@ export default function Privacy() {
       {/* The clouds belong to the whole article, behind everything, so the
           short header can no longer slice them along its bottom edge. */}
       <article className="relative isolate overflow-x-clip bg-white">
-        <img src={cloudImg} alt="" aria-hidden className="pointer-events-none absolute -left-[25vw] top-[5rem] -z-10 w-[max(20rem,46vw)] max-w-none -scale-x-100 select-none opacity-45 max-md:-left-[64vw]" />
-        <img src={cloudImg} alt="" aria-hidden className="pointer-events-none absolute -right-[26vw] top-[8rem] -z-10 w-[max(20rem,46vw)] max-w-none select-none opacity-40 max-md:-right-[66vw]" />
+        <img src={cloudImg} alt="" aria-hidden className="pointer-events-none absolute -left-[25vw] top-[5rem] -z-10 w-[max(20rem,46vw)] max-w-none -scale-x-100 select-none opacity-45 max-md:-left-[42vw] max-md:top-[4.75rem] max-md:w-[62vw] max-md:[mask-image:linear-gradient(90deg,#000_45%,transparent_78%)]" />
+        <img src={cloudImg} alt="" aria-hidden className="pointer-events-none absolute -right-[26vw] top-[8rem] -z-10 w-[max(20rem,46vw)] max-w-none select-none opacity-40 max-md:-right-[42vw] max-md:top-[4.75rem] max-md:w-[62vw] max-md:[mask-image:linear-gradient(270deg,#000_45%,transparent_78%)]" />
         <header className="relative px-5 pb-10 pt-[clamp(10rem,15vw,13.5rem)] sm:px-8">
           <div className="relative mx-auto max-w-3xl text-center">
             <h1 className="font-['Momo_Trust_Display'] text-[clamp(1.9rem,4.2vw,3.2rem)] font-normal leading-[1.12] text-plum-700">

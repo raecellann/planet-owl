@@ -64,7 +64,7 @@ export default function StackCards({ heading, headingClass = '', items, tones })
           >
             <div className="flex min-h-[calc(var(--step)-1rem)] items-center gap-4">
               <span className="font-['Momo_Trust_Display'] text-2xl leading-none opacity-80 sm:text-3xl">0{i + 1}</span>
-              <h3 className="font-['Momo_Trust_Display'] text-[clamp(1.25rem,2.4vw,2rem)] font-normal leading-[1.1]">{it.title}</h3>
+              <h3 className="font-['Momo_Trust_Display'] text-[clamp(1.05rem,2.4vw,2rem)] font-normal leading-[1.12]">{it.title}</h3>
             </div>
             <div className="mt-5">{it.body}</div>
           </li>

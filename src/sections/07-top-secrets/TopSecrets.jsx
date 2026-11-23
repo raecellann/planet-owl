@@ -481,7 +481,7 @@ export default function TopSecrets() {
                 <Reveal
                   y={44}
                   {...(landed ? { onMount: true, delay: 0.5 } : {})}
-                  className={`pl-12 pr-2 sm:pr-4 lg:px-0 ${flipped ? 'lg:order-2' : ''}`}
+                  className={`sm:pl-12 sm:pr-4 lg:px-0 ${flipped ? 'lg:order-2' : ''}`}
                 >
                   <span className="font-ui text-[clamp(2.5rem,5vw,8rem)] font-bold leading-none text-gold-500">
                     {s.n}
