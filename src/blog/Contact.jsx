@@ -242,9 +242,6 @@ export default function Contact() {
                   <fieldset id="book-a-call" className="mt-7 rounded-2xl bg-gold-200 p-4 sm:p-5">
                     <legend className="sr-only">Book a call</legend>
                     <p className="font-ui text-base font-bold text-plum-900">Book a call (optional)</p>
-                    <p className="mt-1 font-ui text-sm leading-relaxed text-plum-800">
-                      Pick a day and time that suits you{timezone ? `, in your own time (${timezone})` : ''}. We will confirm by email.
-                    </p>
                     <div className="mt-4 grid gap-4 sm:grid-cols-2">
                       <Field label="Preferred Date">
                         <input type="date" min={today} value={form.date} onChange={set('date')} className={FIELD} />
