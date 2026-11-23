@@ -93,10 +93,12 @@ export default function Privacy() {
 
   return (
     <BlogLayout onBlog={false} newsletter={false} page={{ label: 'Privacy', href: '#/privacy' }}>
-      <article>
-        <header className="relative overflow-hidden bg-white px-5 pb-10 pt-[clamp(10rem,15vw,13.5rem)] sm:px-8">
-          <img src={cloudImg} alt="" aria-hidden className="pointer-events-none absolute -left-[24vw] top-[8%] w-[max(20rem,48vw)] max-w-none -scale-x-100 select-none opacity-50 max-md:-left-[62vw] [mask-image:linear-gradient(180deg,#000_68%,transparent_98%)]" />
-          <img src={cloudImg} alt="" aria-hidden className="pointer-events-none absolute -right-[25vw] top-[20%] w-[max(20rem,48vw)] max-w-none select-none opacity-45 max-md:-right-[64vw] [mask-image:linear-gradient(180deg,#000_68%,transparent_98%)]" />
+      {/* The clouds belong to the whole article, behind everything, so the
+          short header can no longer slice them along its bottom edge. */}
+      <article className="relative isolate overflow-x-clip bg-white">
+        <img src={cloudImg} alt="" aria-hidden className="pointer-events-none absolute -left-[25vw] top-[5rem] -z-10 w-[max(20rem,46vw)] max-w-none -scale-x-100 select-none opacity-45 max-md:-left-[64vw]" />
+        <img src={cloudImg} alt="" aria-hidden className="pointer-events-none absolute -right-[26vw] top-[8rem] -z-10 w-[max(20rem,46vw)] max-w-none select-none opacity-40 max-md:-right-[66vw]" />
+        <header className="relative px-5 pb-10 pt-[clamp(10rem,15vw,13.5rem)] sm:px-8">
           <div className="relative mx-auto max-w-3xl text-center">
             <h1 className="font-['Momo_Trust_Display'] text-[clamp(1.9rem,4.2vw,3.2rem)] font-normal leading-[1.12] text-plum-700">
               Privacy Policy
