@@ -73,7 +73,7 @@ export const A = {
    * carries an opaque white plate that shows as a rectangle anywhere the
    * background is not white.
    */
-  logo: asset('logo-alpha.png'),
+  logo: asset('logo-lockup.webp'),
   mark: asset('owl-mark.png'),
   /**
    * The owl already composed onto its plum disc, at the exact framing used

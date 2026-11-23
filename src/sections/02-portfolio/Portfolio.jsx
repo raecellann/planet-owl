@@ -649,7 +649,7 @@ export default function Portfolio() {
               plays its one-time arrival. */}
           <motion.div
             style={{ x: rowFlight }}
-            className="pointer-events-none absolute -left-[16%] top-[18%] z-30 w-[40%] sm:-left-[13.2%] sm:w-[33%]"
+            className="pointer-events-none absolute -left-[33%] top-[18%] z-30 w-[40%] sm:-left-[27%] sm:w-[33%]"
           >
             <motion.img
               src={A.owl.plane}

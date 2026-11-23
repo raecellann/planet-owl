@@ -112,8 +112,8 @@ export default function Contact() {
 
   const booked = Boolean(form.date)
 
-  // "Book a call" on the left: glide to the block, pulse a purple ring round
-  // it so the eye lands there, and put the cursor in the date field.
+  // "Book a call" on the left: glide to the block, bring up a soft gold halo
+  // so the eye lands there, and put the cursor in the date field.
   const bookingRef = useRef(null)
   const reduceMotion = useReducedMotion()
   const goToBooking = (e) => {
@@ -123,17 +123,24 @@ export default function Contact() {
     box.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' })
     setTimeout(() => {
       box.querySelector('input')?.focus({ preventScroll: true })
-      const ring = (a) => `0 0 0 5px rgba(86, 35, 84, ${a})`
+      if (reduceMotion) return
+      // A soft gold halo that rises and settles once, while the fields lift
+      // into place one after another.
+      const ease = 'cubic-bezier(0.22, 1, 0.36, 1)'
       box.animate(
         [
-          { boxShadow: ring(0), transform: 'scale(1)' },
-          { boxShadow: ring(0.85), transform: reduceMotion ? 'scale(1)' : 'scale(1.025)' },
-          { boxShadow: ring(0.15), transform: 'scale(1)' },
-          { boxShadow: ring(0.85), transform: reduceMotion ? 'scale(1)' : 'scale(1.025)' },
-          { boxShadow: ring(0), transform: 'scale(1)' },
+          { boxShadow: '0 0 0 0 rgba(240,185,57,0), 0 0 0 0 rgba(54,14,57,0)' },
+          { boxShadow: '0 0 0 2px rgba(240,185,57,0.9), 0 22px 46px -20px rgba(54,14,57,0.4)', offset: 0.35 },
+          { boxShadow: '0 0 0 0 rgba(240,185,57,0), 0 0 0 0 rgba(54,14,57,0)' },
         ],
-        { duration: 1600, easing: 'ease-in-out' },
+        { duration: 1900, easing: ease },
       )
+      box.querySelectorAll('p, label').forEach((el, i) => {
+        el.animate(
+          [{ opacity: 0.35, transform: 'translateY(8px)' }, { opacity: 1, transform: 'translateY(0)' }],
+          { duration: 700, delay: i * 90, easing: ease, fill: 'backwards' },
+        )
+      })
     }, reduceMotion ? 0 : 520)
   }
 

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import BlogLayout from './BlogLayout'
 import { A } from '../lib/assets'
 import Faq from '../components/Faq'
@@ -89,6 +89,63 @@ const STEPS = [
   { n: '03', title: 'Keep the flock on it', copy: 'Stay on the plan month to month, and step up to the next one when you need another craft.' },
 ]
 
+/**
+ * The torn edge from the Flock band, cut from the same plate and filled with
+ * the plum section's colour. A strip of its own, because stretching the plate
+ * over a section this tall would stretch the tears with it.
+ */
+function SectionBreak({ edge }) {
+  const mask = {
+    WebkitMaskImage: `url(${A.goldPlate})`,
+    maskImage: `url(${A.goldPlate})`,
+    WebkitMaskSize: 'max(100%, 640px) auto',
+    maskSize: 'max(100%, 640px) auto',
+    WebkitMaskPosition: `center ${edge}`,
+    maskPosition: `center ${edge}`,
+    WebkitMaskRepeat: 'no-repeat',
+    maskRepeat: 'no-repeat',
+  }
+  return <div aria-hidden style={mask} className="relative h-[max(38px,5.9vw)] w-full bg-plum-800" />
+}
+
+/**
+ * Try, Decide, Stay, on the scroll. The plane starts parked over "Try"; each
+ * stretch of scroll flies it one stop right, uncovering the word it leaves and
+ * hiding the next, until it clears "Stay" and leaves the tile.
+ */
+function PlaneSteps() {
+  const reduce = useReducedMotion()
+  const ref = useRef(null)
+  const { scrollYProgress: s } = useScroll({ target: ref, offset: ['start 92%', 'end 28%'] })
+  const left = useTransform(s, [0, 0.14, 0.4, 0.68, 1], ['16.6%', '16.6%', '50%', '83.4%', '135%'])
+  const tryOn = useTransform(s, [0.16, 0.28], [0, 1])
+  const decideOn = useTransform(s, [0.42, 0.54], [0, 1])
+  const stayOn = useTransform(s, [0.7, 0.82], [0, 1])
+  const shown = [tryOn, decideOn, stayOn]
+
+  return (
+    <div ref={ref} className="relative h-28 w-full shrink-0 md:w-[27rem]">
+      <ol className="grid h-full grid-cols-3 place-items-center font-ui text-sm font-bold">
+        {['Try', 'Decide', 'Stay'].map((t, i) => (
+          <motion.li key={t} style={reduce ? undefined : { opacity: shown[i] }} className="rounded-full bg-plum-800 px-4 py-2 text-white">
+            {t}
+          </motion.li>
+        ))}
+      </ol>
+      {!reduce && (
+        <motion.img
+          src={A.owl.plane}
+          alt=""
+          aria-hidden
+          loading="lazy"
+          style={{ left, x: '-50%', y: '-50%' }}
+          className="pointer-events-none absolute top-1/2 h-28 w-auto max-w-none"
+        />
+      )}
+    </div>
+  )
+}
+
 const STEP_ART = [A.owl.digital, A.owl.develop, A.owl.wizardLg]
 
 /**
@@ -118,14 +175,6 @@ function HowItWorks() {
   return (
     <div className="mt-12 grid gap-12 lg:grid-cols-2 lg:gap-16">
       <ol className="relative pl-16">
-        <span aria-hidden className="absolute bottom-6 left-[1.375rem] top-2 w-1 rounded-full bg-plum-100" />
-        <motion.span
-          aria-hidden
-          initial={false}
-          animate={{ scaleY: (active + 1) / STEPS.length }}
-          transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-          className="absolute bottom-6 left-[1.375rem] top-2 w-1 origin-top rounded-full bg-gold-500"
-        />
         {STEPS.map((st, i) => (
           <li
             key={st.n}
@@ -135,9 +184,16 @@ function HowItWorks() {
             data-step={i}
             className="relative flex min-h-[20rem] flex-col justify-center py-8 lg:min-h-[62svh]"
           >
+            {/* The line runs from stop to stop, with nothing above the first. */}
+            {i > 0 && (
+              <span aria-hidden className={`absolute -left-[2.625rem] bottom-1/2 top-0 w-1 transition-colors duration-500 ${i <= active ? 'bg-gold-500' : 'bg-plum-100'}`} />
+            )}
+            {i < STEPS.length - 1 && (
+              <span aria-hidden className={`absolute -left-[2.625rem] bottom-0 top-1/2 w-1 transition-colors duration-500 ${i < active ? 'bg-gold-500' : 'bg-plum-100'}`} />
+            )}
             <span
               aria-hidden
-              className={`absolute -left-16 top-1/2 grid size-12 -translate-y-1/2 place-items-center rounded-full font-ui text-base font-bold shadow-[0_6px_0_-2px_var(--color-plum-950)] transition-colors duration-300 ${
+              className={`absolute -left-16 top-1/2 z-10 grid size-12 -translate-y-1/2 place-items-center rounded-full font-ui text-base font-bold shadow-[0_6px_0_-2px_var(--color-plum-950)] transition-colors duration-300 ${
                 i <= active ? 'bg-plum-800 text-gold-500' : 'bg-plum-100 text-plum-700'
               }`}
             >
@@ -221,13 +277,13 @@ export default function Pricing() {
           {PLANS.map((p) => (
             <li
               key={p.name}
-              className={`flex flex-col rounded-[1.75rem] p-7 ring-1 ${p.featured ? 'bg-teal-400 text-plum-900 ring-teal-400 shadow-[0_30px_60px_-30px_rgba(54,14,57,0.5)] [&_.text-plum-600]:text-plum-900 [&_.text-plum-700]:text-plum-900 [&_.text-plum-800]:text-plum-900 [&_.text-teal-500]:text-plum-900' : 'bg-white text-plum-900 ring-plum-900/10 shadow-[0_30px_60px_-36px_rgba(54,14,57,0.45)]'}`}
+              className={`flex flex-col rounded-[1.75rem] p-7 ring-1 ${p.featured ? 'bg-teal-600 text-white ring-teal-600 shadow-[0_30px_60px_-30px_rgba(54,14,57,0.5)] [&_.text-plum-600]:text-white [&_.text-plum-700]:text-white [&_.text-plum-800]:text-white [&_.text-plum-900]:text-white [&_.text-teal-500]:text-gold-400' : 'bg-white text-plum-900 ring-plum-900/10 shadow-[0_30px_60px_-36px_rgba(54,14,57,0.45)]'}`}
             >
               {/* The owl on TOP of the card and large, by request — it was a
                   5rem figure tucked beside the plan's name. */}
               {/* The tag first, and gold on every card — by request. It sat
                   under the owl, and was lilac on three of the four. */}
-              <p className="self-start rounded-full bg-gold-500 px-3 py-1.5 font-ui text-xs font-bold uppercase tracking-wide text-plum-900">
+              <p className="self-start rounded-full bg-gold-500 px-3 py-1.5 font-ui text-xs font-bold uppercase tracking-wide !text-plum-900">
                 {p.tag}
               </p>
               <img src={p.owl} alt="" aria-hidden loading="lazy" className="mx-auto mt-5 h-44 w-auto object-contain sm:h-48" />
@@ -245,7 +301,7 @@ export default function Pricing() {
 
               <a
                 href="#/contact"
-                className={`btn-type mt-6 inline-flex h-12 items-center justify-center rounded-full px-6 font-ui font-semibold no-underline transition-colors ${p.featured ? 'bg-gold-500 text-plum-900 shadow-[0_6px_0_-2px_var(--color-plum-950)] hover:bg-gold-400' : 'bg-plum-800 text-white shadow-[0_6px_0_-2px_var(--color-plum-950)] hover:bg-plum-700'}`}
+                className={`btn-type mt-6 inline-flex h-12 items-center justify-center rounded-full px-6 font-ui font-semibold no-underline transition-colors ${p.featured ? 'bg-gold-500 !text-plum-900 shadow-[0_6px_0_-2px_var(--color-plum-950)] hover:bg-gold-400' : 'bg-plum-800 text-white shadow-[0_6px_0_-2px_var(--color-plum-950)] hover:bg-plum-700'}`}
               >
                 {p.from ? 'Let’s Talk' : 'Start Free Trial'}
               </a>
@@ -278,7 +334,8 @@ export default function Pricing() {
           section must not clip (`overflow` stays visible) or the pinning
           stops working. (A plan-by-craft comparison table sat above this;
           it is gone, by request.) */}
-      <section className="bg-plum-800 px-5 pb-24 pt-20 sm:px-8 sm:pb-32 sm:pt-28">
+      <SectionBreak edge="top" />
+      <section className="-my-px bg-plum-800 px-5 pb-24 pt-20 sm:px-8 sm:pb-32 sm:pt-28">
         <div className="mx-auto max-w-[1320px]">
           <div>
             <StackCards
@@ -353,37 +410,19 @@ export default function Pricing() {
                 <img src={t.owl} alt="" aria-hidden loading="lazy" className="h-28 w-28 shrink-0 object-contain" />
               </motion.div>
             ))}
-            <motion.div variants={TILE} whileHover={reduce ? undefined : { y: -6 }} className="rounded-[1.5rem] bg-gold-500 p-6 text-plum-900 md:col-span-3">
+            <motion.div variants={TILE} whileHover={reduce ? undefined : { y: -6 }} className="overflow-hidden rounded-[1.5rem] bg-gold-500 p-6 text-plum-900 md:col-span-3">
               <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
                 <div>
                   <h3 className="font-ui text-xl font-bold">Free 2-week trial.</h3>
                   <p className="mt-2 font-ui leading-snug">See how the nest handles your brand first.</p>
                 </div>
-                <img src={A.owl.plane} alt="" aria-hidden loading="lazy" className="mx-auto h-28 w-auto max-w-full object-contain" />
-                <ol className="flex items-center gap-3 font-ui text-sm font-bold">
-                  {['Try', 'Decide', 'Stay'].map((t, i) => (
-                    <li key={t} className="flex items-center gap-3">
-                      {i > 0 && (
-                        <motion.span
-                          aria-hidden
-                          variants={{ off: { scaleX: 0 }, on: { scaleX: 1, transition: { duration: 0.4, delay: 0.5 + i * 0.5 } } }}
-                          className="h-0.5 w-8 origin-left bg-plum-900/60"
-                        />
-                      )}
-                      <motion.span
-                        variants={{ off: { opacity: 0, scale: 0.7 }, on: { opacity: 1, scale: 1, transition: { type: 'spring', stiffness: 380, damping: 20, delay: 0.55 + i * 0.5 } } }}
-                        className="rounded-full bg-plum-800 px-4 py-2 text-white"
-                      >
-                        {t}
-                      </motion.span>
-                    </li>
-                  ))}
-                </ol>
+                <PlaneSteps />
               </div>
             </motion.div>
           </motion.div>
         </div>
       </section>
+      <SectionBreak edge="bottom" />
 
       {/* ------------------------------------------------ how it works --
           A ROADMAP that draws itself, by request ("animated, like an
@@ -396,7 +435,7 @@ export default function Pricing() {
       <section className="bg-white px-5 py-14 sm:px-8 sm:py-20">
         <div className="mx-auto max-w-[1320px]">
           <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-plum-700">
-            How It Works
+            How It <span className="font-[family-name:var(--font-pop)] text-gold-500 [text-shadow:0_3px_0_var(--color-plum-800)]">Hatches</span>
           </h2>
           <HowItWorks />
         </div>

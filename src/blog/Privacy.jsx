@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import BlogLayout from './BlogLayout'
+import { MobileTopicBar, TOPIC_WATCH, jumpToTopic } from './TopicNav'
 import { CONTACT_EMAIL } from '../lib/signup'
 
 /**
@@ -83,13 +84,11 @@ export default function Privacy() {
         const seen = entries.filter((e) => e.isIntersecting).sort((x, y) => x.boundingClientRect.top - y.boundingClientRect.top)
         if (seen[0]) setActive(seen[0].target.id.replace('topic-', ''))
       },
-      { rootMargin: '-20% 0px -65% 0px' },
+      { rootMargin: TOPIC_WATCH },
     )
     els.forEach((el) => io.observe(el))
     return () => io.disconnect()
   }, [])
-
-  const jump = (id) => document.getElementById(`topic-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 
   return (
     <BlogLayout onBlog={false} newsletter={false} page={{ label: 'Privacy', href: '#/privacy' }}>
@@ -110,6 +109,8 @@ export default function Privacy() {
             staying put while the text scrolls, with the one being read marked
             in gold. Same grid and same list as `BlogPost`, less its share
             column. Below `lg` the list is hidden and the page is one column. */}
+        <div>
+        <MobileTopicBar topics={TOPICS} active={active} label="On this page" />
         <div className="mx-auto grid max-w-[1180px] gap-10 px-5 pb-8 pt-4 sm:px-8 lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-16">
           <nav aria-label="On this page" className="hidden lg:block">
             <div className="sticky top-[calc(2.92vw+max(3.25rem,4.4vw)+2rem)]">
@@ -119,7 +120,7 @@ export default function Privacy() {
                   <li key={t.id}>
                     <button
                       type="button"
-                      onClick={() => jump(t.id)}
+                      onClick={() => jumpToTopic(t.id)}
                       className={`-ml-0.5 block w-full border-l-2 pl-4 text-left font-ui text-sm leading-snug transition-colors ${
                         active === t.id
                           ? 'border-gold-500 font-bold text-plum-900'
@@ -157,6 +158,7 @@ export default function Privacy() {
               </p>
             </section>
           </div>
+        </div>
         </div>
       </article>
     </BlogLayout>

@@ -3,7 +3,7 @@ import cloudImg from '../../assets/section 2/image 35 copy.png'
 import { motion } from 'motion/react'
 import BlogCover from './BlogCover'
 import BlogLayout, { CategoryChip } from './BlogLayout'
-import { CATEGORIES, POSTS, formatDate, postHref } from './posts'
+import { CATEGORIES, POSTS, postHref } from './posts'
 
 /**
  * The blog's front page: a sky hero with the search, the newest post featured
@@ -32,17 +32,17 @@ export default function BlogIndex() {
   return (
     <BlogLayout>
       {/* ------------------------------------------------------- the hero -- */}
-      <section className="relative overflow-hidden bg-white px-5 pb-[clamp(9rem,18vw,15rem)] pt-[clamp(8rem,13vw,11rem)] sm:px-8">
+      <section className="relative overflow-hidden bg-white px-5 pb-[clamp(9rem,18vw,15rem)] pt-[clamp(10rem,15vw,13.5rem)] sm:px-8">
         {/* Big whole clouds on plain white. Their outer halves run past the
             screen edge, and no mask slices them off inside the page. */}
-        <img src={cloudImg} alt="" aria-hidden className="pointer-events-none absolute -left-[20vw] top-[6%] w-[max(22rem,50vw)] max-w-none -scale-x-100 select-none opacity-50 [mask-image:linear-gradient(180deg,#000_68%,transparent_98%)]" />
-        <img src={cloudImg} alt="" aria-hidden className="pointer-events-none absolute -right-[22vw] top-[12%] w-[max(22rem,50vw)] max-w-none select-none opacity-45 [mask-image:linear-gradient(180deg,#000_68%,transparent_98%)]" />
+        <img src={cloudImg} alt="" aria-hidden className="pointer-events-none absolute -left-[20vw] top-[6%] w-[max(22rem,50vw)] max-md:-left-[34vw] max-md:bottom-0 max-md:top-auto max-md:w-[78vw] max-w-none -scale-x-100 select-none opacity-50 [mask-image:linear-gradient(180deg,#000_68%,transparent_98%)]" />
+        <img src={cloudImg} alt="" aria-hidden className="pointer-events-none absolute -right-[22vw] top-[12%] w-[max(22rem,50vw)] max-md:-right-[36vw] max-md:bottom-0 max-md:top-auto max-md:w-[78vw] max-w-none select-none opacity-45 [mask-image:linear-gradient(180deg,#000_68%,transparent_98%)]" />
 
         <div className="relative mx-auto max-w-4xl text-center">
           <h1 className="font-['Momo_Trust_Display'] text-[clamp(2rem,4.8vw,3.6rem)] font-normal leading-[1.08] text-plum-700">
             Notes From the Nest: Bright Ideas, Hatched Weekly
           </h1>
-          <p className="mx-auto mt-5 max-w-2xl font-ui text-[clamp(0.95rem,1.25vw,1.15rem)] leading-relaxed text-plum-600">
+          <p className="mx-auto mt-5 max-w-[52rem] font-ui text-[clamp(0.95rem,1.15vw,1.1rem)] leading-relaxed text-plum-600">
             Straight talk on brand, design and the creative operations behind them: what works,
             what breaks, and how to get more good work out of the team you already have.
           </p>
@@ -108,14 +108,9 @@ export default function BlogIndex() {
               <CategoryChip className="absolute left-4 top-4">{featured.category}</CategoryChip>
             </div>
             <div className="flex flex-col justify-center p-7 sm:p-10">
-              <div className="flex items-center justify-between gap-4">
-                <span className="rounded-full bg-teal-500 px-3.5 py-1.5 font-ui text-xs font-bold leading-none text-white">
-                  Featured
-                </span>
-                <time dateTime={featured.date} className="font-ui text-sm text-plum-600">
-                  {formatDate(featured.date)}
-                </time>
-              </div>
+              <span className="w-fit rounded-full bg-teal-500 px-3.5 py-1.5 font-ui text-xs font-bold leading-none text-white">
+                Featured
+              </span>
               <h2 className="mt-5 font-ui text-[clamp(1.4rem,2.3vw,2rem)] font-bold leading-[1.18] text-plum-900">
                 {featured.title}
               </h2>
@@ -176,9 +171,6 @@ export default function BlogIndex() {
                     <h3 className="mt-5 font-ui text-xl font-bold leading-snug text-plum-900 transition-colors group-hover:text-plum-700">
                       {p.title}
                     </h3>
-                    <time dateTime={p.date} className="mt-2 block font-ui text-sm text-plum-600">
-                      {formatDate(p.date)}
-                    </time>
                   </a>
                 </motion.li>
               ))}

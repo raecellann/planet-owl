@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import BlogCover from './BlogCover'
 import BlogLayout, { CategoryChip } from './BlogLayout'
-import { BLOG_HOME, POSTS, formatDate, postHref } from './posts'
+import { BLOG_HOME, POSTS, postHref } from './posts'
+import { MobileTopicBar, TOPIC_WATCH, jumpToTopic } from './TopicNav'
 
 /**
  * One article: category and date, the title, its cover, then three columns —
@@ -29,7 +30,7 @@ export default function BlogPost({ post }) {
         const seen = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)
         if (seen[0]) setActive(seen[0].target.id.replace('topic-', ''))
       },
-      { rootMargin: '-20% 0px -65% 0px' },
+      { rootMargin: TOPIC_WATCH },
     )
     els.forEach((el) => io.observe(el))
     return () => io.disconnect()
@@ -39,8 +40,6 @@ export default function BlogPost({ post }) {
   useEffect(() => {
     document.title = `${post.title} | Planet Owl`
   }, [post.title])
-
-  const jump = (id) => document.getElementById(`topic-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 
   const url = typeof window !== 'undefined' ? window.location.href : ''
   const copy = async () => {
@@ -63,9 +62,7 @@ export default function BlogPost({ post }) {
           <div className="mx-auto max-w-3xl text-center">
             <div className="flex items-center justify-center gap-4">
               <CategoryChip className="!bg-teal-500 !text-white">{post.category}</CategoryChip>
-              <time dateTime={post.date} className="font-ui text-sm text-plum-600">
-                {formatDate(post.date)} · {post.readMinutes} min read
-              </time>
+              <span className="font-ui text-sm text-plum-600">{post.readMinutes} min read</span>
             </div>
             <h1 className="mt-6 font-['Momo_Trust_Display'] text-[clamp(1.9rem,4.2vw,3.2rem)] font-normal leading-[1.12] text-plum-700">
               {post.title}
@@ -80,6 +77,8 @@ export default function BlogPost({ post }) {
         </header>
 
         {/* -------------------------------------------------------- body -- */}
+        <div>
+        <MobileTopicBar topics={topics} active={active} label="Topics" />
         <div className="mx-auto grid max-w-[1180px] gap-10 px-5 pb-8 pt-14 sm:px-8 lg:grid-cols-[13rem_minmax(0,1fr)_9rem] lg:gap-12">
           <nav aria-label="Topics" className="hidden lg:block">
             <div className="sticky top-[calc(2.92vw+max(3.25rem,4.4vw)+2rem)]">
@@ -89,7 +88,7 @@ export default function BlogPost({ post }) {
                   <li key={t.id}>
                     <button
                       type="button"
-                      onClick={() => jump(t.id)}
+                      onClick={() => jumpToTopic(t.id)}
                       className={`-ml-0.5 block w-full border-l-2 pl-4 text-left font-ui text-sm leading-snug transition-colors ${
                         active === t.id
                           ? 'border-gold-500 font-bold text-plum-900'
@@ -186,6 +185,7 @@ export default function BlogPost({ post }) {
             </div>
           </aside>
         </div>
+        </div>
       </article>
 
       {/* ------------------------------------------------- keep reading -- */}
@@ -208,9 +208,6 @@ export default function BlogPost({ post }) {
                     <CategoryChip className="absolute left-3 top-3">{p.category}</CategoryChip>
                   </div>
                   <h3 className="mt-5 font-ui text-xl font-bold leading-snug text-plum-900">{p.title}</h3>
-                  <time dateTime={p.date} className="mt-2 block font-ui text-sm text-plum-600">
-                    {formatDate(p.date)}
-                  </time>
                 </a>
               </li>
             ))}
