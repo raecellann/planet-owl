@@ -3,6 +3,7 @@ import { useReducedMotion } from 'motion/react'
 import BlogLayout from './BlogLayout'
 import { CONTACT_EMAIL, submitContact } from '../lib/signup'
 import { A } from '../lib/assets'
+import { DatePicker, TimePicker } from './BookingPickers'
 import cloudImg from '../../assets/section 2/image 35 copy.png'
 
 /**
@@ -122,7 +123,7 @@ export default function Contact() {
     if (!box) return
     box.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' })
     setTimeout(() => {
-      box.querySelector('input')?.focus({ preventScroll: true })
+      box.querySelector('button')?.focus({ preventScroll: true })
       if (reduceMotion) return
       // A soft gold halo that rises and settles once, while the fields lift
       // into place one after another.
@@ -277,23 +278,10 @@ export default function Contact() {
                     <p className="font-ui text-base font-bold text-plum-900">Book a call (optional)</p>
                     <div className="mt-4 grid gap-4 sm:grid-cols-2">
                       <Field label="Preferred Date">
-                        <input type="date" min={today} value={form.date} onChange={set('date')} className={FIELD} />
+                        <DatePicker min={today} value={form.date} onChange={(date) => setForm((f) => ({ ...f, date }))} />
                       </Field>
                       <Field label="Preferred Time">
-                        <span className="relative block">
-                          <select value={form.time} onChange={set('time')} required={booked} className={`${FIELD} cursor-pointer appearance-none pr-12`}>
-                          <option value="">Choose a time</option>
-                          {SLOTS.map((s) => (
-                            <option key={s} value={s}>
-                              {s}
-                            </option>
-                          ))}
-                        </select>
-                          {/* Our own arrow: the browser's sits jammed against the border. */}
-                          <svg viewBox="0 0 24 24" aria-hidden className="pointer-events-none absolute right-4 top-[calc(50%+0.1875rem)] size-5 -translate-y-1/2 text-plum-700" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="m6 9 6 6 6-6" />
-                          </svg>
-                        </span>
+                        <TimePicker value={form.time} options={SLOTS} required={booked} onChange={(time) => setForm((f) => ({ ...f, time }))} />
                       </Field>
                     </div>
                   </fieldset>

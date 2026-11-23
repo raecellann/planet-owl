@@ -357,6 +357,23 @@ export default function NestView({ onReveal }) {
     if (panelRef.current) ro.observe(panelRef.current)
     return () => ro.disconnect()
   }, [])
+  // Once the pin has ended the shot is over, so the frame is switched off.
+  // Left on, its dark panel slid up the page over Top Secrets with a hard edge.
+  useEffect(() => {
+    const check = () => {
+      const track = trackRef.current
+      const frame = frameRef.current
+      if (!track || !frame) return
+      frame.style.visibility = track.getBoundingClientRect().bottom <= window.innerHeight + 1 ? 'hidden' : 'visible'
+    }
+    check()
+    window.addEventListener('scroll', check, { passive: true })
+    window.addEventListener('resize', check)
+    return () => {
+      window.removeEventListener('scroll', check)
+      window.removeEventListener('resize', check)
+    }
+  }, [])
   const atHole = dims.f / 2 - 0.535 * dims.h
   const atPane = dims.f / 2 - 0.439 * dims.h
   const panelY = useTransform(p, (v) => {

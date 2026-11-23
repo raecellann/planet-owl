@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useMotionValue, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { A } from '../../lib/assets'
 import Reveal from '../../components/ui/Reveal'
+import { PHONE, useMediaQuery } from '../../lib/useMediaQuery'
 import CursorPlayBadge, { useCursorPlayBadge } from '../../components/ui/CursorPlayBadge'
 
 /**
@@ -655,9 +656,11 @@ function Quote({ copyRef }) {
   // are low on the screen, and comes off as they rise: covered while the
   // copy's top is still in the bottom 15% of the window, clear by the time it
   // reaches a third of the way up. Scrubbing back up puts it back.
+  const phone = useMediaQuery(PHONE)
   const { scrollYProgress: copyProgress } = useScroll({
     target: copyRef,
-    offset: ['start 0.85', 'start 0.35'],
+    // Lifts sooner on a phone, where the copy fills more of the screen.
+    offset: phone ? ['start 0.98', 'start 0.66'] : ['start 0.85', 'start 0.35'],
   })
   useEffect(
     () =>
@@ -701,8 +704,7 @@ function Quote({ copyRef }) {
       // The reveal is timed now, so the hold comes from its delay rather
       // than from over-covering.
       const dense = img.offsetHeight * 0.15
-      // No curtain on a phone: the copy is too tall for the plate to lift off in time.
-      const pullUp = window.innerWidth < 640 ? 0 : Math.max(0, untransformedTop - copy.getBoundingClientRect().top + dense)
+      const pullUp = Math.max(0, untransformedTop - copy.getBoundingClientRect().top + dense)
       pullUpMV.set(pullUp)
       // Flipped on the first measurement and left alone after: it is what
       // lets `imgY` start applying the pull-up, and what releases the slide

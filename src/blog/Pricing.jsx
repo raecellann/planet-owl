@@ -4,6 +4,7 @@ import BlogLayout from './BlogLayout'
 import { A } from '../lib/assets'
 import Faq from '../components/Faq'
 import StackCards from '../components/StackCards'
+import SectionBreak from '../components/SectionBreak'
 import cloudImg from '../../assets/section 2/image 35 copy.png'
 
 /**
@@ -90,25 +91,6 @@ const STEPS = [
 ]
 
 /**
- * The torn edge from the Flock band, cut from the same plate and filled with
- * the plum section's colour. A strip of its own, because stretching the plate
- * over a section this tall would stretch the tears with it.
- */
-function SectionBreak({ edge }) {
-  const mask = {
-    WebkitMaskImage: `url(${A.goldPlate})`,
-    maskImage: `url(${A.goldPlate})`,
-    WebkitMaskSize: 'max(100%, 640px) auto',
-    maskSize: 'max(100%, 640px) auto',
-    WebkitMaskPosition: `center ${edge}`,
-    maskPosition: `center ${edge}`,
-    WebkitMaskRepeat: 'no-repeat',
-    maskRepeat: 'no-repeat',
-  }
-  return <div aria-hidden style={mask} className="relative h-[max(38px,5.9vw)] w-full bg-plum-800" />
-}
-
-/**
  * Try, Decide, Stay, on the scroll. The plane starts parked over "Try"; each
  * stretch of scroll flies it one stop right, uncovering the word it leaves and
  * hiding the next, until it clears "Stay" and leaves the tile.
@@ -157,80 +139,78 @@ function PlaneSteps() {
 const STEP_ART = [A.owl.digital, A.owl.develop, A.owl.wizardLg]
 
 /**
- * The roadmap. The steps scroll past on the left while the owl on the right
- * stays in place and changes to match whichever step is mid-screen, and the
- * gold line fills as you go. Cut-out art, so there is no box round the picture.
- * On phones there is no room for a pinned column, so each step carries its own.
+ * The roadmap, as a pinned stage. The title, the three stops and the owl hold
+ * still under the navbar while the scroll moves through the steps, so nothing
+ * ever slides underneath the title.
  */
 function HowItWorks() {
   const reduce = useReducedMotion()
+  const track = useRef(null)
   const [active, setActive] = useState(0)
-  const stepRefs = useRef([])
 
   useEffect(() => {
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) setActive(Number(e.target.dataset.step))
-        })
-      },
-      { rootMargin: '-48% 0px -48% 0px' },
-    )
-    stepRefs.current.forEach((el) => el && io.observe(el))
-    return () => io.disconnect()
+    const read = () => {
+      const el = track.current
+      if (!el) return
+      const r = el.getBoundingClientRect()
+      const travel = r.height - window.innerHeight
+      const p = travel > 0 ? Math.min(0.999, Math.max(0, -r.top / travel)) : 0
+      setActive(Math.floor(p * STEPS.length))
+    }
+    read()
+    window.addEventListener('scroll', read, { passive: true })
+    window.addEventListener('resize', read)
+    return () => {
+      window.removeEventListener('scroll', read)
+      window.removeEventListener('resize', read)
+    }
   }, [])
 
   return (
-    <div className="mt-6 grid gap-12 lg:grid-cols-2 lg:gap-16">
-      <ol className="relative pl-16">
-        {STEPS.map((st, i) => (
-          <li
-            key={st.n}
-            ref={(el) => {
-              stepRefs.current[i] = el
-            }}
-            data-step={i}
-            className="relative flex min-h-[20rem] flex-col justify-center py-8 lg:min-h-[62svh]"
-          >
-            {/* The line runs from stop to stop, with nothing above the first. */}
-            {i > 0 && (
-              <span aria-hidden className={`absolute -left-[2.625rem] bottom-1/2 top-0 w-1 transition-colors duration-500 ${i <= active ? 'bg-gold-500' : 'bg-plum-100'}`} />
-            )}
-            {i < STEPS.length - 1 && (
-              <span aria-hidden className={`absolute -left-[2.625rem] bottom-0 top-1/2 w-1 transition-colors duration-500 ${i < active ? 'bg-gold-500' : 'bg-plum-100'}`} />
-            )}
-            <span
-              aria-hidden
-              className={`absolute -left-16 top-1/2 z-10 grid size-12 -translate-y-1/2 place-items-center rounded-full font-ui text-base font-bold shadow-[0_6px_0_-2px_var(--color-plum-950)] transition-colors duration-300 ${
-                i <= active ? 'bg-plum-800 text-gold-500' : 'bg-plum-100 text-plum-700'
-              }`}
-            >
-              {st.n}
-            </span>
-            <div className={`transition-opacity duration-300 ${i === active ? 'opacity-100' : 'lg:opacity-40'}`}>
-              <h3 className="font-ui text-2xl font-bold text-plum-900 lg:text-3xl">{st.title}</h3>
-              <p className="mt-2 max-w-md font-ui text-lg leading-relaxed text-plum-800">{st.copy}</p>
-              <img src={STEP_ART[i]} alt="" aria-hidden loading="lazy" className="mt-6 h-52 w-auto object-contain lg:hidden" />
-            </div>
-          </li>
-        ))}
-      </ol>
-
-      <div className="hidden lg:block">
-        <div className="sticky top-[calc(50svh-13rem)] flex h-[26rem] items-center justify-center">
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.img
-              key={active}
-              src={STEP_ART[active]}
-              alt=""
-              aria-hidden
-              initial={reduce ? false : { opacity: 0, y: 26, scale: 0.92 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={reduce ? undefined : { opacity: 0, y: -22, scale: 0.96 }}
-              transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
-              className="max-h-full w-auto max-w-full object-contain"
-            />
-          </AnimatePresence>
+    <div ref={track} className={reduce ? '' : 'h-[220svh]'}>
+      <div className={`flex flex-col pb-6 pt-[calc(max(5.25rem,2.92vw+max(3.25rem,4.4vw))+1.75rem)] ${reduce ? '' : 'sticky top-0 h-[100svh]'}`}>
+        <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-plum-700">
+          How It Hatches
+        </h2>
+        <div className="mt-6 grid min-h-0 flex-1 grid-rows-[auto_minmax(0,1fr)] gap-4 lg:grid-cols-2 lg:grid-rows-1 lg:gap-16">
+          <ol className="flex flex-col lg:justify-center">
+            {STEPS.map((st, i) => (
+              <li key={st.n} className="relative min-h-16 pl-16 last:min-h-12">
+                {i < STEPS.length - 1 && (
+                  <span aria-hidden className={`absolute bottom-0 left-[1.4375rem] top-12 w-0.5 transition-colors duration-500 ${i < active ? 'bg-gold-500' : 'bg-plum-100'}`} />
+                )}
+                <span
+                  aria-hidden
+                  className={`absolute left-0 top-0 grid size-12 place-items-center rounded-full font-ui text-base font-bold transition-colors duration-300 ${
+                    i <= active ? 'bg-plum-800 text-gold-500' : 'bg-plum-100 text-plum-700'
+                  }`}
+                >
+                  {st.n}
+                </span>
+                <h3 className={`flex min-h-12 items-center font-ui text-xl font-bold transition-colors duration-300 lg:text-2xl ${i === active ? 'text-plum-900' : 'text-plum-900/45'}`}>
+                  {st.title}
+                </h3>
+                <div className={`grid transition-[grid-template-rows,opacity] duration-500 ease-out ${i === active || reduce ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+                  <p className="max-w-md overflow-hidden pb-4 font-ui leading-relaxed text-plum-800">{st.copy}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+          <div className="relative flex min-h-0 items-center justify-center">
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.img
+                key={active}
+                src={STEP_ART[active]}
+                alt=""
+                aria-hidden
+                initial={reduce ? false : { opacity: 0, y: 22, scale: 0.94 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={reduce ? undefined : { opacity: 0, y: -18, scale: 0.97 }}
+                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                className="max-h-full w-auto max-w-full object-contain lg:max-h-[26rem]"
+              />
+            </AnimatePresence>
+          </div>
         </div>
       </div>
     </div>
@@ -390,7 +370,7 @@ export default function Pricing() {
                 <motion.span
                   aria-hidden
                   variants={{ off: { scaleY: 0 }, on: { scaleY: 1, transition: { duration: 1.3, delay: 0.35, ease: 'easeInOut' } } }}
-                  className="absolute bottom-[0.6rem] left-[0.3125rem] top-[0.6rem] w-1 origin-top rounded-full bg-plum-800"
+                  className="absolute bottom-[0.6rem] left-[0.375rem] top-[0.6rem] w-0.5 origin-top bg-plum-800"
                 />
                 {['Month 1', 'Month 2', 'Month 3', 'Month 4'].map((m, i) => (
                   <li key={m} className="relative font-ui font-semibold">
@@ -440,16 +420,9 @@ export default function Pricing() {
           its text arrive as the line reaches them. Across from `lg` up,
           down the left edge below it. Once only — it does not replay on
           every pass. */}
-      <section className="bg-white px-5 py-14 sm:px-8 sm:py-20">
+      <section className="bg-white px-5 sm:px-8">
         <div className="mx-auto max-w-[1320px]">
-          {/* Inside one wrapper with the roadmap, so the title stays pinned
-              under the navbar for all three steps. */}
-          <div>
-            <h2 className="sticky top-[calc(max(5.25rem,2.92vw+max(3.25rem,4.4vw))+0.5rem)] z-20 bg-white py-3 font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-plum-700">
-              How It Hatches
-            </h2>
-            <HowItWorks />
-          </div>
+          <HowItWorks />
         </div>
       </section>
 

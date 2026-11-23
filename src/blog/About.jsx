@@ -4,6 +4,7 @@ import BlogLayout from './BlogLayout'
 import { A } from '../lib/assets'
 import { WORK } from '../sections/02-portfolio/work'
 import StackCards from '../components/StackCards'
+import SectionBreak from '../components/SectionBreak'
 import OwlBubble, { OWL_INTROS } from '../components/OwlBubble'
 
 /**
@@ -198,7 +199,8 @@ export default function About() {
           brings up that craft's owl and everything it covers. It was four
           still cards. (The client offered made-up figures as the other way
           to fill this page; there are none here — see the note at the top.) */}
-      <section className="bg-plum-800 px-5 py-14 sm:px-8 sm:py-20">
+      <SectionBreak edge="top" />
+      <section className="-my-px bg-plum-800 px-5 py-14 sm:px-8 sm:py-20">
         <div className="mx-auto max-w-[1180px]">
           <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-gold-500">
             Four Crafts, One Nest
@@ -268,6 +270,7 @@ export default function About() {
           </div>
         </div>
       </section>
+      <SectionBreak edge="bottom" />
 
       {/* -------------------------------------------------- how we work -- */}
       <section className="bg-white px-5 py-14 sm:px-8 sm:py-20">

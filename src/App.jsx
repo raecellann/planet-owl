@@ -145,7 +145,7 @@ export default function App({ skipIntro = false }) {
 
       {entered && <Nav entered={entered} />}
 
-      <main>
+      <main className="bg-white">
         {!introGone && <Intro onEnter={enter} onDone={dropIntro} />}
         <Hero />
         <Portfolio />

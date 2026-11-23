@@ -84,7 +84,7 @@ export default function Footer({ ground = 'night' }) {
           (33vw tall at 1.757:1) the bottom lands 18.8vw into the band, and
           23.2vw leaves the 4.4vw gap to the heading that the reference shows.
           Change the plane's width and this has to move with it. */}
-      <div className="relative -mt-px bg-[#e7b248] px-3 pb-14 pt-[27.8vw] sm:px-[4.22vw] sm:pb-16">
+      <div className="relative -mt-px bg-[#e7b248] px-3 pb-14 pt-[38vw] sm:px-[4.22vw] sm:pt-[27.8vw] sm:pb-16">
         {/* It no longer matches the navbar, and that is deliberate rather than
             drift.
 
@@ -173,7 +173,7 @@ export default function Footer({ ground = 'night' }) {
               same way — (100 - 66) / 2 = 17 — and the band's `pt` follows:
               66 / 1.757 = 37.6vw tall, less the 14.2 above the band, plus the
               same 4.4vw gap to the heading = 27.8vw. */}
-          <div className="pointer-events-none absolute -top-[14.2vw] left-[17vw] w-[66vw]">
+          <div className="pointer-events-none absolute -top-[14.2vw] left-[8vw] w-[84vw] sm:left-[17vw] sm:w-[66vw]">
             <Reveal y={40}>
               {/* `width`/`height` are the file's own 1564x890. Without them
                   this image measured 0 tall until it loaded, so the footer
