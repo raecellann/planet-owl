@@ -428,7 +428,9 @@ export default function NestView({ onReveal }) {
   // pinned frame (see `App`, which pulls it up by a viewport), so the city
   // and the cave thin out and the heading is simply there underneath — in
   // place, at full size, with nothing handed over.
-  const shot = useTransform(p, [CLOSE[0], CLOSE[1]], at(1, 0))
+  // On the raw scroll, not the spring: on a quick flick the spring trails
+  // behind, and the picture's soft edges were left hanging on screen.
+  const shot = useTransform(scrollYProgress, [CLOSE[0], CLOSE[1]], at(1, 0))
 
   // The pilot, and he goes FIRST — the whole of `OWL` is his, with the city
   // sitting still behind him (`PUSH` does not start until 0.52). He grows
@@ -450,8 +452,11 @@ export default function NestView({ onReveal }) {
   const owlFlyRotate = useTransform(p, [OWL[0], OWL[1], OWL_GO[1]], at(0, 3, 16))
 
   // --- branch · slowest ----------------------------------------------------
-  const branchY = useTransform(p, BEATS, at('-27%', '-22%', '-17%'))
-  const branchScale = useTransform(p, BEATS, at(1, 1.02, 1.06))
+  // Raw scroll for the same reason as `shot`, and gone before its feathered
+  // lower edge can sit over the moving picture.
+  const branchY = useTransform(scrollYProgress, BEATS, at('-27%', '-22%', '-17%'))
+  const branchScale = useTransform(scrollYProgress, BEATS, at(1, 1.02, 1.06))
+  const branchFade = useTransform(scrollYProgress, [0.1, 0.24], at(1, 0))
 
   // The cave and the city no longer transform. Both were being scaled and
   // slid to fake depth against a crop; the plate is drawn whole and in place
@@ -538,7 +543,7 @@ export default function NestView({ onReveal }) {
             `z-40` keeps it over the pinned frame for the moment they meet. */}
         <motion.div
           aria-hidden
-          style={{ x: '-50%', y: branchY, scale: branchScale }}
+          style={{ x: '-50%', y: branchY, scale: branchScale, opacity: branchFade }}
           className="pointer-events-none absolute left-1/2 top-0 z-40 w-[200%] max-w-none origin-top select-none sm:w-[140%] lg:w-[105%]"
         >
           <img
