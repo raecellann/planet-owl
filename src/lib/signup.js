@@ -93,3 +93,69 @@ export async function submitSignup({ email, source = 'site' }) {
 
   return { via: 'endpoint' }
 }
+
+/**
+ * Send the contact page's form: a message, and optionally a call to book.
+ *
+ * Same endpoint as the sign-up pills, with the whole form as the JSON body, so
+ * a booking request lands in the studio inbox as one email with every field
+ * on its own line. `fields` is passed through as given; only the email is
+ * checked here, because it is the one thing a reply cannot do without.
+ *
+ * Nothing here HOLDS a slot. The date and time are a request, which the studio
+ * confirms by replying — the page says so. Holding real slots needs a
+ * calendar behind it (Calendly, Cal.com, Google Calendar), and none is
+ * connected.
+ */
+export async function submitContact(fields) {
+  const email = String(fields.email || '').trim()
+  if (!isValidEmail(email)) throw new Error('That does not look like an email address.')
+
+  const wantsCall = Boolean(fields.date)
+  const subject = wantsCall
+    ? `Call request for ${fields.date}${fields.time ? ` at ${fields.time}` : ''} — Planet Owl`
+    : 'New contact message — Planet Owl'
+
+  if (ENDPOINT === 'mailto') {
+    const lines = Object.entries(fields)
+      .filter(([, v]) => v)
+      .map(([k, v]) => `${k}: ${v}`)
+      .join('\n')
+    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines)}`
+    return { via: 'mailto' }
+  }
+
+  const payload = {
+    ...fields,
+    email,
+    source: 'contact page',
+    page: typeof window !== 'undefined' ? window.location.href : '',
+    _subject: subject,
+  }
+  if (ACCESS_KEY) payload.access_key = ACCESS_KEY
+
+  let res
+  try {
+    res = await fetch(ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify(payload),
+    })
+  } catch {
+    throw new Error('Could not reach the server. Check your connection and try again.')
+  }
+
+  if (!res.ok) {
+    let message = 'Something went wrong on our end. Please try again in a moment.'
+    try {
+      const data = await res.json()
+      if (data?.errors?.length) message = data.errors.map((e) => e.message).join(' ')
+      else if (typeof data?.message === 'string') message = data.message
+    } catch {
+      /* non-JSON error body — keep the generic message */
+    }
+    throw new Error(message)
+  }
+
+  return { via: 'endpoint' }
+}

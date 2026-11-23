@@ -21,7 +21,7 @@ import { BLOG_HOME } from './posts'
  */
 /* `onBlog` is false for the pages that borrow this frame without being the
    blog (the privacy page), so "Blog" is not marked as the current page there. */
-export default function BlogLayout({ children, onBlog = true }) {
+export default function BlogLayout({ children, onBlog = true, newsletter = true }) {
   const [projectOpen, setProjectOpen] = useState(false)
   const openProject = (e) => {
     e.preventDefault()
@@ -114,6 +114,10 @@ export default function BlogLayout({ children, onBlog = true }) {
           brand. The footer is told its ground is white (`ground`, below), so
           the gold scallops rise straight out of the page. The bottom padding
           is still the room the plane needs. */}
+      {/* `newsletter={false}` (the contact page, which is already a form)
+          keeps only the room the footer's plane needs. */}
+      {!newsletter && <div className="bg-white pb-[18vw]" />}
+      {newsletter && (
       <section className="bg-white px-5 pb-[18vw] pt-[clamp(4rem,8vw,7rem)] sm:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.8rem,4vw,3rem)] font-normal leading-[1.1] text-plum-700">
@@ -128,6 +132,7 @@ export default function BlogLayout({ children, onBlog = true }) {
           </div>
         </div>
       </section>
+      )}
 
       <Footer ground="white" />
 

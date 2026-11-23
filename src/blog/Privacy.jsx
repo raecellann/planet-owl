@@ -20,15 +20,16 @@ const SECTIONS = [
   {
     title: 'What we collect',
     body: [
-      'The only personal information this website asks for is your email address, and only when you choose to type it into one of our forms — the sign-up bar at the foot of the page, the “Start a Project” window, or the newsletter form on the blog.',
-      'When you send one of those forms we also receive the address of the page you sent it from and which form you used, so we know what you were asking about.',
+      'This website only learns what you choose to type into one of our forms. The sign-up bar at the foot of the page, the “Start a Project” window and the newsletter form on the blog ask for your email address.',
+      'The contact page asks for more, so that we can reply properly or book a call: your name and email address and, if you choose to give them, your company, website, phone number, a preferred date and time for a call (with your time zone), and your message.',
+      'When you send any of these forms we also receive the address of the page you sent it from and which form you used, so we know what you were asking about.',
       'We do not ask you to create an account, and this website does not use advertising trackers or analytics cookies.',
     ],
   },
   {
     title: 'How we use it',
     body: [
-      'We use your email address to reply to you about the project, trial or newsletter you asked about. We do not sell it, and we do not share it with anyone for their own marketing.',
+      'We use what you send us to reply to you about the project, call, trial or newsletter you asked about. We do not sell it, and we do not share it with anyone for their own marketing.',
     ],
   },
   {
@@ -41,7 +42,7 @@ const SECTIONS = [
   {
     title: 'How long we keep it',
     body: [
-      'We keep your email address for as long as we are in conversation with you or sending you the updates you asked for. Tell us to stop and we will remove it.',
+      'We keep what you send us for as long as we are in conversation with you or sending you the updates you asked for. Tell us to stop and we will remove it.',
     ],
   },
   {
