@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import { A, openStartProject } from '../lib/assets'
+import { A } from '../lib/assets'
 
 /**
  * The FAQ: an owl and a title on the left, an accordion on the right — the
@@ -81,20 +81,13 @@ export default function Faq({ tone = 'light', className = '', askHref = null }) 
           <br /> Fly In
         </h2>
         <p className={`mt-5 max-w-md font-ui text-lg leading-relaxed ${t.lead}`}>
-          The questions we hear most. Anything else,{' '}
-          {askHref ? (
-            <a href={askHref} className="font-semibold text-inherit underline">
-              ask the owls
-            </a>
-          ) : (
-            <button type="button" onClick={openStartProject} className="font-semibold underline">
-              ask the owls
-            </button>
-          )}
-          .
+          Still curious?{' '}
+          <a href={askHref ?? '#/contact'} className="font-bold text-inherit no-underline">
+            Ask the owls.
+          </a>
         </p>
         <img
-          src={A.owl.wizard}
+          src={A.owl.vr}
           alt="An owl in a wizard's hat"
           loading="lazy"
           // Larger, by request — it was 15rem and read as a spot

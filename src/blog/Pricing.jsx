@@ -136,7 +136,7 @@ function PlaneSteps() {
   )
 }
 
-const STEP_ART = [A.owl.digital, A.owl.develop, A.owl.wizardLg]
+const STEP_ART = [A.owl.digital, A.owl.develop, A.owl.ai]
 
 /**
  * The roadmap, as a pinned stage. The title, the three stops and the owl hold
@@ -168,7 +168,7 @@ function HowItWorks() {
 
   return (
     <div ref={track} className={reduce ? '' : 'h-[220svh]'}>
-      <div className={`flex flex-col pb-6 pt-[calc(max(5.25rem,2.92vw+max(3.25rem,4.4vw))+1.75rem)] ${reduce ? '' : 'sticky top-0 h-[100svh]'}`}>
+      <div className={`flex flex-col pb-6 pt-[calc(max(5.25rem,2.92vw+max(3.25rem,4.4vw))+1.75rem)] lg:pb-[16svh] ${reduce ? '' : 'sticky top-0 h-[100svh]'}`}>
         <div className="grid min-h-0 flex-1 grid-rows-[auto_minmax(0,1fr)] gap-4 lg:grid-cols-2 lg:grid-rows-1 lg:gap-16">
           {/* The title sits directly on top of the first stop. */}
           <div className="flex flex-col lg:justify-center">
