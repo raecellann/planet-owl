@@ -47,10 +47,13 @@ const TONES = {
   dark: {
     title: 'text-gold-500',
     lead: 'text-gold-400',
-    rule: 'border-white/15',
-    q: 'text-white',
+    // Brand colours only, by request: the questions were plain white on
+    // the dark, which is not a colour this site uses for type. Gold for the
+    // questions, the pale gold for answers, teal for the marks.
+    rule: 'border-gold-500/30',
+    q: 'text-gold-400',
     a: 'text-gold-200',
-    mark: 'text-gold-500',
+    mark: 'text-teal-400',
   },
   light: {
     title: 'text-plum-700',
@@ -68,13 +71,13 @@ export default function Faq({ tone = 'light', className = '' }) {
   const t = TONES[tone]
 
   return (
-    <div className={`grid gap-10 text-left lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16 ${className}`}>
+    <div className={`grid gap-10 text-left lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-20 ${className}`}>
       <div>
-        <h2 className={`font-['Momo_Trust_Display'] text-[clamp(1.9rem,3.6vw,3rem)] font-normal leading-[1.08] ${t.title}`}>
+        <h2 className={`font-['Momo_Trust_Display'] text-[clamp(2.4rem,5vw,4.25rem)] font-normal leading-[1.05] ${t.title}`}>
           Before You
           <br /> Fly In
         </h2>
-        <p className={`mt-4 max-w-sm font-ui leading-relaxed ${t.lead}`}>
+        <p className={`mt-5 max-w-md font-ui text-lg leading-relaxed ${t.lead}`}>
           The questions we hear most. Anything else,{' '}
           <button type="button" onClick={openStartProject} className="font-semibold underline">
             ask the owls
@@ -85,7 +88,9 @@ export default function Faq({ tone = 'light', className = '' }) {
           src={A.owl.wizard}
           alt="An owl in a wizard's hat"
           loading="lazy"
-          className="mt-8 w-[min(70%,15rem)] select-none"
+          // Larger, by request — it was 15rem and read as a spot
+          // illustration beside the title rather than as half of the layout.
+          className="mt-8 w-[min(92%,27rem)] select-none"
         />
       </div>
 
@@ -100,13 +105,13 @@ export default function Faq({ tone = 'light', className = '' }) {
                 aria-expanded={isOpen}
                 aria-controls={`faq-a-${i}`}
                 onClick={() => setOpen(isOpen ? -1 : i)}
-                className={`flex w-full items-center justify-between gap-6 py-5 text-left font-ui text-lg font-bold ${t.q}`}
+                className={`flex w-full items-center justify-between gap-6 py-6 text-left font-ui text-[clamp(1.15rem,1.7vw,1.5rem)] font-bold ${t.q}`}
               >
                 {f.q}
                 <motion.svg
                   viewBox="0 0 24 24"
                   aria-hidden
-                  className={`size-5 shrink-0 ${t.mark}`}
+                  className={`size-6 shrink-0 ${t.mark}`}
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2.4"
@@ -129,7 +134,7 @@ export default function Faq({ tone = 'light', className = '' }) {
                     transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
                     className="overflow-hidden"
                   >
-                    <p className={`max-w-2xl pb-6 font-ui leading-relaxed ${t.a}`}>{f.a}</p>
+                    <p className={`max-w-2xl pb-7 font-ui text-lg leading-relaxed ${t.a}`}>{f.a}</p>
                   </motion.div>
                 )}
               </AnimatePresence>
