@@ -437,13 +437,18 @@ export default function TopSecrets() {
                     is pulled back by exactly that; below it the column is
                     centred and the strip centres with it.
 
-                    Above the pictures, as in the frame — there the vines are
-                    the LAST layers in the group, soft foreground growth
-                    crossing the nests' edges. */}
+                    BEHIND the pictures now, by request. In the frame the
+                    vines are the last layers in the group — soft foreground
+                    growth crossing the nests' edges — and that is how they
+                    were built, at `z-20`. In practice one of them ran straight
+                    across the foot of a nest and read as something blocking
+                    it. At `z-0`, with the secret itself lifted to `z-10`
+                    below, each vine passes behind the nest and the copy and
+                    only shows in the dark either side of them. */}
                 {VINES[i] && (
                   <div
                     aria-hidden
-                    className="pointer-events-none absolute inset-y-0 left-1/2 z-20 w-screen -translate-x-1/2 lg:left-[-9.1vw] lg:translate-x-0"
+                    className="pointer-events-none absolute inset-y-0 left-1/2 z-0 w-screen -translate-x-1/2 lg:left-[-9.1vw] lg:translate-x-0"
                   >
                     {VINES[i].map((v) => (
                       <img
@@ -470,7 +475,7 @@ export default function TopSecrets() {
                     the other two. Mirroring the tracks along with the order
                     keeps all three pictures the same size. */}
                 <article
-                  className={`grid items-center gap-10 lg:gap-[4vw] ${flipped ? 'lg:grid-cols-[1.5fr_1fr]' : 'lg:grid-cols-[1fr_1.5fr]'}`}
+                  className={`relative z-10 grid items-center gap-10 lg:gap-[4vw] ${flipped ? 'lg:grid-cols-[1.5fr_1fr]' : 'lg:grid-cols-[1fr_1.5fr]'}`}
                 >
                 <Reveal
                   y={44}

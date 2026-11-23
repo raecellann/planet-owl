@@ -148,16 +148,27 @@ export default function Contact() {
                   </Icon>
                   <span>Or leave a message in the form</span>
                 </li>
-                {/* Where the studio works, not a street address: the client
-                    asked for "anywhere in the US" and there is no office
-                    address to print. Swap this line for the real one when
-                    there is. */}
+                {/* The studio's own phone and address, as the client gave
+                    them. (Earlier asks were for a made-up US address; those
+                    were not used.) */}
                 <li className="flex items-center gap-4">
+                  <Icon>
+                    <path d="M6.5 3.5h3l1.5 4-2 1.5a11 11 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.5 5.7 2 2 0 0 1 6.5 3.5z" />
+                  </Icon>
+                  <a href="tel:+639679812402" className="font-semibold text-plum-900 no-underline hover:text-plum-700">
+                    0967 981 2402
+                  </a>
+                </li>
+                <li className="flex items-start gap-4">
                   <Icon>
                     <path d="M12 21s-6.5-5.6-6.5-10.5a6.5 6.5 0 0 1 13 0C18.5 15.4 12 21 12 21z" />
                     <circle cx="12" cy="10.5" r="2.3" />
                   </Icon>
-                  <span>Serving clients across the United States</span>
+                  <address className="not-italic leading-snug">
+                    Purok Sampaguita 131B, Tangob,
+                    <br />
+                    Padre Garcia, Batangas, Philippines
+                  </address>
                 </li>
               </ul>
 
