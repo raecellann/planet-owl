@@ -276,7 +276,7 @@ export default function Contact() {
                   <fieldset ref={bookingRef} id="book-a-call" className="mt-7 scroll-mt-32 rounded-2xl bg-gold-200 p-4 sm:p-5">
                     <legend className="sr-only">Book a call</legend>
                     <p className="font-ui text-base font-bold text-plum-900">Book a call (optional)</p>
-                    <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                    <div className="relative mt-4 grid gap-4 sm:grid-cols-2">
                       <Field label="Preferred Date">
                         <DatePicker min={today} value={form.date} onChange={(date) => setForm((f) => ({ ...f, date }))} />
                       </Field>

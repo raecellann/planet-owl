@@ -63,7 +63,7 @@ export function DatePicker({ value, min, onChange }) {
     : 'Choose a date'
 
   return (
-    <div ref={root} className="relative" onClick={keepLabelOut}>
+    <div ref={root} onClick={keepLabelOut}>
       <button type="button" aria-haspopup="dialog" aria-expanded={open} onClick={() => setOpen(!open)} className={`${TRIGGER} ${value ? 'text-plum-900' : 'text-plum-900/55'}`}>
         <span className="truncate">{label}</span>
         <svg viewBox="0 0 24 24" aria-hidden className="size-5 shrink-0 text-plum-700" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -72,7 +72,7 @@ export function DatePicker({ value, min, onChange }) {
         </svg>
       </button>
       {open && (
-        <div role="dialog" aria-label="Choose a date" className={`${PANEL} w-[17.5rem]`}>
+        <div role="dialog" aria-label="Choose a date" className={`${PANEL} right-0`}>
           <div className="flex items-center justify-between px-1 pb-2">
             <button type="button" aria-label="Previous month" disabled={!canGoBack} onClick={() => step(-1)} className="grid size-8 place-items-center rounded-full text-plum-800 transition-colors hover:bg-plum-100 disabled:opacity-25 disabled:hover:bg-transparent">‹</button>
             <span className="font-ui text-sm font-bold text-plum-900">
