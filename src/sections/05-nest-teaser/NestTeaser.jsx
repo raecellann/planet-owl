@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react'
-import { motion, useAnimationControls, useReducedMotion } from 'motion/react'
+import { useEffect, useRef, useState } from 'react'
+import { animate, motion, useMotionValue, useReducedMotion, useSpring } from 'motion/react'
 import { A } from '../../lib/assets'
 import Reveal from '../../components/ui/Reveal'
 import { GoldButton } from '../../components/ui/Button'
@@ -163,64 +163,87 @@ const FEATHERS_PHONE = [
 ]
 
 /**
- * One feather: it turns on its own clock, and when the pointer touches it, it
- * is knocked into the air and falls back.
+ * One feather. It turns on its own clock; touch it with the mouse and it comes
+ * along behind the cursor on a loose spring, tilting with the movement as if
+ * caught in a breeze. When the cursor rests or moves away it lets go and
+ * drifts back to its place, swaying side to side. A tap on a phone flicks it
+ * up and lets it fall the same way.
  *
- * Three nested boxes, because three things move and each needs its own
- * transform:
- *
- *   1. the outer box holds the PLACE — left, top and height off the table;
- *   2. the middle one carries the FLIGHT, on the screen's own axes;
- *   3. the inner one carries the slow TURN, and the image sits in that.
- *
- * The flight has to be outside the turn. A translate applied inside a
- * rotating box is measured in that box's own frame, so "up" would have been
- * whichever way the feather happened to be pointing at the time — sideways
- * as often as not.
- *
- * The flight itself, by request ("nalipad at nabagsak"): the feather is
- * flicked UP and off to one side, hangs for a moment, then comes down the way
- * a feather does — swinging from side to side, dipping a little past where it
- * started, and settling back onto its spot. It returns because the three are
- * placed to frame the wizard; one that stayed where it fell would leave a
- * hole in the arrangement after the first visitor.
- *
- * `busy` is what stops it re-triggering itself. The feather moves out from
- * under the pointer as it flies and sweeps back through it on the way down,
- * which fires `pointerenter` again each time; without the latch one touch
- * became a feather that never landed. A touch on a phone fires the same
- * event, so a tap knocks it up there too.
- *
- * Distances are a share of the feather's own height (`lift`), so the big one
- * travels further than the small one and all three stay inside the swept-disc
- * clearances worked out above.
+ * The flight sits outside the turning box so "toward the cursor" stays on the
+ * screen's axes rather than the feather's rotated ones.
  */
 function Feather({ left, top, vw, cap, secs, dir, lift }) {
-  const flight = useAnimationControls()
-  const busy = useRef(false)
+  const home = useRef(null)
+  const x = useMotionValue(0)
+  const y = useMotionValue(0)
+  const r = useMotionValue(0)
+  const sx = useSpring(x, { stiffness: 40, damping: 8, mass: 0.9 })
+  const sy = useSpring(y, { stiffness: 40, damping: 8, mass: 0.9 })
+  const sr = useSpring(r, { stiffness: 34, damping: 6 })
+  const caught = useRef(false)
+  const idle = useRef(null)
+  const lastX = useRef(0)
+  const flight = useRef([])
 
-  const knock = async () => {
-    if (busy.current) return
-    busy.current = true
-    const up = `${-lift * 100}%`
-    const pct = (n) => `${n * lift * 100 * dir}%`
-    await flight.start({
-      y: ['0%', up, `${-lift * 118}%`, `${-lift * 55}%`, `${lift * 26}%`, '0%'],
-      x: ['0%', pct(0.55), pct(0.2), pct(-0.6), pct(0.35), '0%'],
-      rotate: [0, -24 * dir, 14 * dir, -18 * dir, 9 * dir, 0],
-      transition: {
-        duration: 3.4,
-        // Fast off the mark, slow at the top, then an unhurried fall.
-        times: [0, 0.14, 0.26, 0.52, 0.8, 1],
-        ease: ['easeOut', 'easeInOut', 'easeInOut', 'easeInOut', 'easeOut'],
-      },
-    })
-    busy.current = false
+  const land = () => stopFlight()
+  const stopFlight = () => {
+    flight.current.forEach((c) => c.stop())
+    flight.current = []
+  }
+
+  // Falls from wherever it is now, swinging across its own path.
+  const drop = (fromX = x.get(), fromY = y.get()) => {
+    caught.current = false
+    clearTimeout(idle.current)
+    stopFlight()
+    const h = home.current?.offsetHeight ?? 200
+    const swing = h * 0.16 * dir
+    const opts = { duration: 3.6, ease: 'easeInOut', times: [0, 0.28, 0.56, 0.8, 1] }
+    flight.current = [
+      animate(x, [fromX, fromX * 0.65 + swing, fromX * 0.35 - swing, fromX * 0.1 + swing * 0.4, 0], opts),
+      animate(y, [fromY, fromY * 0.7 - h * 0.05, fromY * 0.4, fromY * 0.12 + h * 0.03, 0], opts),
+      animate(r, [r.get(), 20 * dir, -16 * dir, 7 * dir, 0], opts),
+    ]
+  }
+
+  useEffect(() => {
+    const onMove = (e) => {
+      if (!caught.current || !home.current) return
+      const b = home.current.getBoundingClientRect()
+      const reach = b.height * 1.15
+      const clamp = (v) => Math.max(-reach, Math.min(reach, v))
+      x.set(clamp(e.clientX - (b.left + b.width / 2)))
+      y.set(clamp(e.clientY - (b.top + b.height / 2)))
+      r.set(Math.max(-38, Math.min(38, (e.clientX - lastX.current) * 1.7)))
+      lastX.current = e.clientX
+      clearTimeout(idle.current)
+      idle.current = setTimeout(() => drop(), 1000)
+    }
+    window.addEventListener('pointermove', onMove, { passive: true })
+    return () => {
+      window.removeEventListener('pointermove', onMove)
+      clearTimeout(idle.current)
+      land()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const touch = (e) => {
+    if (e.pointerType === 'mouse') {
+      stopFlight()
+      caught.current = true
+      lastX.current = e.clientX
+      clearTimeout(idle.current)
+      idle.current = setTimeout(() => drop(), 1000)
+      return
+    }
+    const h = home.current?.offsetHeight ?? 200
+    drop(h * lift * 0.5 * dir, -h * lift)
   }
 
   return (
-    <div className="absolute" style={{ left: `${left}%`, top: `${top}%`, height: `min(${vw}vw, ${cap}%)` }}>
-      <motion.div className="h-full" animate={flight}>
+    <div ref={home} className="absolute" style={{ left: `${left}%`, top: `${top}%`, height: `min(${vw}vw, ${cap}%)` }}>
+      <motion.div className="h-full" style={{ x: sx, y: sy, rotate: sr }}>
         <motion.div
           className="h-full"
           animate={{ rotate: 360 * dir }}
@@ -231,7 +254,7 @@ function Feather({ left, top, vw, cap, secs, dir, lift }) {
             alt=""
             loading="lazy"
             decoding="async"
-            onPointerEnter={knock}
+            onPointerEnter={touch}
             className="pointer-events-auto block h-full w-auto cursor-pointer saturate-100 transition-[filter] duration-300 hover:saturate-[1.75]"
           />
         </motion.div>

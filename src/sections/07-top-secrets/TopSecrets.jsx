@@ -59,10 +59,10 @@ const VINE_FADE =
  */
 const VINES = {
   1: [
-    { left: '75.9vw', top: 'calc(-1.25rem - 2.1vw)', width: '63.1vw', matrix: '-1, 0.016, -0.016, -1' },
+    { left: '75.9vw', top: 'calc(-1.25rem + 3.4vw)', width: '63.1vw', matrix: '-1, 0.016, -0.016, -1' },
     { left: '4.8vw', top: '80%', width: '34vw', matrix: '0.48, 0.877, 0.877, -0.48', desktopOnly: true },
   ],
-  2: [{ left: '81.4vw', top: 'calc(-1.25rem - 1.6vw)', width: '42.2vw', matrix: '-0.983, -0.185, -0.185, 0.983' }],
+  2: [{ left: '81.4vw', top: 'calc(-1.25rem + 3.9vw)', width: '42.2vw', matrix: '-0.983, -0.185, -0.185, 0.983' }],
 }
 
 /**

@@ -192,7 +192,7 @@ export default function Portfolio() {
                8px, deeper than the chips' 4px, because the tray is the lower
                surface: it has the section's own ground beneath it rather than
                2.5rem of capsule padding. */
-            className="inline-flex max-w-full flex-wrap items-center justify-center gap-1.5 rounded-[2.5rem] bg-gold-500 p-2 shadow-[0_8px_0_-2px_var(--color-plum-900),0_26px_44px_-20px_rgba(54,14,57,0.6)] sm:rounded-full sm:p-2.5"
+            className="inline-flex max-w-[calc(100%-1.5rem)] flex-wrap items-center justify-center gap-2 rounded-[2.25rem] bg-gold-500 px-5 py-3.5 sm:max-w-full sm:gap-1.5 sm:rounded-[2.5rem] sm:p-2 shadow-[0_8px_0_-2px_var(--color-plum-900),0_26px_44px_-20px_rgba(54,14,57,0.6)] sm:rounded-full sm:p-2.5"
           >
             {CHIPS.map((f) => {
               const active = f.id === filter
@@ -225,7 +225,7 @@ export default function Portfolio() {
                      be: one shared element slides between chips rather than
                      each fading its own background). `active:` on the button
                      alone would never touch it. */
-                  className={`btn-type relative rounded-full px-4 py-2 text-sm font-semibold transition-[color,box-shadow] duration-300 active:text-plum-900 [&:active>span:first-child]:bg-gold-500 sm:px-6 sm:py-2.5 ${
+                  className={`btn-type relative rounded-full px-3 py-1.5 text-[0.8rem] font-semibold sm:px-4 sm:py-2 sm:text-sm transition-[color,box-shadow] duration-300 active:text-plum-900 [&:active>span:first-child]:bg-gold-500 sm:px-6 sm:py-2.5 ${
                     active
                       ? 'text-white shadow-[0_6px_0_-2px_var(--color-plum-900),0_10px_16px_-10px_rgba(54,14,57,0.55)]'
                       : 'text-plum-700 shadow-[0_6px_0_-2px_var(--color-plum-900),0_10px_16px_-10px_rgba(54,14,57,0.35)] hover:text-plum-900'

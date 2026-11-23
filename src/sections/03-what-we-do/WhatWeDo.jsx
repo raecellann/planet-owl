@@ -361,7 +361,7 @@ export default function WhatWeDo() {
         style={reduce ? { scaleX: -1 } : { scaleX: -1, x: cloudLeftX, y: cloudY }}
         // `top-[38vw]`, down from 34 — it sat high enough to cut across the
         // owls' feet; lower, it is ground haze under them.
-        className="pointer-events-none absolute -left-[13vw] top-[38vw] z-0 w-[32vw] max-w-none select-none opacity-60"
+        className="pointer-events-none absolute z-0 w-[44vw] max-w-none select-none opacity-60 max-sm:-right-[14vw] max-sm:top-[112vw] sm:-left-[13vw] sm:top-[38vw] sm:w-[32vw]"
       />
 
       {/* 1594 — the design's own content width. The inspector puts the title

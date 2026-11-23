@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import BlogLayout from './BlogLayout'
 import { A } from '../lib/assets'
 import { WORK } from '../sections/02-portfolio/work'
+import StackCards from '../components/StackCards'
 
 /**
  * The About page, at `#/about`.
@@ -94,6 +95,17 @@ function CountUp({ to }) {
   )
 }
 
+/** The flock around the island: the hero's own owls, at different depths. */
+const TEAM = [
+  { src: A.owl.tophat, x: '2%', y: '10%', w: '21%' },
+  { src: A.owl.crown, x: '25%', y: '0%', w: '19%' },
+  { src: A.owl.flower, x: '72%', y: '3%', w: '22%' },
+  { src: A.owl.pumpkin, x: '0%', y: '47%', w: '20%' },
+  { src: A.owl.flame, x: '79%', y: '40%', w: '20%' },
+  { src: A.owl.astronaut, x: '17%', y: '66%', w: '22%' },
+  { src: A.owl.float, x: '48%', y: '43%', w: '42%' },
+]
+
 const PROMISES = [
   {
     title: 'Make your brand impossible to ignore',
@@ -150,16 +162,20 @@ export default function About() {
               you.
             </p>
           </div>
-          {/* The studio's own wizard, standing free on the page — no card,
-              no sky panel behind him (by request; he had been put in a
-              rounded container, and before that this was a stock-looking
-              photograph). */}
-          <img
-            src={A.owl.wizardLg}
-            alt="The Planet Owl wizard, in a starred hat with a wand"
-            loading="lazy"
-            className="mx-auto block h-[min(80vw,30rem)] w-auto object-contain [mask-image:linear-gradient(180deg,#000_94%,transparent_100%)]"
-          />
+          {/* The whole team on the studio's island, as on the hero. */}
+          <div role="img" aria-label="The Planet Owl team of owls flying around the studio's floating island" className="relative mx-auto aspect-[1/0.92] w-full max-w-[38rem]">
+            <img src={A.island} alt="" loading="lazy" className="absolute bottom-[3%] left-[10%] w-[80%]" />
+            {TEAM.map((o) => (
+              <img
+                key={o.src}
+                src={o.src}
+                alt=""
+                loading="lazy"
+                style={{ left: o.x, top: o.y, width: o.w }}
+                className="absolute transition-transform duration-300 hover:-translate-y-2"
+              />
+            ))}
+          </div>
         </div>
       </section>
 
@@ -264,30 +280,15 @@ export default function About() {
               so the next one slides up over it as the page moves. The
               offsets clear the fixed nav; nothing above this list may clip
               or the pinning stops. */}
-          <ul className="mt-10 space-y-8">
-            {PROMISES.map((p, i) => (
-              <li
-                key={p.title}
-                // Pinned in the MIDDLE of the screen, by request, not under the nav:
-                // half the window less half a panel (17rem min-height), stepped
-                // 1.75rem per panel, and never higher than the nav's own clearance.
-                style={{ top: `max(8.5rem, calc(50svh - 8.5rem + ${i * 1.75}rem))` }}
-                className={`sticky grid min-h-[17rem] items-center gap-6 rounded-[1.75rem] p-8 shadow-[0_-22px_44px_-28px_rgba(54,14,57,0.6)] sm:p-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-12 ${
-                  ['bg-gold-200', 'bg-[#e7b248]', 'bg-plum-800'][i]
-                }`}
-              >
-                <div>
-                  <p className={`font-['Momo_Trust_Display'] text-5xl leading-none ${i === 2 ? 'text-gold-500' : 'text-teal-600'}`}>
-                    0{i + 1}
-                  </p>
-                  <h3 className={`mt-3 font-['Momo_Trust_Display'] text-[clamp(1.6rem,3vw,2.5rem)] font-normal leading-[1.1] ${i === 2 ? 'text-white' : 'text-plum-900'}`}>
-                    {p.title}
-                  </h3>
-                </div>
-                <p className={`font-ui text-lg leading-relaxed ${i === 2 ? 'text-gold-200' : 'text-plum-900'}`}>{p.copy}</p>
-              </li>
-            ))}
-          </ul>
+          <div className="mt-10">
+            <StackCards
+              tones={['bg-gold-200 text-plum-900', 'bg-[#e7b248] text-plum-900', 'bg-plum-800 text-gold-200']}
+              items={PROMISES.map((p) => ({
+                title: p.title,
+                body: <p className="max-w-3xl font-ui text-lg leading-relaxed">{p.copy}</p>,
+              }))}
+            />
+          </div>
 
           <p className="mt-14 font-['Momo_Trust_Display'] text-[clamp(1.5rem,3vw,2.3rem)] leading-tight text-plum-700">
             <span className="text-teal-600">No</span> guesswork. <span className="text-teal-600">No</span>{' '}

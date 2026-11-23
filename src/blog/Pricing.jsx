@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from 'motion/react'
 import BlogLayout from './BlogLayout'
 import { A } from '../lib/assets'
 import Faq from '../components/Faq'
+import StackCards from '../components/StackCards'
 import cloudImg from '../../assets/section 2/image 35 copy.png'
 
 /**
@@ -120,11 +121,7 @@ export default function Pricing() {
           {PLANS.map((p) => (
             <li
               key={p.name}
-              className={`flex flex-col rounded-[1.75rem] p-7 ring-1 ${
-                p.featured
-                  ? 'bg-plum-800 text-white ring-plum-800 shadow-[0_30px_60px_-30px_rgba(54,14,57,0.7)]'
-                  : 'bg-white text-plum-900 ring-plum-900/10 shadow-[0_30px_60px_-36px_rgba(54,14,57,0.45)]'
-              }`}
+              className={`flex flex-col rounded-[1.75rem] p-7 ring-1 ${p.featured ? 'bg-white text-plum-900 ring-[3px] ring-gold-500 shadow-[0_30px_60px_-30px_rgba(54,14,57,0.5)]' : 'bg-white text-plum-900 ring-plum-900/10 shadow-[0_30px_60px_-36px_rgba(54,14,57,0.45)]'}`}
             >
               {/* The owl on TOP of the card and large, by request — it was a
                   5rem figure tucked beside the plan's name. */}
@@ -134,34 +131,30 @@ export default function Pricing() {
                 {p.tag}
               </p>
               <img src={p.owl} alt="" aria-hidden loading="lazy" className="mx-auto mt-5 h-44 w-auto object-contain sm:h-48" />
-              <h2 className={`mt-5 font-['Momo_Trust_Display'] text-3xl font-normal ${p.featured ? 'text-gold-500' : 'text-plum-700'}`}>
+              <h2 className={`mt-5 font-['Momo_Trust_Display'] text-3xl font-normal text-plum-700`}>
                 {p.name}
               </h2>
               <p className="mt-4 font-ui">
-                {p.from && <span className={`mr-1.5 text-sm ${p.featured ? 'text-gold-200' : 'text-plum-600'}`}>from</span>}
+                {p.from && <span className={`mr-1.5 text-sm text-plum-600`}>from</span>}
                 <span className="text-[2.6rem] font-bold leading-none">{p.price}</span>
-                <span className={`text-base ${p.featured ? 'text-gold-200' : 'text-plum-600'}`}>/mo</span>
+                <span className={`text-base text-plum-600`}>/mo</span>
               </p>
-              <p className={`mt-3 min-h-[3.5rem] font-ui leading-snug ${p.featured ? 'text-gold-200' : 'text-plum-800'}`}>
+              <p className={`mt-3 min-h-[3.5rem] font-ui leading-snug text-plum-800`}>
                 {p.line}
               </p>
 
               <a
                 href="#/contact"
-                className={`btn-type mt-6 inline-flex h-12 items-center justify-center rounded-full px-6 font-ui font-semibold no-underline transition-colors ${
-                  p.featured
-                    ? 'bg-gold-500 text-plum-900 shadow-[0_6px_0_-2px_var(--color-plum-950)] hover:bg-gold-400'
-                    : 'bg-plum-800 text-white shadow-[0_6px_0_-2px_var(--color-plum-950)] hover:bg-plum-700'
-                }`}
+                className={`btn-type mt-6 inline-flex h-12 items-center justify-center rounded-full px-6 font-ui font-semibold no-underline transition-colors ${p.featured ? 'bg-gold-500 text-plum-900 shadow-[0_6px_0_-2px_var(--color-plum-950)] hover:bg-gold-400' : 'bg-plum-800 text-white shadow-[0_6px_0_-2px_var(--color-plum-950)] hover:bg-plum-700'}`}
               >
                 {p.from ? 'Let’s Talk' : 'Start Free Trial'}
               </a>
 
-              <p className={`mt-7 font-ui text-sm font-bold ${p.featured ? 'text-white' : 'text-plum-900'}`}>{p.lead}</p>
+              <p className={`mt-7 font-ui text-sm font-bold text-plum-900`}>{p.lead}</p>
               <ul className="mt-3 space-y-2.5">
                 {p.items.map((item) => (
-                  <li key={item} className={`flex items-start gap-2.5 font-ui ${p.featured ? 'text-gold-200' : 'text-plum-800'}`}>
-                    <svg viewBox="0 0 24 24" aria-hidden className={`mt-0.5 size-5 shrink-0 ${p.featured ? 'text-gold-500' : 'text-teal-500'}`} fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
+                  <li key={item} className={`flex items-start gap-2.5 font-ui text-plum-800`}>
+                    <svg viewBox="0 0 24 24" aria-hidden className={`mt-0.5 size-5 shrink-0 text-teal-500`} fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M5 12.5l4.5 4.5L19 7.5" />
                     </svg>
                     {item}
@@ -190,33 +183,77 @@ export default function Pricing() {
           <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-gold-500">
             Standard Issue on Every Plan
           </h2>
-          <ul className="mt-10 space-y-8">
-            {STANDARD.map((g, i) => (
-              <li
-                key={g.title}
-                // Pinned in the MIDDLE of the screen, by request, not under the nav:
-                // half the window less half a panel (17rem min-height), stepped
-                // 1.75rem per panel, and never higher than the nav's own clearance.
-                style={{ top: `max(8.5rem, calc(50svh - 8.5rem + ${i * 1.75}rem))` }}
-                className="sticky grid min-h-[17rem] items-center gap-6 rounded-[1.75rem] bg-white p-8 shadow-[0_-22px_44px_-26px_rgba(20,5,20,0.85)] sm:p-12 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] lg:gap-12"
-              >
+          <div className="mt-10">
+            <StackCards
+              tones={['bg-white text-plum-800', 'bg-gold-200 text-plum-900', 'bg-[#e7b248] text-plum-900']}
+              items={STANDARD.map((g) => ({
+                title: g.title,
+                body: (
+                  <ul className="space-y-3">
+                    {g.items.map((item) => (
+                      <li key={item} className="flex items-start gap-3 font-ui text-lg leading-snug">
+                        <Check className="mt-1 text-teal-600" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                ),
+              }))}
+            />
+          </div>
+
+          {/* The tile grid, laid out after the reference. Its wording is only
+              what the studio has actually said. The reference's cancel-anytime,
+              refund and no-fee promises are that company's terms, so none is
+              repeated here until Planet Owl decides its own. */}
+          <h2 className="mt-24 text-center font-['Momo_Trust_Display'] text-[clamp(1.9rem,4vw,3.2rem)] font-normal leading-[1.1] text-gold-500">
+            Simple Plans. No Guesswork.
+          </h2>
+          <div className="mt-10 grid gap-4 md:grid-cols-3">
+            <div className="rounded-[1.5rem] bg-teal-400 p-6 text-plum-900 md:row-span-2">
+              <h3 className="font-ui text-xl font-bold">Month by month.</h3>
+              <p className="mt-2 font-ui leading-snug">One flat price on your plan, billed monthly.</p>
+              <ol className="mt-6 space-y-4 border-l-2 border-plum-900/40 pl-5">
+                {['Month 1', 'Month 2', 'Month 3', 'Month 4'].map((m) => (
+                  <li key={m} className="relative font-ui font-semibold before:absolute before:-left-[1.72rem] before:top-1 before:size-3.5 before:rounded-full before:bg-plum-800">
+                    {m}
+                  </li>
+                ))}
+              </ol>
+            </div>
+            <div className="rounded-[1.5rem] bg-white p-6 text-plum-900">
+              <h3 className="font-ui text-xl font-bold">One flock.</h3>
+              <p className="mt-2 font-ui leading-snug text-plum-800">Design, digital, development and AI under one roof.</p>
+            </div>
+            <div className="rounded-[1.5rem] bg-white p-6 text-plum-900">
+              <h3 className="font-ui text-xl font-bold">Move up anytime.</h3>
+              <p className="mt-2 font-ui leading-snug text-plum-800">Need another craft? Step up to the next plan.</p>
+            </div>
+            <div className="rounded-[1.5rem] bg-white p-6 text-plum-900">
+              <h3 className="font-ui text-xl font-bold">Built for your brand.</h3>
+              <p className="mt-2 font-ui leading-snug text-plum-800">Refined in the nest before it reaches you.</p>
+            </div>
+            <div className="rounded-[1.5rem] bg-teal-400 p-6 text-plum-900">
+              <h3 className="font-ui text-xl font-bold">Custom scope.</h3>
+              <p className="mt-2 font-ui leading-snug">Parliament is shaped around what you are building.</p>
+            </div>
+            <div className="rounded-[1.5rem] bg-gold-500 p-6 text-plum-900 md:col-span-3">
+              <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
                 <div>
-                  <p className="font-['Momo_Trust_Display'] text-5xl leading-none text-teal-600">0{i + 1}</p>
-                  <h3 className="mt-3 font-['Momo_Trust_Display'] text-[clamp(1.8rem,3.4vw,2.8rem)] font-normal leading-none text-plum-700">
-                    {g.title}
-                  </h3>
+                  <h3 className="font-ui text-xl font-bold">Free 2-week trial.</h3>
+                  <p className="mt-2 font-ui leading-snug">See how the nest handles your brand first.</p>
                 </div>
-                <ul className="space-y-4">
-                  {g.items.map((item) => (
-                    <li key={item} className="flex items-start gap-3 font-ui text-lg leading-snug text-plum-800">
-                      <Check className="mt-1 text-teal-500" />
-                      {item}
+                <ol className="flex items-center gap-3 font-ui text-sm font-bold">
+                  {['Try', 'Decide', 'Stay'].map((t, i) => (
+                    <li key={t} className="flex items-center gap-3">
+                      {i > 0 && <span aria-hidden className="h-0.5 w-8 bg-plum-900/50" />}
+                      <span className="rounded-full bg-plum-800 px-4 py-2 text-white">{t}</span>
                     </li>
                   ))}
-                </ul>
-              </li>
-            ))}
-          </ul>
+                </ol>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -275,10 +312,10 @@ export default function Pricing() {
           yellow band. The clouds stop short of the 1320px column, so they
           frame the questions rather than sitting under them. */}
       <section className="relative overflow-hidden bg-white px-5 py-14 sm:px-8 sm:py-20">
-        <img src={cloudImg} alt="" aria-hidden loading="lazy" style={{ left: 'min(-12vw, calc(50vw - 660px - 26vw))' }} className="pointer-events-none absolute top-[6%] w-[max(12rem,24vw)] max-w-none -scale-x-100 opacity-55" />
-        <img src={cloudImg} alt="" aria-hidden loading="lazy" style={{ right: 'min(-10vw, calc(50vw - 660px - 20vw))' }} className="pointer-events-none absolute top-[30%] w-[max(10rem,18vw)] max-w-none opacity-50" />
+        <img src={cloudImg} alt="" aria-hidden loading="lazy" style={{ left: 'min(-15vw, calc(50vw - 660px - 27vw))' }} className="pointer-events-none absolute top-[-4%] w-[max(13rem,29vw)] max-w-none -scale-x-100 opacity-55" />
+        <img src={cloudImg} alt="" aria-hidden loading="lazy" style={{ right: 'min(-10vw, calc(50vw - 660px - 20vw))' }} className="pointer-events-none absolute top-[47%] w-[max(7rem,10vw)] max-w-none opacity-35" />
         <img src={cloudImg} alt="" aria-hidden loading="lazy" style={{ right: 'min(-14vw, calc(50vw - 660px - 30vw))' }} className="pointer-events-none absolute bottom-[-6%] w-[max(13rem,28vw)] max-w-none opacity-45" />
-        <img src={cloudImg} alt="" aria-hidden loading="lazy" style={{ left: 'min(-8vw, calc(50vw - 660px - 15vw))' }} className="pointer-events-none absolute bottom-[8%] w-[max(8rem,13vw)] max-w-none opacity-50" />
+        <img src={cloudImg} alt="" aria-hidden loading="lazy" style={{ left: 'min(-8vw, calc(50vw - 660px - 15vw))' }} className="pointer-events-none absolute bottom-[31%] w-[max(6rem,8vw)] max-w-none opacity-30" />
         <div className="relative mx-auto max-w-[1320px]">
           <Faq tone="light" askHref="#/contact" />
         </div>

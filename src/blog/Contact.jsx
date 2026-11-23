@@ -48,11 +48,11 @@ const SLOTS = Array.from({ length: 17 }, (_, i) => {
  * the words.
  */
 const CLOUDS = [
-  { side: 'left', at: 'min(-14vw, calc(50vw - 590px - 30vw))', top: '4rem', w: 'max(13rem,28vw)', o: 0.55, flip: true },
-  { side: 'right', at: 'min(-8vw, calc(50vw - 590px - 20vw))', top: '8rem', w: 'max(10rem,19vw)', o: 0.5, flip: false },
-  { side: 'right', at: 'min(-16vw, calc(50vw - 590px - 31vw))', top: '36rem', w: 'max(14rem,30vw)', o: 0.45, flip: false },
-  { side: 'left', at: 'min(-7vw, calc(50vw - 590px - 15vw))', top: '34rem', w: 'max(8rem,14vw)', o: 0.5, flip: true },
-  { side: 'left', at: 'min(-10vw, calc(50vw - 590px - 21vw))', top: '56rem', w: 'max(10rem,20vw)', o: 0.45, flip: false },
+  { side: 'left', at: 'min(-17vw, calc(50vw - 590px - 31vw))', top: '-1rem', w: 'max(14rem,32vw)', o: 0.55, flip: true },
+  { side: 'left', at: 'min(-3vw, calc(50vw - 590px - 8vw))', top: '15rem', w: 'max(5rem,7vw)', o: 0.3, flip: false },
+  { side: 'right', at: 'min(-5vw, calc(50vw - 590px - 11vw))', top: '21rem', w: 'max(7rem,11vw)', o: 0.4, flip: true },
+  { side: 'right', at: 'min(-19vw, calc(50vw - 590px - 36vw))', top: '43rem', w: 'max(15rem,37vw)', o: 0.5, flip: false },
+  { side: 'left', at: 'min(-9vw, calc(50vw - 590px - 17vw))', top: '61rem', w: 'max(9rem,17vw)', o: 0.38, flip: false },
 ]
 
 const EMPTY = {

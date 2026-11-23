@@ -14,7 +14,6 @@ import { CONTACT_EMAIL } from '../lib/signup'
  * `index.html`. If any of those change (an analytics script, a new form
  * field, a different form backend), this page has to change with them.
  */
-const UPDATED = 'November 23, 2026'
 
 const SECTIONS = [
   {
@@ -60,7 +59,7 @@ const SECTIONS = [
   {
     title: 'Changes to this page',
     body: [
-      'If what we collect or how we use it changes, we will update this page and the date at the top of it.',
+      'If what we collect or how we use it changes, we will update this page.',
     ],
   },
 ]
@@ -95,10 +94,9 @@ export default function Privacy() {
   return (
     <BlogLayout onBlog={false} page={{ label: 'Privacy', href: '#/privacy' }}>
       <article>
-        <header className="bg-[linear-gradient(180deg,#cdd8f4_0%,#dfe7fa_45%,#ffffff_100%)] px-5 pb-10 pt-[clamp(8rem,12vw,10.5rem)] sm:px-8">
+        <header className="bg-white px-5 pb-10 pt-[clamp(8rem,12vw,10.5rem)] sm:px-8">
           <div className="mx-auto max-w-3xl text-center">
-            <p className="font-ui text-sm text-plum-600">Last updated {UPDATED}</p>
-            <h1 className="mt-4 font-['Momo_Trust_Display'] text-[clamp(1.9rem,4.2vw,3.2rem)] font-normal leading-[1.12] text-plum-700">
+            <h1 className="font-['Momo_Trust_Display'] text-[clamp(1.9rem,4.2vw,3.2rem)] font-normal leading-[1.12] text-plum-700">
               Privacy Policy
             </h1>
             <p className="mx-auto mt-5 max-w-xl font-ui leading-relaxed text-plum-800">
