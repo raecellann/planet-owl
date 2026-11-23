@@ -242,7 +242,7 @@ export default function TheFlock() {
           reads centred in the plate instead. */}
       <div className="relative mx-auto max-w-6xl px-5 pt-20 sm:px-8">
         <Reveal y={36}>
-          <h2 className="text-center font-ui text-[clamp(1.9rem,4.6vw,3.35rem)] font-bold leading-[1.08] text-plum-800">
+          <h2 className="text-center font-ui text-[clamp(1.9rem,4.6vw,3.35rem)] font-bold leading-[1.08] text-plum-700">
             Join 1,000+ Owls
             <br className="hidden sm:block" /> Nesting With Us
           </h2>

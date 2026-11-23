@@ -25,9 +25,9 @@ const GROUNDS = {
 
 const TONES = {
   teal: 'bg-teal-500 text-white',
-  gold: 'bg-gold-500 text-plum-900',
+  gold: 'bg-gold-500 text-plum-700',
   plum: 'bg-plum-800 text-white',
-  white: 'bg-white text-plum-900',
+  white: 'bg-white text-plum-700',
 }
 
 const DOTS = {
@@ -83,7 +83,7 @@ export default function BlogCover({ cover, title, className = '', ratio = 'aspec
             className={`aspect-[16/11] rounded-[1.4cqw] ${theme === 'plum' ? 'bg-[linear-gradient(160deg,#f4cb6b,#e7b248)]' : 'bg-[linear-gradient(160deg,#6b3f69,#451647)]'}`}
           />
           <p className="mt-[1.4cqw] font-ui text-[1.5cqw] leading-none text-plum-500">{card.kicker}</p>
-          <p className="mt-[0.7cqw] font-ui text-[2.5cqw] font-bold leading-[1.1] text-plum-900">{card.title}</p>
+          <p className="mt-[0.7cqw] font-ui text-[2.5cqw] font-bold leading-[1.1] text-plum-700">{card.title}</p>
         </div>
       )}
 
@@ -146,7 +146,7 @@ function Queue({ items }) {
           className="rounded-[1.2cqw] bg-white/95 px-[1.5cqw] py-[1.1cqw] shadow-[0_1.4cqw_2.6cqw_-1.6cqw_rgba(36,5,31,0.7)]"
         >
           <p className="font-ui text-[1.05cqw] leading-none text-plum-500">Queue · {String(i + 1).padStart(2, '0')}</p>
-          <p className="mt-[0.5cqw] font-ui text-[1.7cqw] font-bold leading-none text-plum-900">{label}</p>
+          <p className="mt-[0.5cqw] font-ui text-[1.7cqw] font-bold leading-none text-plum-700">{label}</p>
         </div>
       ))}
     </div>

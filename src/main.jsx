@@ -8,6 +8,7 @@ import Contact from './blog/Contact.jsx'
 import About from './blog/About.jsx'
 import Pricing from './blog/Pricing.jsx'
 import { findPost } from './blog/posts.js'
+import { watchOrphans } from './lib/noOrphans'
 import './index.css'
 
 /**
@@ -96,6 +97,8 @@ function Root() {
   }
   return <App skipIntro={seenBlog.current} />
 }
+
+watchOrphans()
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

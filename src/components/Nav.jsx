@@ -253,7 +253,7 @@ export default function Nav({ entered = true }) {
                 // rather than directly in the anchor: the browser's default
                 // link underline was drawing on the anchor's own line box, so a
                 // rule that had never been needed suddenly was.
-                className="btn-type active:!shadow-none relative block text-[max(0.8rem,1.05vw)] font-bold text-plum-700 no-underline transition-colors before:invisible before:block before:font-[family-name:var(--font-pop)] before:font-normal before:content-[attr(data-label)] hover:text-plum-900"
+                className="btn-type active:!shadow-none relative block text-[max(0.8rem,1.05vw)] font-bold text-plum-700 no-underline transition-colors before:invisible before:block before:font-[family-name:var(--font-pop)] before:font-normal before:content-[attr(data-label)] hover:text-plum-800"
               >
                 <span className="absolute inset-0 flex items-center justify-center whitespace-nowrap">
                   {l.label}

@@ -251,7 +251,7 @@ export default function Intro({ onEnter, onDone }) {
           initial={reduce ? false : { opacity: 0, y: 22 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="text-shadow-soft font-['Momo_Trust_Display'] text-[clamp(1.5rem,3vw,3.5rem)] font-normal tracking-tight text-plum-800"
+          className="text-shadow-soft font-['Momo_Trust_Display'] text-[clamp(1.5rem,3vw,3.5rem)] font-normal tracking-tight text-plum-700"
         >
           Are you ready to fly?
         </motion.h1>
@@ -269,7 +269,7 @@ export default function Intro({ onEnter, onDone }) {
           whileTap={{ y: 2 }}
           aria-label="Enter Planet Owl"
           // IMPROVED PADDING & TEXT SIZE: px-10 py-4 text-lg
-          className="btn-type rounded-full bg-gold-500 px-10 py-4 text-lg font-semibold text-plum-900 shadow-[0_6px_0_-2px_var(--color-plum-900),0_20px_35px_-15px_rgba(54,14,57,0.65)] select-none transition-colors duration-200 active:bg-teal-500"
+          className="btn-type rounded-full bg-gold-500 px-10 py-4 text-lg font-semibold text-plum-700 shadow-[0_6px_0_-2px_var(--color-plum-900),0_20px_35px_-15px_rgba(54,14,57,0.65)] select-none transition-colors duration-200 active:bg-teal-500"
         >
           Hold the button
         </motion.button>

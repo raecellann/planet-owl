@@ -85,7 +85,7 @@ export default function BlogPost({ post }) {
         <div className="mx-auto grid max-w-[1180px] gap-10 px-5 pb-8 pt-14 sm:px-8 lg:grid-cols-[13rem_minmax(0,1fr)_9rem] lg:gap-12">
           <nav aria-label="Topics" className="hidden lg:block">
             <div className="sticky top-[calc(2.92vw+max(3.25rem,4.4vw)+2rem)]">
-              <p className="font-ui text-xs font-bold uppercase tracking-wider text-plum-900">Topics</p>
+              <p className="font-ui text-xs font-bold uppercase tracking-wider text-plum-700">Topics</p>
               <ul className="mt-4 space-y-3 border-l-2 border-plum-100">
                 {topics.map((t) => (
                   <li key={t.id}>
@@ -94,8 +94,8 @@ export default function BlogPost({ post }) {
                       onClick={() => jumpToTopic(t.id)}
                       className={`-ml-0.5 block w-full border-l-2 pl-4 text-left font-ui text-sm leading-snug transition-colors ${
                         active === t.id
-                          ? 'border-gold-500 font-bold text-plum-900'
-                          : 'border-transparent text-plum-600 hover:text-plum-900'
+                          ? 'border-gold-500 font-bold text-plum-700'
+                          : 'border-transparent text-plum-600 hover:text-plum-800'
                       }`}
                     >
                       {t.label}
@@ -107,7 +107,7 @@ export default function BlogPost({ post }) {
           </nav>
 
           <div className="min-w-0">
-            <p className="font-ui text-[1.15rem] font-medium leading-relaxed text-plum-800">{post.excerpt}</p>
+            <p className="font-ui text-[1.15rem] font-medium leading-relaxed text-plum-700">{post.excerpt}</p>
 
             {post.sections.map((s) => (
               <section key={s.id} id={`topic-${s.id}`} className="scroll-mt-[calc(2.92vw+max(3.25rem,4.4vw)+2rem)] pt-12">
@@ -128,8 +128,8 @@ export default function BlogPost({ post }) {
                 <dl className="mt-5 space-y-4">
                   {post.faq.map((f) => (
                     <div key={f.q} className="rounded-2xl bg-plum-100/60 p-6">
-                      <dt className="font-ui text-lg font-bold text-plum-900">{f.q}</dt>
-                      <dd className="mt-2 font-ui leading-relaxed text-plum-800">{f.a}</dd>
+                      <dt className="font-ui text-lg font-bold text-plum-700">{f.q}</dt>
+                      <dd className="mt-2 font-ui leading-relaxed text-plum-700">{f.a}</dd>
                     </div>
                   ))}
                 </dl>
@@ -138,10 +138,10 @@ export default function BlogPost({ post }) {
 
             {/* the ask, in the page's own gold */}
             <div className="mt-14 rounded-[1.75rem] bg-[#e7b248] p-8 sm:p-10">
-              <p className="font-['Momo_Trust_Display'] text-[clamp(1.4rem,2.6vw,2rem)] leading-tight text-plum-900">
+              <p className="font-['Momo_Trust_Display'] text-[clamp(1.4rem,2.6vw,2rem)] leading-tight text-plum-700">
                 Want this running for your brand?
               </p>
-              <p className="mt-3 max-w-xl font-ui leading-relaxed text-plum-900/85">
+              <p className="mt-3 max-w-xl font-ui leading-relaxed text-plum-700/85">
                 Tell us what you are building. We will show you how the nest would handle it, refined
                 before it reaches you.
               </p>
@@ -156,7 +156,7 @@ export default function BlogPost({ post }) {
 
           <aside className="lg:block">
             <div className="sticky top-[calc(2.92vw+max(3.25rem,4.4vw)+2rem)]">
-              <p className="font-ui text-xs font-bold uppercase tracking-wider text-plum-900">Share this article</p>
+              <p className="font-ui text-xs font-bold uppercase tracking-wider text-plum-700">Share this article</p>
               <div className="mt-4 flex gap-2.5">
                 <ShareLink
                   href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`}
@@ -174,7 +174,7 @@ export default function BlogPost({ post }) {
                   type="button"
                   onClick={copy}
                   aria-label="Copy the link to this article"
-                  className="grid size-10 place-items-center rounded-full bg-gold-500 text-plum-900 transition-colors hover:bg-gold-400"
+                  className="grid size-10 place-items-center rounded-full bg-gold-500 text-plum-700 transition-colors hover:bg-gold-400"
                 >
                   <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                     <rect x="9" y="9" width="11" height="11" rx="2.5" />
@@ -210,7 +210,7 @@ export default function BlogPost({ post }) {
                     <BlogCover cover={p.cover} title={p.title} />
                     <CategoryChip className="absolute left-3 top-3">{p.category}</CategoryChip>
                   </div>
-                  <h3 className="mt-5 font-ui text-xl font-bold leading-snug text-plum-900">{p.title}</h3>
+                  <h3 className="mt-5 font-ui text-xl font-bold leading-snug text-plum-700">{p.title}</h3>
                 </a>
               </li>
             ))}
@@ -228,7 +228,7 @@ function ShareLink({ href, label, children }) {
       target="_blank"
       rel="noopener noreferrer"
       aria-label={label}
-      className="grid size-10 place-items-center rounded-full bg-gold-500 text-plum-900 transition-colors hover:bg-gold-400"
+      className="grid size-10 place-items-center rounded-full bg-gold-500 text-plum-700 transition-colors hover:bg-gold-400"
     >
       <svg viewBox="0 0 24 24" className="size-5" fill="currentColor" aria-hidden>
         {children}
@@ -239,13 +239,13 @@ function ShareLink({ href, label, children }) {
 
 function Block({ block }) {
   if (block.p) {
-    return <p className="mt-5 font-ui text-[1.05rem] leading-[1.75] text-plum-800">{block.p}</p>
+    return <p className="mt-5 font-ui text-[1.05rem] leading-[1.75] text-plum-700">{block.p}</p>
   }
   if (block.list) {
     return (
       <ul className="mt-5 space-y-3">
         {block.list.map((item) => (
-          <li key={item} className="relative pl-7 font-ui text-[1.05rem] leading-[1.7] text-plum-800">
+          <li key={item} className="relative pl-7 font-ui text-[1.05rem] leading-[1.7] text-plum-700">
             <span aria-hidden className="absolute left-0 top-[0.62em] size-2.5 rounded-full bg-gold-500" />
             {item}
           </li>

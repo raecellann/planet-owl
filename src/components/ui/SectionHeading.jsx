@@ -21,7 +21,7 @@ export default function SectionHeading({ eyebrow, title, copy, tone = 'dark', al
       <Reveal y={34} delay={0.08}>
         <h2
           className={`mt-5 font-ui text-[clamp(1.9rem,4.6vw,3.35rem)] font-semibold leading-[1.1] ${
-            light ? 'text-white' : 'text-plum-800'
+            light ? 'text-white' : 'text-plum-700'
           }`}
         >
           {title}

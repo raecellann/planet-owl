@@ -66,7 +66,7 @@ export default function BlogIndex() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search the blog"
-              className="h-14 w-full rounded-full border-[3px] border-plum-900 bg-white pl-13 pr-6 font-ui text-base font-semibold text-plum-900 placeholder:text-plum-900/55 focus:outline-none focus-visible:ring-4 focus-visible:ring-gold-500/60"
+              className="h-14 w-full rounded-full border-[3px] border-plum-900 bg-white pl-13 pr-6 font-ui text-base font-semibold text-plum-700 placeholder:text-plum-700/55 focus:outline-none focus-visible:ring-4 focus-visible:ring-gold-500/60"
             />
           </label>
         </div>
@@ -111,11 +111,11 @@ export default function BlogIndex() {
               <span className="w-fit rounded-full bg-teal-500 px-3.5 py-1.5 font-ui text-xs font-bold leading-none text-white">
                 Featured
               </span>
-              <h2 className="mt-5 font-ui text-[clamp(1.4rem,2.3vw,2rem)] font-bold leading-[1.18] text-plum-900">
+              <h2 className="mt-5 font-ui text-[clamp(1.4rem,2.3vw,2rem)] font-bold leading-[1.18] text-plum-700">
                 {featured.title}
               </h2>
               <p className="mt-4 font-ui leading-relaxed text-plum-700">{featured.excerpt}</p>
-              <span className="btn-type mt-7 inline-flex h-12 w-fit items-center rounded-full bg-gold-500 px-6 font-semibold text-plum-900 shadow-[0_6px_0_-2px_var(--color-plum-900)] transition-colors group-hover:bg-gold-400">
+              <span className="btn-type mt-7 inline-flex h-12 w-fit items-center rounded-full bg-gold-500 px-6 font-semibold text-plum-700 shadow-[0_6px_0_-2px_var(--color-plum-900)] transition-colors group-hover:bg-gold-400">
                 Read More
               </span>
             </div>
@@ -168,7 +168,7 @@ export default function BlogIndex() {
                       <BlogCover cover={p.cover} title={p.title} />
                       <CategoryChip className="absolute left-3 top-3">{p.category}</CategoryChip>
                     </div>
-                    <h3 className="mt-5 font-ui text-xl font-bold leading-snug text-plum-900 transition-colors group-hover:text-plum-700">
+                    <h3 className="mt-5 font-ui text-xl font-bold leading-snug text-plum-700 transition-colors group-hover:text-plum-700">
                       {p.title}
                     </h3>
                   </a>

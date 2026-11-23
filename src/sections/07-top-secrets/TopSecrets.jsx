@@ -251,7 +251,7 @@ function NestHotspot({ review, open, onToggle, play }) {
                     presenting made-up people as customers. A quote and a
                     rating, with only the brand named, says exactly as much as
                     is actually known. */}
-                <blockquote className="font-ui text-sm leading-relaxed text-plum-800">
+                <blockquote className="font-ui text-sm leading-relaxed text-plum-700">
                   “{quote}”
                 </blockquote>
 
@@ -263,7 +263,7 @@ function NestHotspot({ review, open, onToggle, play }) {
                   ))}
                 </div>
 
-                <figcaption className="mt-2.5 border-t border-plum-900/10 pt-2.5 font-display text-sm font-semibold text-plum-900">
+                <figcaption className="mt-2.5 border-t border-plum-900/10 pt-2.5 font-display text-sm font-semibold text-plum-700">
                   {brand}
                 </figcaption>
               </div>

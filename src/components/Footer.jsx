@@ -202,7 +202,7 @@ export default function Footer({ ground = 'night' }) {
                 those same figures so it tracks them if the pill changes —
                 restated again here to match the pill's current (nav-sized)
                 padding rather than the taller pair it shipped with. */}
-            <h2 className="mt-2 pl-[calc(3px_+_0.5rem_+_1.25rem)] font-ui text-[clamp(1.75rem,5.5vw,5rem)] font-bold leading-[1.12] text-plum-900 sm:pl-[calc(3px_+_0.625rem_+_1.75rem)]">
+            <h2 className="mt-2 pl-[calc(3px_+_0.5rem_+_1.25rem)] font-ui text-[clamp(1.75rem,5.5vw,5rem)] font-bold leading-[1.12] text-plum-700 sm:pl-[calc(3px_+_0.625rem_+_1.75rem)]">
               Let’s Make Something
               <br /> Brilliantly Strange!
             </h2>
@@ -272,7 +272,7 @@ export default function Footer({ ground = 'night' }) {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`Planet Owl on ${soc.name}`}
-                    className="text-plum-800 transition-colors hover:text-plum-950"
+                    className="text-plum-700 transition-colors hover:text-plum-800"
                   >
                     {soc.icon}
                   </a>
@@ -281,7 +281,7 @@ export default function Footer({ ground = 'night' }) {
                   // but it is not a link until the account's address is in
                   // `SOCIALS`. A dead `href="#"` would have jumped the page to
                   // its top and announced itself as a link that goes nowhere.
-                  <span key={soc.name} title={`${soc.name} (coming soon)`} className="text-plum-800">
+                  <span key={soc.name} title={`${soc.name} (coming soon)`} className="text-plum-700">
                     <span className="sr-only">{soc.name}, coming soon</span>
                     {soc.icon}
                   </span>
@@ -299,7 +299,7 @@ export default function Footer({ ground = 'night' }) {
                   data-label={l.label}
                   // The navbar's hover: the label swaps to Luckiest Guy, with
                   // the wider face's width reserved so the row does not shift.
-                  className="btn-type active:!shadow-none relative block text-sm font-semibold text-plum-800 no-underline transition-colors before:invisible before:block before:font-[family-name:var(--font-pop)] before:font-normal before:content-[attr(data-label)] hover:text-plum-950 sm:text-base"
+                  className="btn-type active:!shadow-none relative block text-sm font-semibold text-plum-700 no-underline transition-colors before:invisible before:block before:font-[family-name:var(--font-pop)] before:font-normal before:content-[attr(data-label)] hover:text-plum-800 sm:text-base"
                 >
                   <span className="absolute inset-0 flex items-center justify-center whitespace-nowrap">{l.label}</span>
                 </a>

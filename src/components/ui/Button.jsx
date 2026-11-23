@@ -54,7 +54,7 @@ export function GoldButton({
       // portfolio's selected chip uses. Only the FILL changes: the hard ledge
       // stays plum, so the button still presses onto the same shadow it rests
       // on rather than swapping two things at once.
-      className={`${base} ${sizing} bg-gold-500 text-plum-900 shadow-[0_6px_0_-2px_var(--color-plum-900),0_22px_38px_-18px_rgba(20,12,10,0.7)] hover:bg-gold-400 active:bg-teal-500 ${className}`}
+      className={`${base} ${sizing} bg-gold-500 text-plum-700 shadow-[0_6px_0_-2px_var(--color-plum-900),0_22px_38px_-18px_rgba(20,12,10,0.7)] hover:bg-gold-400 active:bg-teal-500 ${className}`}
       whileHover={{ y: -3 }}
       whileTap={{ y: 2 }}
       transition={{ type: 'spring', stiffness: 420, damping: 24 }}

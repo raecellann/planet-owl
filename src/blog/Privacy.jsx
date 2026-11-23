@@ -103,7 +103,7 @@ export default function Privacy() {
             <h1 className="font-['Momo_Trust_Display'] text-[clamp(1.9rem,4.2vw,3.2rem)] font-normal leading-[1.12] text-plum-700">
               Privacy Policy
             </h1>
-            <p className="mx-auto mt-5 max-w-xl font-ui leading-relaxed text-plum-800">
+            <p className="mx-auto mt-5 max-w-xl font-ui leading-relaxed text-plum-700">
               Planet Owl is a creative studio. This page explains, in plain words, what this website
               learns about you and what we do with it.
             </p>
@@ -119,7 +119,7 @@ export default function Privacy() {
         <div className="mx-auto grid max-w-[1180px] gap-10 px-5 pb-8 pt-4 sm:px-8 lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-16">
           <nav aria-label="On this page" className="hidden lg:block">
             <div className="sticky top-[calc(2.92vw+max(3.25rem,4.4vw)+2rem)]">
-              <p className="font-ui text-xs font-bold uppercase tracking-wider text-plum-900">On this page</p>
+              <p className="font-ui text-xs font-bold uppercase tracking-wider text-plum-700">On this page</p>
               <ul className="mt-4 space-y-3 border-l-2 border-plum-100">
                 {TOPICS.map((t) => (
                   <li key={t.id}>
@@ -128,8 +128,8 @@ export default function Privacy() {
                       onClick={() => jumpToTopic(t.id)}
                       className={`-ml-0.5 block w-full border-l-2 pl-4 text-left font-ui text-sm leading-snug transition-colors ${
                         active === t.id
-                          ? 'border-gold-500 font-bold text-plum-900'
-                          : 'border-transparent text-plum-600 hover:text-plum-900'
+                          ? 'border-gold-500 font-bold text-plum-700'
+                          : 'border-transparent text-plum-600 hover:text-plum-800'
                       }`}
                     >
                       {t.label}
@@ -143,9 +143,9 @@ export default function Privacy() {
           <div className="min-w-0 max-w-3xl">
             {SECTIONS.map((s) => (
               <section key={s.title} id={`topic-${slug(s.title)}`} className="mt-10 scroll-mt-[calc(2.92vw+max(3.25rem,4.4vw)+2rem)] first:mt-0">
-                <h2 className="font-ui text-xl font-bold text-plum-900 sm:text-2xl">{s.title}</h2>
+                <h2 className="font-ui text-xl font-bold text-plum-700 sm:text-2xl">{s.title}</h2>
                 {s.body.map((p) => (
-                  <p key={p} className="mt-3 font-ui leading-relaxed text-plum-800">
+                  <p key={p} className="mt-3 font-ui leading-relaxed text-plum-700">
                     {p}
                   </p>
                 ))}
@@ -153,8 +153,8 @@ export default function Privacy() {
             ))}
 
             <section id="topic-contact-us" className="mt-10 scroll-mt-[calc(2.92vw+max(3.25rem,4.4vw)+2rem)]">
-              <h2 className="font-ui text-xl font-bold text-plum-900 sm:text-2xl">Contact us</h2>
-              <p className="mt-3 font-ui leading-relaxed text-plum-800">
+              <h2 className="font-ui text-xl font-bold text-plum-700 sm:text-2xl">Contact us</h2>
+              <p className="mt-3 font-ui leading-relaxed text-plum-700">
                 Questions about this page, or a request about your information, can be sent to{' '}
                 <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold text-teal-600 underline">
                   {CONTACT_EMAIL}

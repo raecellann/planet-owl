@@ -473,7 +473,7 @@ export default function NestTeaser() {
               the smaller cap is closer to the reference anyway - measured
               there, the heading's cap height is about 1.9% of the frame's
               width against the 2.8% this was drawing. */}
-          <h2 className="font-ui text-[clamp(1.6rem,3.4vw,2.9rem)] font-bold leading-[1.12] text-plum-800">
+          <h2 className="font-ui text-[clamp(1.6rem,3.4vw,2.9rem)] font-bold leading-[1.12] text-plum-700">
             Still scrolling… So you really
             <br className="hidden sm:block" /> wanna know our magic?
           </h2>

@@ -189,11 +189,11 @@ function HowItWorks() {
                 >
                   {st.n}
                 </span>
-                <h3 className={`flex min-h-12 items-center font-ui text-xl font-bold transition-colors duration-300 lg:text-2xl ${i === active ? 'text-plum-900' : 'text-plum-900/45'}`}>
+                <h3 className={`flex min-h-12 items-center font-ui text-xl font-bold transition-colors duration-300 lg:text-2xl ${i === active ? 'text-plum-700' : 'text-plum-700/45'}`}>
                   {st.title}
                 </h3>
                 <div className={`grid transition-[grid-template-rows,opacity] duration-500 ease-out ${i === active || reduce ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
-                  <p className="max-w-md overflow-hidden pb-2 font-ui leading-snug text-plum-800 lg:pb-4 lg:leading-relaxed">{st.copy}</p>
+                  <p className="max-w-md overflow-hidden pb-2 font-ui leading-snug text-plum-700 lg:pb-4 lg:leading-relaxed">{st.copy}</p>
                 </div>
               </li>
             ))}
@@ -256,7 +256,7 @@ export default function Pricing() {
           <h1 className="font-['Momo_Trust_Display'] text-[clamp(2rem,5vw,3.8rem)] font-normal leading-[1.08] text-plum-700">
             One Nest. Pick How Much of It You Need.
           </h1>
-          <p className="mx-auto mt-5 max-w-2xl font-ui text-lg leading-relaxed text-plum-800">
+          <p className="mx-auto mt-5 max-w-2xl font-ui text-lg leading-relaxed text-plum-700">
             Four monthly plans, each adding a craft to the one before it. Every plan starts with a
             free 2-week trial.
           </p>
@@ -268,13 +268,13 @@ export default function Pricing() {
           {PLANS.map((p) => (
             <li
               key={p.name}
-              className={`group flex flex-col rounded-[1.75rem] p-7 ring-1 transition-[translate,box-shadow] duration-300 ease-out hover:-translate-y-2.5 hover:!shadow-[0_38px_60px_-26px_rgba(54,14,57,0.6)] motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${p.featured ? 'bg-teal-600 text-white ring-teal-600 shadow-[0_30px_60px_-30px_rgba(54,14,57,0.5)] [&_.text-plum-600]:text-white [&_.text-plum-700]:text-white [&_.text-plum-800]:text-white [&_.text-plum-900]:text-white [&_.text-teal-500]:text-gold-400' : 'bg-white text-plum-900 ring-plum-900/10 shadow-[0_30px_60px_-36px_rgba(54,14,57,0.45)]'}`}
+              className={`group flex flex-col rounded-[1.75rem] p-7 ring-1 transition-[translate,box-shadow] duration-300 ease-out hover:-translate-y-2.5 hover:!shadow-[0_38px_60px_-26px_rgba(54,14,57,0.6)] motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${p.featured ? 'bg-teal-600 text-white ring-teal-600 shadow-[0_30px_60px_-30px_rgba(54,14,57,0.5)] [&_.text-plum-600]:text-white [&_.text-plum-700]:text-white [&_.text-plum-700]:text-white [&_.text-plum-700]:text-white [&_.text-teal-500]:text-gold-400' : 'bg-white text-plum-700 ring-plum-900/10 shadow-[0_30px_60px_-36px_rgba(54,14,57,0.45)]'}`}
             >
               {/* The owl on TOP of the card and large, by request — it was a
                   5rem figure tucked beside the plan's name. */}
               {/* The tag first, and gold on every card — by request. It sat
                   under the owl, and was lilac on three of the four. */}
-              <p className="self-start rounded-full bg-gold-500 px-3 py-1.5 font-ui text-xs font-bold uppercase tracking-wide !text-plum-900">
+              <p className="self-start rounded-full bg-gold-500 px-3 py-1.5 font-ui text-xs font-bold uppercase tracking-wide !text-plum-700">
                 {p.tag}
               </p>
               <img src={p.owl} alt="" aria-hidden loading="lazy" className="mx-auto mt-5 h-44 w-auto origin-bottom object-contain transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:-rotate-3 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:transform-none sm:h-48" />
@@ -286,21 +286,21 @@ export default function Pricing() {
                 <span className="text-[2.6rem] font-bold leading-none">{p.price}</span>
                 <span className={`text-base text-plum-600`}>/mo</span>
               </p>
-              <p className={`mt-3 min-h-[3.5rem] font-ui leading-snug text-plum-800`}>
+              <p className={`mt-3 min-h-[3.5rem] font-ui leading-snug text-plum-700`}>
                 {p.line}
               </p>
 
               <a
                 href="#/contact"
-                className={`btn-type mt-6 inline-flex h-12 items-center justify-center rounded-full px-6 font-ui font-semibold no-underline transition-colors ${p.featured ? 'bg-gold-500 !text-plum-900 shadow-[0_6px_0_-2px_var(--color-plum-950)] hover:bg-gold-400' : 'bg-plum-800 text-white shadow-[0_6px_0_-2px_var(--color-plum-950)] hover:bg-plum-700'}`}
+                className={`btn-type mt-6 inline-flex h-12 items-center justify-center rounded-full px-6 font-ui font-semibold no-underline transition-colors ${p.featured ? 'bg-gold-500 !text-plum-700 shadow-[0_6px_0_-2px_var(--color-plum-950)] hover:bg-gold-400' : 'bg-plum-800 text-white shadow-[0_6px_0_-2px_var(--color-plum-950)] hover:bg-plum-700'}`}
               >
                 {p.from ? 'Let’s Talk' : 'Start Free Trial'}
               </a>
 
-              <p className={`mt-7 font-ui text-sm font-bold text-plum-900`}>{p.lead}</p>
+              <p className={`mt-7 font-ui text-sm font-bold text-plum-700`}>{p.lead}</p>
               <ul className="mt-3 space-y-2.5">
                 {p.items.map((item) => (
-                  <li key={item} className={`flex items-start gap-2.5 font-ui text-plum-800`}>
+                  <li key={item} className={`flex items-start gap-2.5 font-ui text-plum-700`}>
                     <svg viewBox="0 0 24 24" aria-hidden className={`mt-0.5 size-5 shrink-0 text-teal-500`} fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M5 12.5l4.5 4.5L19 7.5" />
                     </svg>
@@ -332,7 +332,7 @@ export default function Pricing() {
             <StackCards
               heading="Standard Issue on Every Plan"
               headingClass="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-gold-500"
-              tones={['bg-white text-plum-800', 'bg-gold-200 text-plum-900', 'bg-[#e7b248] text-plum-900']}
+              tones={['bg-white text-plum-700', 'bg-gold-200 text-plum-700', 'bg-[#e7b248] text-plum-700']}
               items={STANDARD.map((g) => ({
                 title: g.title,
                 body: (
@@ -365,7 +365,7 @@ export default function Pricing() {
             variants={{ on: { transition: { staggerChildren: 0.12 } } }}
             className="mt-10 grid gap-4 md:grid-cols-3"
           >
-            <motion.div variants={TILE} whileHover={reduce ? undefined : { y: -6 }} className="group relative overflow-hidden rounded-[1.5rem] bg-teal-400 p-6 text-plum-900 md:row-span-2">
+            <motion.div variants={TILE} whileHover={reduce ? undefined : { y: -6 }} className="group relative overflow-hidden rounded-[1.5rem] bg-teal-400 p-6 text-plum-700 md:row-span-2">
               <img src={A.owl.broom} alt="" aria-hidden loading="lazy" className="pointer-events-none absolute -right-4 bottom-1 w-[58%] max-w-[15rem] object-contain origin-bottom transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:-rotate-6 group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:rotate-0 motion-reduce:group-hover:scale-100" />
               <h3 className="font-ui text-xl font-bold">Month by month.</h3>
               <p className="mt-2 font-ui leading-snug">One flat price on your plan, billed monthly.</p>
@@ -392,7 +392,7 @@ export default function Pricing() {
                 key={t.title}
                 variants={TILE}
                 whileHover={reduce ? undefined : { y: -6 }}
-                className={`group flex items-center justify-between gap-3 rounded-[1.5rem] p-6 text-plum-900 ${t.tone}`}
+                className={`group flex items-center justify-between gap-3 rounded-[1.5rem] p-6 text-plum-700 ${t.tone}`}
               >
                 <div>
                   <h3 className="font-ui text-xl font-bold">{t.title}</h3>
@@ -401,7 +401,7 @@ export default function Pricing() {
                 <img src={t.owl} alt="" aria-hidden loading="lazy" className="h-28 w-28 shrink-0 object-contain origin-bottom transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:-rotate-6 group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:rotate-0 motion-reduce:group-hover:scale-100" />
               </motion.div>
             ))}
-            <motion.div variants={TILE} whileHover={reduce ? undefined : { y: -6 }} className="overflow-hidden rounded-[1.5rem] bg-gold-500 p-6 text-plum-900 md:col-span-3">
+            <motion.div variants={TILE} whileHover={reduce ? undefined : { y: -6 }} className="overflow-hidden rounded-[1.5rem] bg-gold-500 p-6 text-plum-700 md:col-span-3">
               <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
                 <div>
                   <h3 className="font-ui text-xl font-bold">Free 2-week trial.</h3>

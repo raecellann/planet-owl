@@ -45,7 +45,7 @@ const count = (work) => (work.items.length > 1 ? ` · ${work.items.length} piece
 function Caption({ work }) {
   return (
     <figcaption className="mt-3 px-1 text-left sm:mt-4">
-      <span className="block text-[0.95rem] font-bold leading-snug text-plum-800 sm:text-base">
+      <span className="block text-[0.95rem] font-bold leading-snug text-plum-700 sm:text-base">
         {work.title}
       </span>
       <span className="block text-sm leading-snug text-plum-600">
@@ -156,7 +156,7 @@ export default function Portfolio() {
       <div className="mx-auto max-w-[1616px] px-5 sm:px-8">
         <header className="mx-auto max-w-2xl text-center">
           <Reveal y={34}>
-            <h2 className="font-ui text-[clamp(1.9rem,4.6vw,3.35rem)] font-bold leading-[1.08] text-plum-800">
+            <h2 className="font-ui text-[clamp(1.9rem,4.6vw,3.35rem)] font-bold leading-[1.08] text-plum-700">
               Ideas That Became
               <br className="hidden sm:block" /> Experiences
             </h2>
@@ -227,10 +227,10 @@ export default function Portfolio() {
                      be: one shared element slides between chips rather than
                      each fading its own background). `active:` on the button
                      alone would never touch it. */
-                  className={`btn-type relative rounded-full px-3 py-1.5 text-[0.8rem] font-semibold sm:px-4 sm:py-2 sm:text-sm transition-[color,box-shadow] duration-300 active:text-plum-900 [&:active>span:first-child]:bg-gold-500 sm:px-6 sm:py-2.5 ${
+                  className={`btn-type relative rounded-full px-3 py-1.5 text-[0.8rem] font-semibold sm:px-4 sm:py-2 sm:text-sm transition-[color,box-shadow] duration-300 active:text-plum-700 [&:active>span:first-child]:bg-gold-500 sm:px-6 sm:py-2.5 ${
                     active
                       ? 'text-white shadow-[0_6px_0_-2px_var(--color-plum-900),0_10px_16px_-10px_rgba(54,14,57,0.55)]'
-                      : 'text-plum-700 shadow-[0_6px_0_-2px_var(--color-plum-900),0_10px_16px_-10px_rgba(54,14,57,0.35)] hover:text-plum-900'
+                      : 'text-plum-700 shadow-[0_6px_0_-2px_var(--color-plum-900),0_10px_16px_-10px_rgba(54,14,57,0.35)] hover:text-plum-800'
                   }`}
                 >
                   {/* one shared element slides between chips instead of each
@@ -516,7 +516,7 @@ export default function Portfolio() {
                       placed against that, so a line of text below the tile
                       would land in the gap the row is spaced by. Bottom-left
                       is the capture's own empty navy. */}
-                  <figcaption className="absolute bottom-[4%] left-[2.5%] flex max-w-[80%] items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold text-plum-800 shadow-[0_10px_24px_-12px_rgba(54,14,57,0.6)] sm:px-4 sm:py-2 sm:text-sm">
+                  <figcaption className="absolute bottom-[4%] left-[2.5%] flex max-w-[80%] items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold text-plum-700 shadow-[0_10px_24px_-12px_rgba(54,14,57,0.6)] sm:px-4 sm:py-2 sm:text-sm">
                     <span className="truncate">
                       {lead.title}
                       <span className="font-normal text-plum-600">

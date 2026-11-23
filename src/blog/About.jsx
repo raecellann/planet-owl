@@ -124,7 +124,7 @@ function StatTile({ stat, owl }) {
           <CountUp key={run} to={stat.value} />
         </p>
         <span aria-hidden className="mt-3 block h-1 w-full origin-left scale-x-[0.18] rounded-full bg-gold-500 transition-transform duration-500 ease-out group-hover:scale-x-100 group-focus-visible:scale-x-100" />
-        <p className="mt-3 font-ui font-semibold leading-snug text-plum-800">{stat.label}</p>
+        <p className="mt-3 font-ui font-semibold leading-snug text-plum-700">{stat.label}</p>
       </a>
     </li>
   )
@@ -178,11 +178,11 @@ export default function About() {
             <h1 className="font-['Momo_Trust_Display'] text-[clamp(2rem,4.6vw,3.6rem)] font-normal leading-[1.08] text-plum-700">
               Meet the Owls Behind the Work
             </h1>
-            <p className="mt-5 font-ui text-lg leading-relaxed text-plum-800">
+            <p className="mt-5 font-ui text-lg leading-relaxed text-plum-700">
               Planet Owl is a creative studio. We build identities, websites, apps, AI solutions and
               immersive experiences for brands that rise above the ordinary.
             </p>
-            <p className="mt-4 font-ui text-lg leading-relaxed text-plum-800">
+            <p className="mt-4 font-ui text-lg leading-relaxed text-plum-700">
               We call the team the flock and the studio the nest. Design, development, digital and
               AI sit under one roof, so an idea does not have to be handed from one agency to the
               next to become real. It is shaped, built and refined in one place before it reaches
@@ -247,7 +247,7 @@ export default function About() {
                 onClick={() => setCraft(n)}
                 className={`btn-type rounded-full px-6 py-3 font-ui text-base font-semibold transition-colors ${
                   n === craft
-                    ? 'bg-gold-500 text-plum-900 shadow-[0_6px_0_-2px_var(--color-plum-950)]'
+                    ? 'bg-gold-500 text-plum-700 shadow-[0_6px_0_-2px_var(--color-plum-950)]'
                     : 'bg-white/10 text-white hover:bg-white/20'
                 }`}
               >
@@ -281,12 +281,12 @@ export default function About() {
                   <h3 className="font-['Momo_Trust_Display'] text-[clamp(2rem,4.5vw,3.5rem)] font-normal leading-none text-plum-700">
                     {CRAFTS[craft].title}
                   </h3>
-                  <p className="mt-3 font-ui text-lg text-plum-800">{CRAFTS[craft].line}</p>
+                  <p className="mt-3 font-ui text-lg text-plum-700">{CRAFTS[craft].line}</p>
                   <ul className="mt-6 flex flex-wrap gap-2.5">
                     {CRAFTS[craft].items.map((item) => (
                       <li
                         key={item}
-                        className="rounded-full bg-plum-100 px-4 py-2 font-ui text-sm font-semibold text-plum-900"
+                        className="rounded-full bg-plum-100 px-4 py-2 font-ui text-sm font-semibold text-plum-700"
                       >
                         {item}
                       </li>
@@ -307,7 +307,7 @@ export default function About() {
             <StackCards
               heading="What We Are Here to Do"
               headingClass="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-plum-700"
-              tones={['bg-gold-200 text-plum-900', 'bg-[#e7b248] text-plum-900', 'bg-plum-800 text-gold-200']}
+              tones={['bg-gold-200 text-plum-700', 'bg-[#e7b248] text-plum-700', 'bg-plum-800 text-gold-200']}
               items={PROMISES.map((p) => ({
                 title: p.title,
                 body: <p className="max-w-3xl font-ui text-lg leading-relaxed">{p.copy}</p>,

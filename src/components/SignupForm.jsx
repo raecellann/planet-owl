@@ -86,7 +86,7 @@ export default function SignupForm({ source = 'footer', compact = false, autoFoc
           placeholder="Enter your email here!"
           aria-invalid={state === 'error' || undefined}
           aria-describedby={`${id}-status`}
-          className={`min-w-0 flex-1 bg-transparent font-display font-semibold text-plum-900 placeholder:text-plum-900/70 focus:outline-none disabled:opacity-60 ${input}`}
+          className={`min-w-0 flex-1 bg-transparent font-display font-semibold text-plum-700 placeholder:text-plum-700/70 focus:outline-none disabled:opacity-60 ${input}`}
         />
         <motion.button
           type="submit"
@@ -99,7 +99,7 @@ export default function SignupForm({ source = 'footer', compact = false, autoFoc
         >
           {state === 'sending' ? 'Sending…' : state === 'sent' ? 'Sent!' : 'Get Free 2-Week Trial'}
           <span
-            className={`grid shrink-0 place-items-center rounded-full bg-gold-500 text-plum-900 shadow-[0_3px_0_0_var(--color-plum-900)] transition-transform duration-300 group-hover:translate-x-0.5 ${badge}`}
+            className={`grid shrink-0 place-items-center rounded-full bg-gold-500 text-plum-700 shadow-[0_3px_0_0_var(--color-plum-900)] transition-transform duration-300 group-hover:translate-x-0.5 ${badge}`}
           >
             {state === 'sent' ? (
               <svg viewBox="0 0 24 24" className={arrow} fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
@@ -119,7 +119,7 @@ export default function SignupForm({ source = 'footer', compact = false, autoFoc
         role="status"
         aria-live="polite"
         className={`mt-3 min-h-[1.25rem] px-2 font-display text-sm font-semibold transition-opacity duration-300 ${
-          state === 'error' ? 'text-red-700' : 'text-plum-900'
+          state === 'error' ? 'text-red-700' : 'text-plum-700'
         } ${message ? 'opacity-100' : 'opacity-0'}`}
       >
         {message || ' '}

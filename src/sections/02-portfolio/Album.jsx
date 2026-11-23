@@ -65,7 +65,7 @@ export default function Album({ work, onClose }) {
                 href={work.href}
                 target="_blank"
                 rel="noreferrer"
-                className="shrink-0 rounded-full bg-gold-500 px-4 py-2 text-sm font-semibold text-plum-900 transition-colors hover:bg-gold-400"
+                className="shrink-0 rounded-full bg-gold-500 px-4 py-2 text-sm font-semibold text-plum-700 transition-colors hover:bg-gold-400"
               >
                 Visit site <span aria-hidden>↗</span>
                 <span className="sr-only"> (opens in a new tab)</span>

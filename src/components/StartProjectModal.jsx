@@ -114,7 +114,7 @@ export default function StartProjectModal({ open, onClose }) {
               type="button"
               onClick={onClose}
               aria-label="Close"
-              className="absolute right-1 top-1 z-30 grid size-11 place-items-center rounded-full bg-white text-plum-900 shadow-[0_4px_0_0_var(--color-plum-900)] transition-colors hover:bg-gold-200 sm:right-0 sm:top-0 sm:size-12"
+              className="absolute right-1 top-1 z-30 grid size-11 place-items-center rounded-full bg-white text-plum-700 shadow-[0_4px_0_0_var(--color-plum-900)] transition-colors hover:bg-gold-200 sm:right-0 sm:top-0 sm:size-12"
             >
               <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round">
                 <path d="M6 6l12 12M18 6L6 18" />
@@ -148,7 +148,7 @@ export default function StartProjectModal({ open, onClose }) {
               <div className="relative px-[11%] pb-[16%] pt-[24%] sm:px-[11%] sm:pb-[12%] sm:pt-[19%]">
                 <h2
                   id="start-project-title"
-                  className="font-ui text-[clamp(1.5rem,4.2vw,2.6rem)] font-bold leading-[1.12] text-plum-900"
+                  className="font-ui text-[clamp(1.5rem,4.2vw,2.6rem)] font-bold leading-[1.12] text-plum-700"
                 >
                   Let’s Make Something
                   <br /> Brilliantly Strange!

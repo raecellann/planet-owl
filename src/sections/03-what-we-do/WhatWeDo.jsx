@@ -672,7 +672,7 @@ export default function WhatWeDo() {
                 {craft.items.map((item) => (
                   <li
                     key={item}
-                    className="font-ui text-[clamp(0.95rem,1.17vw,1.4rem)] font-medium leading-snug text-plum-800"
+                    className="font-ui text-[clamp(0.95rem,1.17vw,1.4rem)] font-medium leading-snug text-plum-700"
                   >
                     {item}
                   </li>
@@ -807,7 +807,7 @@ function Arrow({ children, label, onClick, disabled = false }) {
       // control. Hover still lifts to `gold-400`, a lighter tint of the same
       // hue.
       style={{ '--btn-ledge': 'var(--color-plum-900)' }}
-      className="btn-type grid size-[clamp(2.75rem,3.75vw,4.5rem)] place-items-center rounded-full bg-gold-500 text-plum-800 shadow-[0_6px_0_-2px_var(--color-plum-900),0_18px_30px_-16px_rgba(20,12,10,0.7)] transition-colors hover:bg-gold-400 disabled:cursor-not-allowed"
+      className="btn-type grid size-[clamp(2.75rem,3.75vw,4.5rem)] place-items-center rounded-full bg-gold-500 text-plum-700 shadow-[0_6px_0_-2px_var(--color-plum-900),0_18px_30px_-16px_rgba(20,12,10,0.7)] transition-colors hover:bg-gold-400 disabled:cursor-not-allowed"
     >
       <svg viewBox="0 0 24 24" className="size-[42%]" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
         {children}

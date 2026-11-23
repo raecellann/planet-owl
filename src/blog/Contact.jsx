@@ -70,7 +70,7 @@ const EMPTY = {
 }
 
 const FIELD =
-  'mt-1.5 w-full rounded-xl border-2 border-plum-900/15 bg-white px-4 py-3 font-ui text-base text-plum-900 placeholder:text-plum-900/40 transition-colors focus:border-plum-700 focus:outline-none'
+  'mt-1.5 w-full rounded-xl border-2 border-plum-900/15 bg-white px-4 py-3 font-ui text-base text-plum-700 placeholder:text-plum-700/40 transition-colors focus:border-plum-700 focus:outline-none'
 
 export default function Contact() {
   const [form, setForm] = useState(EMPTY)
@@ -166,13 +166,13 @@ export default function Contact() {
               <h1 className="font-['Momo_Trust_Display'] text-[clamp(2rem,4.6vw,3.6rem)] font-normal leading-[1.1] text-plum-700">
                 Contact Us
               </h1>
-              <ul className="mt-7 space-y-5 font-ui text-lg text-plum-900">
+              <ul className="mt-7 space-y-5 font-ui text-lg text-plum-700">
                 <li className="flex items-center gap-4">
                   <Icon>
                     <path d="M3 6.5h18v11H3z" />
                     <path d="m3.5 7 8.5 6.5L20.5 7" />
                   </Icon>
-                  <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold text-plum-900 no-underline hover:text-plum-700">
+                  <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold text-plum-700 no-underline hover:text-plum-700">
                     {CONTACT_EMAIL}
                   </a>
                 </li>
@@ -181,7 +181,7 @@ export default function Contact() {
                     <rect x="3.5" y="5" width="17" height="15" rx="2.5" />
                     <path d="M3.5 9.5h17M8 3v4M16 3v4" />
                   </Icon>
-                  <a href="#book" onClick={goToBooking} className="font-semibold text-plum-900 no-underline hover:text-plum-700">
+                  <a href="#book" onClick={goToBooking} className="font-semibold text-plum-700 no-underline hover:text-plum-700">
                     Book a call
                   </a>
                 </li>
@@ -198,7 +198,7 @@ export default function Contact() {
                   <Icon>
                     <path d="M6.5 3.5h3l1.5 4-2 1.5a11 11 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.5 5.7 2 2 0 0 1 6.5 3.5z" />
                   </Icon>
-                  <a href="tel:+639679812402" className="font-semibold text-plum-900 no-underline hover:text-plum-700">
+                  <a href="tel:+639679812402" className="font-semibold text-plum-700 no-underline hover:text-plum-700">
                     0967 981 2402
                   </a>
                 </li>
@@ -233,7 +233,7 @@ export default function Contact() {
                   <h3 className="font-['Momo_Trust_Display'] text-3xl font-normal text-plum-700">
                     {booked ? 'Call requested!' : 'Message sent!'}
                   </h3>
-                  <p className="mx-auto mt-4 max-w-sm font-ui leading-relaxed text-plum-800">
+                  <p className="mx-auto mt-4 max-w-sm font-ui leading-relaxed text-plum-700">
                     {booked
                       ? `Thanks, ${form.firstName || 'friend'}. We have your request for ${form.date}${form.time ? ` at ${form.time}` : ''} and will confirm it by email.`
                       : `Thanks, ${form.firstName || 'friend'}. We will get back to you by email.`}
@@ -275,7 +275,7 @@ export default function Contact() {
                       a plain message. */}
                   <fieldset ref={bookingRef} id="book-a-call" className="mt-7 scroll-mt-32 rounded-2xl bg-gold-200 p-4 sm:p-5">
                     <legend className="sr-only">Book a call</legend>
-                    <p className="font-ui text-base font-bold text-plum-900">Book a call</p>
+                    <p className="font-ui text-base font-bold text-plum-700">Book a call</p>
                     <div className="mt-4 grid gap-4 sm:grid-cols-2">
                       <Field label="Preferred Date">
                         <DatePicker min={today} value={form.date} onChange={(date) => setForm((f) => ({ ...f, date }))} />
@@ -299,7 +299,7 @@ export default function Contact() {
                   <button
                     type="submit"
                     disabled={state === 'sending'}
-                    className="btn-type mt-7 rounded-full bg-gold-500 px-8 py-3.5 font-ui text-base font-semibold text-plum-900 shadow-[0_6px_0_-2px_var(--color-plum-900),0_18px_30px_-16px_rgba(54,14,57,0.6)] transition-colors hover:bg-gold-400 disabled:cursor-wait disabled:opacity-70"
+                    className="btn-type mt-7 rounded-full bg-gold-500 px-8 py-3.5 font-ui text-base font-semibold text-plum-700 shadow-[0_6px_0_-2px_var(--color-plum-900),0_18px_30px_-16px_rgba(54,14,57,0.6)] transition-colors hover:bg-gold-400 disabled:cursor-wait disabled:opacity-70"
                   >
                     {state === 'sending' ? 'Sending…' : booked ? 'Book My Call' : 'Send Message'}
                   </button>
@@ -315,7 +315,7 @@ export default function Contact() {
             <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.9rem,4.2vw,3.2rem)] font-normal leading-[1.1] text-plum-700">
               Got a Project? Call in the Owls
             </h2>
-            <p className="mx-auto mt-5 max-w-2xl font-ui text-lg leading-relaxed text-plum-800">
+            <p className="mx-auto mt-5 max-w-2xl font-ui text-lg leading-relaxed text-plum-700">
               Tell us what you are building, or pick a time and book a call. One of the flock will
               get back to you by email.
             </p>
@@ -328,7 +328,7 @@ export default function Contact() {
 
 function Field({ label, className = '', children }) {
   return (
-    <label className={`block font-ui text-sm font-semibold text-plum-900 ${className}`}>
+    <label className={`block font-ui text-sm font-semibold text-plum-700 ${className}`}>
       {label}
       {children}
     </label>

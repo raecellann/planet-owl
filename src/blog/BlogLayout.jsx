@@ -182,7 +182,7 @@ export default function BlogLayout({ children, onBlog = true, newsletter = true,
         </AnimatePresence>
       </header>
 
-      <main className="bg-white font-ui text-plum-900">{children}</main>
+      <main className="bg-white font-ui text-plum-700">{children}</main>
 
       {/* The newsletter, on WHITE like the rest of the blog.
 
@@ -206,7 +206,7 @@ export default function BlogLayout({ children, onBlog = true, newsletter = true,
           <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.8rem,4vw,3rem)] font-normal leading-[1.1] text-plum-700">
             Fresh Notes From the Nest
           </h2>
-          <p className="mx-auto mt-4 max-w-xl font-ui leading-relaxed text-plum-800">
+          <p className="mx-auto mt-4 max-w-xl font-ui leading-relaxed text-plum-700">
             New articles on brand, design and creative operations, sent when there is something
             worth reading, and never more often than that.
           </p>
@@ -236,7 +236,7 @@ function BarLink({ href, label, current = false }) {
       data-label={label}
       aria-current={current ? 'page' : undefined}
       className={`btn-type active:!shadow-none relative block text-[max(0.8rem,1.05vw)] font-bold no-underline transition-colors before:invisible before:block before:font-[family-name:var(--font-pop)] before:font-normal before:content-[attr(data-label)] ${
-        current ? 'text-teal-600' : 'text-plum-700 hover:text-plum-900'
+        current ? 'text-teal-600' : 'text-plum-700 hover:text-plum-800'
       }`}
     >
       <span className="absolute inset-0 flex items-center justify-center whitespace-nowrap">{label}</span>
@@ -248,7 +248,7 @@ function BarLink({ href, label, current = false }) {
 export function CategoryChip({ children, className = '' }) {
   return (
     <span
-      className={`inline-flex items-center rounded-full bg-white px-3 py-1.5 font-ui text-[0.7rem] font-bold uppercase leading-none tracking-wide text-plum-800 shadow-[0_6px_14px_-8px_rgba(54,14,57,0.6)] ${className}`}
+      className={`inline-flex items-center rounded-full bg-white px-3 py-1.5 font-ui text-[0.7rem] font-bold uppercase leading-none tracking-wide text-plum-700 shadow-[0_6px_14px_-8px_rgba(54,14,57,0.6)] ${className}`}
     >
       {children}
     </span>

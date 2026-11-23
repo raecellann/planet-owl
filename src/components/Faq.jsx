@@ -58,7 +58,7 @@ const TONES = {
   },
   light: {
     title: 'text-plum-700',
-    lead: 'text-plum-800',
+    lead: 'text-plum-700',
     rule: 'border-plum-900/15',
     q: 'text-plum-700',
     a: 'text-plum-700',

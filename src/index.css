@@ -133,7 +133,7 @@
   body {
     margin: 0;
     background: var(--color-plum-950);
-    color: var(--color-plum-900);
+    color: var(--color-plum-700);
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
@@ -166,6 +166,18 @@
      CTA's `-mt-[22svh]`) keeps it — utilities outrank this layer. */
   main > section + section {
     margin-top: -1px;
+  }
+
+  /* No orphans: the browser keeps the last line of a paragraph from being a
+     single stranded word, on phones and desktop alike. Headings balance below. */
+  p,
+  li,
+  dd,
+  dt,
+  label,
+  figcaption,
+  blockquote {
+    text-wrap: pretty;
   }
 
   h1,
