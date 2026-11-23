@@ -4,6 +4,7 @@ import { A } from '../../lib/assets'
 import Reveal from '../../components/ui/Reveal'
 import { GoldButton } from '../../components/ui/Button'
 import StartProjectModal from '../../components/StartProjectModal'
+import Faq from '../../components/Faq'
 
 // Fixed positions so the sky never reshuffles between renders.
 const STARS = [
@@ -110,6 +111,15 @@ export default function FinalCTA() {
             transition={{ duration: 3 + (i % 5), repeat: Infinity, ease: 'easeInOut', delay: i * 0.24 }}
           />
         ))}
+      </div>
+
+      {/* The FAQ, in the dark stretch above the ask — by request. It fills
+          what was a long empty run of night between the nest and the
+          headline, and the ask below is still what the section ends on. */}
+      <div className="relative mx-auto mb-24 max-w-[1180px] px-5 sm:mb-32 sm:px-8">
+        <Reveal y={40}>
+          <Faq tone="dark" />
+        </Reveal>
       </div>
 
       <div className="relative mx-auto max-w-5xl px-5 text-center sm:px-8">

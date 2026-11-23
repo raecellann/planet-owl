@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import BlogLayout from './BlogLayout'
 import { CONTACT_EMAIL } from '../lib/signup'
 
@@ -65,10 +65,32 @@ const SECTIONS = [
   },
 ]
 
+const slug = (t) => t.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+const TOPICS = [...SECTIONS.map((s) => s.title), 'Contact us'].map((label) => ({ id: slug(label), label }))
+
 export default function Privacy() {
+  const [active, setActive] = useState(TOPICS[0].id)
+
   useEffect(() => {
     document.title = 'Privacy — Planet Owl'
   }, [])
+
+  // Which section is on screen, for the list's highlight — the same reading
+  // the blog articles use for their own Topics list.
+  useEffect(() => {
+    const els = TOPICS.map((t) => document.getElementById(`topic-${t.id}`)).filter(Boolean)
+    const io = new IntersectionObserver(
+      (entries) => {
+        const seen = entries.filter((e) => e.isIntersecting).sort((x, y) => x.boundingClientRect.top - y.boundingClientRect.top)
+        if (seen[0]) setActive(seen[0].target.id.replace('topic-', ''))
+      },
+      { rootMargin: '-20% 0px -65% 0px' },
+    )
+    els.forEach((el) => io.observe(el))
+    return () => io.disconnect()
+  }, [])
+
+  const jump = (id) => document.getElementById(`topic-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 
   return (
     <BlogLayout onBlog={false}>
@@ -86,28 +108,57 @@ export default function Privacy() {
           </div>
         </header>
 
-        <div className="mx-auto max-w-3xl px-5 pb-8 pt-4 sm:px-8">
-          {SECTIONS.map((s) => (
-            <section key={s.title} className="mt-10 first:mt-0">
-              <h2 className="font-ui text-xl font-bold text-plum-900 sm:text-2xl">{s.title}</h2>
-              {s.body.map((p) => (
-                <p key={p} className="mt-3 font-ui leading-relaxed text-plum-800">
-                  {p}
-                </p>
-              ))}
-            </section>
-          ))}
+        {/* The article layout, by request: the sections listed down the left,
+            staying put while the text scrolls, with the one being read marked
+            in gold. Same grid and same list as `BlogPost`, less its share
+            column. Below `lg` the list is hidden and the page is one column. */}
+        <div className="mx-auto grid max-w-[1180px] gap-10 px-5 pb-8 pt-4 sm:px-8 lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-16">
+          <nav aria-label="On this page" className="hidden lg:block">
+            <div className="sticky top-32">
+              <p className="font-ui text-xs font-bold uppercase tracking-wider text-plum-900">On this page</p>
+              <ul className="mt-4 space-y-3 border-l-2 border-plum-100">
+                {TOPICS.map((t) => (
+                  <li key={t.id}>
+                    <button
+                      type="button"
+                      onClick={() => jump(t.id)}
+                      className={`-ml-0.5 block w-full border-l-2 pl-4 text-left font-ui text-sm leading-snug transition-colors ${
+                        active === t.id
+                          ? 'border-gold-500 font-bold text-plum-900'
+                          : 'border-transparent text-plum-600 hover:text-plum-900'
+                      }`}
+                    >
+                      {t.label}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </nav>
 
-          <section className="mt-10">
-            <h2 className="font-ui text-xl font-bold text-plum-900 sm:text-2xl">Contact us</h2>
-            <p className="mt-3 font-ui leading-relaxed text-plum-800">
-              Questions about this page, or a request about your information, can be sent to{' '}
-              <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold text-teal-600 underline">
-                {CONTACT_EMAIL}
-              </a>
-              .
-            </p>
-          </section>
+          <div className="min-w-0 max-w-3xl">
+            {SECTIONS.map((s) => (
+              <section key={s.title} id={`topic-${slug(s.title)}`} className="mt-10 scroll-mt-32 first:mt-0">
+                <h2 className="font-ui text-xl font-bold text-plum-900 sm:text-2xl">{s.title}</h2>
+                {s.body.map((p) => (
+                  <p key={p} className="mt-3 font-ui leading-relaxed text-plum-800">
+                    {p}
+                  </p>
+                ))}
+              </section>
+            ))}
+
+            <section id="topic-contact-us" className="mt-10 scroll-mt-32">
+              <h2 className="font-ui text-xl font-bold text-plum-900 sm:text-2xl">Contact us</h2>
+              <p className="mt-3 font-ui leading-relaxed text-plum-800">
+                Questions about this page, or a request about your information, can be sent to{' '}
+                <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold text-teal-600 underline">
+                  {CONTACT_EMAIL}
+                </a>
+                .
+              </p>
+            </section>
+          </div>
         </div>
       </article>
     </BlogLayout>

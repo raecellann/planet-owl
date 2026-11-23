@@ -104,7 +104,7 @@ export default function Contact() {
 
   return (
     <BlogLayout onBlog={false} newsletter={false}>
-      <div className="relative overflow-hidden bg-white px-5 pb-16 pt-[clamp(8rem,12vw,10.5rem)] sm:px-8">
+      <div className="relative overflow-hidden bg-white px-5 pb-10 pt-[clamp(8rem,12vw,10.5rem)] sm:px-8">
         {CLOUDS.map((c, i) => (
           <img
             key={i}
@@ -117,20 +117,12 @@ export default function Contact() {
           />
         ))}
         <div className="relative z-10 mx-auto max-w-[1180px]">
-          <h1 className="font-['Momo_Trust_Display'] text-[clamp(2rem,4.6vw,3.6rem)] font-normal leading-[1.1] text-plum-700">
-            Got a Project? Call in the Owls
-          </h1>
-          <p className="mt-5 max-w-2xl font-ui text-lg leading-relaxed text-plum-800">
-            Tell us what you are building, or pick a time and book a call. One of the flock will get
-            back to you by email.
-          </p>
-
-          <div className="mt-12 grid gap-10 lg:mt-16 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)] lg:gap-16">
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)] lg:gap-16">
             {/* ------------------------------------------- ways to reach us -- */}
             <div>
-              <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.2vw,2.6rem)] font-normal leading-[1.1] text-plum-700">
+              <h1 className="font-['Momo_Trust_Display'] text-[clamp(2rem,4.6vw,3.6rem)] font-normal leading-[1.1] text-plum-700">
                 Contact Us
-              </h2>
+              </h1>
               <ul className="mt-7 space-y-5 font-ui text-lg text-plum-900">
                 <li className="flex items-center gap-4">
                   <Icon>
@@ -268,6 +260,19 @@ export default function Contact() {
                 </form>
               )}
             </div>
+          </div>
+
+          {/* The page's sign-off, UNDER the form — by request. It used to
+              open the page; here it reads as the closing line once the form
+              has been seen. */}
+          <div className="mx-auto mt-20 max-w-3xl text-center sm:mt-24">
+            <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.9rem,4.2vw,3.2rem)] font-normal leading-[1.1] text-plum-700">
+              Got a Project? Call in the Owls
+            </h2>
+            <p className="mx-auto mt-5 max-w-2xl font-ui text-lg leading-relaxed text-plum-800">
+              Tell us what you are building, or pick a time and book a call. One of the flock will
+              get back to you by email.
+            </p>
           </div>
         </div>
       </div>

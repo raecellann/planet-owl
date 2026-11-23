@@ -170,6 +170,7 @@ export const FOOTER_LINKS = [
   { label: 'What We Do', href: '#what-we-do' },
   { label: 'The Nest', href: '#the-nest' },
   { label: 'Careers', href: '#the-flock' },
+  { label: 'About', href: '#/about' },
   // The blog is its own page, on a hash route — see `src/blog/`.
   { label: 'Blog', href: '#/blog' },
   // The contact / book-a-call page — see `src/blog/Contact.jsx`.
