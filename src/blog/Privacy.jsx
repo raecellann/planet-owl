@@ -93,7 +93,7 @@ export default function Privacy() {
   const jump = (id) => document.getElementById(`topic-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 
   return (
-    <BlogLayout onBlog={false}>
+    <BlogLayout onBlog={false} page={{ label: 'Privacy', href: '#/privacy' }}>
       <article>
         <header className="bg-[linear-gradient(180deg,#cdd8f4_0%,#dfe7fa_45%,#ffffff_100%)] px-5 pb-10 pt-[clamp(8rem,12vw,10.5rem)] sm:px-8">
           <div className="mx-auto max-w-3xl text-center">

@@ -1,4 +1,5 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import BlogLayout from './BlogLayout'
 import { A } from '../lib/assets'
 
@@ -20,22 +21,26 @@ const CRAFTS = [
   {
     title: 'Design',
     owl: A.owl.vr,
-    copy: 'Logos and brand identity, packaging, video editing, 3D motion, websites and UI/UX.',
+    line: 'How your brand looks, moves and feels.',
+    items: ['Logos & Brand Identity', 'Packaging & Collaterals', 'Video Editing', '3D Motion', 'Website', 'UI/UX'],
   },
   {
     title: 'Develop',
     owl: A.owl.develop,
-    copy: 'Web and mobile apps, custom software, e-commerce, databases, cloud, CMS and APIs.',
+    line: 'The products behind the picture.',
+    items: ['Web & Mobile Development', 'Custom Software', 'E-commerce', 'Databases', 'Cloud', 'CMS', 'APIs', 'Maintenance & Optimization'],
   },
   {
     title: 'Digital',
     owl: A.owl.digital,
-    copy: 'Content, social media ads, social listening, digital films, e-commerce and SEO.',
+    line: 'Getting it in front of the right people.',
+    items: ['Content Development', 'Social Media Ads', 'Social Listening', 'Digital Films', 'E-commerce', 'Digital Collectible', 'SEO'],
   },
   {
     title: 'AI Tech',
     owl: A.owl.ai,
-    copy: 'AI assistants, chatbots, automation, generative AI, analytics and integration.',
+    line: 'Making the work smarter and faster.',
+    items: ['AI Assistants', 'Chatbots', 'Automation', 'Generative AI', 'Analytics', 'Integration'],
   },
 ]
 
@@ -55,12 +60,15 @@ const PROMISES = [
 ]
 
 export default function About() {
+  const [craft, setCraft] = useState(0)
+  const reduce = useReducedMotion()
+
   useEffect(() => {
     document.title = 'About — Planet Owl'
   }, [])
 
   return (
-    <BlogLayout onBlog={false} newsletter={false}>
+    <BlogLayout onBlog={false} newsletter={false} page={{ label: 'About', href: '#/about' }}>
       {/* ------------------------------------------------------ opening -- */}
       <header className="bg-[linear-gradient(180deg,#cdd8f4_0%,#dfe7fa_45%,#ffffff_100%)] px-5 pb-14 pt-[clamp(8rem,12vw,10.5rem)] sm:px-8">
         <div className="mx-auto max-w-[1180px]">
@@ -97,21 +105,79 @@ export default function About() {
         </div>
       </section>
 
-      {/* --------------------------------------------------- what we do -- */}
+      {/* --------------------------------------------------- what we do --
+          INTERACTIVE, by request: four tabs, one per craft. Picking one
+          brings up that craft's owl and everything it covers. It was four
+          still cards. (The client offered made-up figures as the other way
+          to fill this page; there are none here — see the note at the top.) */}
       <section className="bg-plum-800 px-5 py-14 sm:px-8 sm:py-20">
         <div className="mx-auto max-w-[1180px]">
           <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-gold-500">
             Four Crafts, One Nest
           </h2>
-          <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {CRAFTS.map((c) => (
-              <li key={c.title} className="flex flex-col rounded-[1.5rem] bg-white p-6">
-                <img src={c.owl} alt="" aria-hidden loading="lazy" className="h-36 w-auto self-start object-contain" />
-                <h3 className="mt-5 font-ui text-xl font-bold text-plum-900">{c.title}</h3>
-                <p className="mt-2 font-ui leading-relaxed text-plum-800">{c.copy}</p>
-              </li>
+          <p className="mt-3 font-ui text-gold-200">Pick a craft to see what is inside it.</p>
+
+          <div role="tablist" aria-label="Crafts" className="mt-8 flex flex-wrap gap-3">
+            {CRAFTS.map((c, n) => (
+              <button
+                key={c.title}
+                type="button"
+                role="tab"
+                id={`craft-tab-${n}`}
+                aria-selected={n === craft}
+                aria-controls="craft-panel"
+                onClick={() => setCraft(n)}
+                className={`btn-type rounded-full px-6 py-3 font-ui text-base font-semibold transition-colors ${
+                  n === craft
+                    ? 'bg-gold-500 text-plum-900 shadow-[0_6px_0_-2px_var(--color-plum-950)]'
+                    : 'bg-white/10 text-white hover:bg-white/20'
+                }`}
+              >
+                {c.title}
+              </button>
             ))}
-          </ul>
+          </div>
+
+          <div
+            id="craft-panel"
+            role="tabpanel"
+            aria-labelledby={`craft-tab-${craft}`}
+            className="mt-8 overflow-hidden rounded-[1.75rem] bg-white p-6 sm:p-10"
+          >
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={CRAFTS[craft].title}
+                initial={reduce ? false : { opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reduce ? undefined : { opacity: 0, y: -10 }}
+                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                className="grid items-center gap-8 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] md:gap-12"
+              >
+                <img
+                  src={CRAFTS[craft].owl}
+                  alt=""
+                  aria-hidden
+                  className="mx-auto h-[min(60vw,18rem)] w-auto object-contain"
+                />
+                <div>
+                  <h3 className="font-['Momo_Trust_Display'] text-[clamp(2rem,4.5vw,3.5rem)] font-normal leading-none text-plum-700">
+                    {CRAFTS[craft].title}
+                  </h3>
+                  <p className="mt-3 font-ui text-lg text-plum-800">{CRAFTS[craft].line}</p>
+                  <ul className="mt-6 flex flex-wrap gap-2.5">
+                    {CRAFTS[craft].items.map((item) => (
+                      <li
+                        key={item}
+                        className="rounded-full bg-plum-100 px-4 py-2 font-ui text-sm font-semibold text-plum-900"
+                      >
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </div>
       </section>
 

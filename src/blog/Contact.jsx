@@ -103,7 +103,7 @@ export default function Contact() {
   const booked = Boolean(form.date)
 
   return (
-    <BlogLayout onBlog={false} newsletter={false}>
+    <BlogLayout onBlog={false} newsletter={false} page={{ label: 'Contact', href: '#/contact' }}>
       <div className="relative overflow-hidden bg-white px-5 pb-10 pt-[clamp(8rem,12vw,10.5rem)] sm:px-8">
         {CLOUDS.map((c, i) => (
           <img

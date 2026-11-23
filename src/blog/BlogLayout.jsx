@@ -19,9 +19,13 @@ import { BLOG_HOME } from './posts'
  * on). Anything that is not a `#/blog` route renders the landing page, so
  * following one leaves the blog and lands on that section.
  */
-/* `onBlog` is false for the pages that borrow this frame without being the
-   blog (the privacy page), so "Blog" is not marked as the current page there. */
-export default function BlogLayout({ children, onBlog = true, newsletter = true }) {
+/* `page` is the page this frame is wrapped round, as { label, href }. The bar
+   names it in teal, by request: on the blog it says Blog, on the privacy page
+   Privacy, and so on, so the bar always says where you are. Left out, it is
+   the blog. `onBlog` is kept for the callers that only say "not the blog". */
+export default function BlogLayout({ children, onBlog = true, newsletter = true, page = null }) {
+  const here = page || (onBlog ? { label: 'Blog', href: BLOG_HOME } : null)
+  const hereIsBlog = here?.href === BLOG_HOME
   const [projectOpen, setProjectOpen] = useState(false)
   const openProject = (e) => {
     e.preventDefault()
@@ -72,19 +76,32 @@ export default function BlogLayout({ children, onBlog = true, newsletter = true 
             <li>
               <a
                 href={BLOG_HOME}
-                aria-current={onBlog ? 'page' : undefined}
-                className={`font-ui text-[max(0.8rem,1.05vw)] font-bold no-underline ${onBlog ? 'text-teal-600' : 'text-plum-700 transition-colors hover:text-plum-900'}`}
+                aria-current={hereIsBlog ? 'page' : undefined}
+                className={`font-ui text-[max(0.8rem,1.05vw)] font-bold no-underline ${hereIsBlog ? 'text-teal-600' : 'text-plum-700 transition-colors hover:text-plum-900'}`}
               >
                 Blog
               </a>
             </li>
+            {here && !hereIsBlog && (
+              <li>
+                <a
+                  href={here.href}
+                  aria-current="page"
+                  className="font-ui text-[max(0.8rem,1.05vw)] font-bold text-teal-600 no-underline"
+                >
+                  {here.label}
+                </a>
+              </li>
+            )}
           </ul>
 
+          {/* Phones have room for one label: the page you are on. */}
           <a
-            href={BLOG_HOME}
-            className={`ml-auto font-ui text-sm font-bold no-underline lg:hidden ${onBlog ? 'text-teal-600' : 'text-plum-700'}`}
+            href={here ? here.href : BLOG_HOME}
+            aria-current={here ? 'page' : undefined}
+            className={`ml-auto font-ui text-sm font-bold no-underline lg:hidden ${here ? 'text-teal-600' : 'text-plum-700'}`}
           >
-            Blog
+            {here ? here.label : 'Blog'}
           </a>
 
           <div className="ml-2 shrink-0 -translate-y-[3px] sm:ml-4 lg:ml-9">
