@@ -268,7 +268,10 @@ export default function About() {
             {PROMISES.map((p, i) => (
               <li
                 key={p.title}
-                style={{ top: `calc(8.5rem + ${i * 1.75}rem)` }}
+                // Pinned in the MIDDLE of the screen, by request, not under the nav:
+                // half the window less half a panel (17rem min-height), stepped
+                // 1.75rem per panel, and never higher than the nav's own clearance.
+                style={{ top: `max(8.5rem, calc(50svh - 8.5rem + ${i * 1.75}rem))` }}
                 className={`sticky grid min-h-[17rem] items-center gap-6 rounded-[1.75rem] p-8 shadow-[0_-22px_44px_-28px_rgba(54,14,57,0.6)] sm:p-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-12 ${
                   ['bg-gold-200', 'bg-[#e7b248]', 'bg-plum-800'][i]
                 }`}

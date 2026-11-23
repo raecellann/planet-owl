@@ -193,7 +193,10 @@ export default function Pricing() {
             {STANDARD.map((g, i) => (
               <li
                 key={g.title}
-                style={{ top: `calc(8.5rem + ${i * 1.75}rem)` }}
+                // Pinned in the MIDDLE of the screen, by request, not under the nav:
+                // half the window less half a panel (17rem min-height), stepped
+                // 1.75rem per panel, and never higher than the nav's own clearance.
+                style={{ top: `max(8.5rem, calc(50svh - 8.5rem + ${i * 1.75}rem))` }}
                 className="sticky grid min-h-[17rem] items-center gap-6 rounded-[1.75rem] bg-white p-8 shadow-[0_-22px_44px_-26px_rgba(20,5,20,0.85)] sm:p-12 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] lg:gap-12"
               >
                 <div>
