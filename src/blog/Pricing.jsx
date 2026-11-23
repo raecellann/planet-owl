@@ -365,8 +365,8 @@ export default function Pricing() {
             variants={{ on: { transition: { staggerChildren: 0.12 } } }}
             className="mt-10 grid gap-4 md:grid-cols-3"
           >
-            <motion.div variants={TILE} whileHover={reduce ? undefined : { y: -6 }} className="relative overflow-hidden rounded-[1.5rem] bg-teal-400 p-6 text-plum-900 md:row-span-2">
-              <img src={A.owl.broom} alt="" aria-hidden loading="lazy" className="pointer-events-none absolute -right-4 bottom-1 w-[58%] max-w-[15rem] object-contain" />
+            <motion.div variants={TILE} whileHover={reduce ? undefined : { y: -6 }} className="group relative overflow-hidden rounded-[1.5rem] bg-teal-400 p-6 text-plum-900 md:row-span-2">
+              <img src={A.owl.broom} alt="" aria-hidden loading="lazy" className="pointer-events-none absolute -right-4 bottom-1 w-[58%] max-w-[15rem] object-contain origin-bottom transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:-rotate-6 group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:rotate-0 motion-reduce:group-hover:scale-100" />
               <h3 className="font-ui text-xl font-bold">Month by month.</h3>
               <p className="mt-2 font-ui leading-snug">One flat price on your plan, billed monthly.</p>
               <ol className="relative mt-6 space-y-4 pl-6">
@@ -392,13 +392,13 @@ export default function Pricing() {
                 key={t.title}
                 variants={TILE}
                 whileHover={reduce ? undefined : { y: -6 }}
-                className={`flex items-center justify-between gap-3 rounded-[1.5rem] p-6 text-plum-900 ${t.tone}`}
+                className={`group flex items-center justify-between gap-3 rounded-[1.5rem] p-6 text-plum-900 ${t.tone}`}
               >
                 <div>
                   <h3 className="font-ui text-xl font-bold">{t.title}</h3>
                   <p className="mt-2 font-ui leading-snug">{t.copy}</p>
                 </div>
-                <img src={t.owl} alt="" aria-hidden loading="lazy" className="h-28 w-28 shrink-0 object-contain" />
+                <img src={t.owl} alt="" aria-hidden loading="lazy" className="h-28 w-28 shrink-0 object-contain origin-bottom transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:-rotate-6 group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:rotate-0 motion-reduce:group-hover:scale-100" />
               </motion.div>
             ))}
             <motion.div variants={TILE} whileHover={reduce ? undefined : { y: -6 }} className="overflow-hidden rounded-[1.5rem] bg-gold-500 p-6 text-plum-900 md:col-span-3">

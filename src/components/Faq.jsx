@@ -87,7 +87,7 @@ export default function Faq({ tone = 'light', className = '', askHref = null }) 
           </a>
         </p>
         <img
-          src={A.owl.vr}
+          src={A.owl.wizard}
           alt="An owl in a wizard's hat"
           loading="lazy"
           // Larger, by request — it was 15rem and read as a spot
