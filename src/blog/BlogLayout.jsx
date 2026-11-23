@@ -19,7 +19,9 @@ import { BLOG_HOME } from './posts'
  * on). Anything that is not a `#/blog` route renders the landing page, so
  * following one leaves the blog and lands on that section.
  */
-export default function BlogLayout({ children }) {
+/* `onBlog` is false for the pages that borrow this frame without being the
+   blog (the privacy page), so "Blog" is not marked as the current page there. */
+export default function BlogLayout({ children, onBlog = true }) {
   const [projectOpen, setProjectOpen] = useState(false)
   const openProject = (e) => {
     e.preventDefault()
@@ -70,8 +72,8 @@ export default function BlogLayout({ children }) {
             <li>
               <a
                 href={BLOG_HOME}
-                aria-current="page"
-                className="font-ui text-[max(0.8rem,1.05vw)] font-bold text-teal-600 no-underline"
+                aria-current={onBlog ? 'page' : undefined}
+                className={`font-ui text-[max(0.8rem,1.05vw)] font-bold no-underline ${onBlog ? 'text-teal-600' : 'text-plum-700 transition-colors hover:text-plum-900'}`}
               >
                 Blog
               </a>
@@ -80,7 +82,7 @@ export default function BlogLayout({ children }) {
 
           <a
             href={BLOG_HOME}
-            className="ml-auto font-ui text-sm font-bold text-teal-600 no-underline lg:hidden"
+            className={`ml-auto font-ui text-sm font-bold no-underline lg:hidden ${onBlog ? 'text-teal-600' : 'text-plum-700'}`}
           >
             Blog
           </a>

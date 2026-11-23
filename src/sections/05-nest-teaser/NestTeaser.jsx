@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { motion, useReducedMotion } from 'motion/react'
+import { useRef, useState } from 'react'
+import { motion, useAnimationControls, useReducedMotion } from 'motion/react'
 import { A } from '../../lib/assets'
 import Reveal from '../../components/ui/Reveal'
 import { GoldButton } from '../../components/ui/Button'
@@ -162,6 +162,84 @@ const FEATHERS_PHONE = [
   [88, 70],
 ]
 
+/**
+ * One feather: it turns on its own clock, and when the pointer touches it, it
+ * is knocked into the air and falls back.
+ *
+ * Three nested boxes, because three things move and each needs its own
+ * transform:
+ *
+ *   1. the outer box holds the PLACE — left, top and height off the table;
+ *   2. the middle one carries the FLIGHT, on the screen's own axes;
+ *   3. the inner one carries the slow TURN, and the image sits in that.
+ *
+ * The flight has to be outside the turn. A translate applied inside a
+ * rotating box is measured in that box's own frame, so "up" would have been
+ * whichever way the feather happened to be pointing at the time — sideways
+ * as often as not.
+ *
+ * The flight itself, by request ("nalipad at nabagsak"): the feather is
+ * flicked UP and off to one side, hangs for a moment, then comes down the way
+ * a feather does — swinging from side to side, dipping a little past where it
+ * started, and settling back onto its spot. It returns because the three are
+ * placed to frame the wizard; one that stayed where it fell would leave a
+ * hole in the arrangement after the first visitor.
+ *
+ * `busy` is what stops it re-triggering itself. The feather moves out from
+ * under the pointer as it flies and sweeps back through it on the way down,
+ * which fires `pointerenter` again each time; without the latch one touch
+ * became a feather that never landed. A touch on a phone fires the same
+ * event, so a tap knocks it up there too.
+ *
+ * Distances are a share of the feather's own height (`lift`), so the big one
+ * travels further than the small one and all three stay inside the swept-disc
+ * clearances worked out above.
+ */
+function Feather({ left, top, vw, cap, secs, dir, lift }) {
+  const flight = useAnimationControls()
+  const busy = useRef(false)
+
+  const knock = async () => {
+    if (busy.current) return
+    busy.current = true
+    const up = `${-lift * 100}%`
+    const pct = (n) => `${n * lift * 100 * dir}%`
+    await flight.start({
+      y: ['0%', up, `${-lift * 118}%`, `${-lift * 55}%`, `${lift * 26}%`, '0%'],
+      x: ['0%', pct(0.55), pct(0.2), pct(-0.6), pct(0.35), '0%'],
+      rotate: [0, -24 * dir, 14 * dir, -18 * dir, 9 * dir, 0],
+      transition: {
+        duration: 3.4,
+        // Fast off the mark, slow at the top, then an unhurried fall.
+        times: [0, 0.14, 0.26, 0.52, 0.8, 1],
+        ease: ['easeOut', 'easeInOut', 'easeInOut', 'easeInOut', 'easeOut'],
+      },
+    })
+    busy.current = false
+  }
+
+  return (
+    <div className="absolute" style={{ left: `${left}%`, top: `${top}%`, height: `min(${vw}vw, ${cap}%)` }}>
+      <motion.div className="h-full" animate={flight}>
+        <motion.div
+          className="h-full"
+          animate={{ rotate: 360 * dir }}
+          transition={{ duration: secs, repeat: Infinity, ease: 'linear' }}
+        >
+          <img
+            src={A.feathers[2]}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            onPointerEnter={knock}
+            className="pointer-events-auto block h-full w-auto cursor-pointer saturate-100 transition-[filter] duration-300 hover:saturate-[1.75]"
+          />
+        </motion.div>
+      </motion.div>
+    </div>
+  )
+}
+
 export default function NestTeaser() {
   const reduce = useReducedMotion()
   const phone = useMediaQuery(PHONE)
@@ -256,35 +334,25 @@ export default function NestTeaser() {
               would fight over `rotate` — the flutter would cancel the turn
               for as long as the pointer stayed on it.
 
-              The flutter fires the instant the pointer lands: a quick
-              shake that dies away, with a small lift, as if the feather had
-              been brushed. It is a keyframed one-shot rather than a spring
-              so it starts at full speed instead of easing in. */}
+              (Historical: the hover used to be a small flutter in place — a
+              quick shake that died away. It is a full flight now; see
+              `Feather`.) */}
           {FEATHERS.map(([deskLeft, deskTop, vw, cap, secs, dir], i) => {
             const [left, top] = phone ? FEATHERS_PHONE[i] : [deskLeft, deskTop]
             return (
-            <motion.div
-              key={i}
-              className="absolute"
-              style={{ left: `${left}%`, top: `${top}%`, height: `min(${vw}vw, ${cap}%)` }}
-              animate={{ rotate: 360 * dir }}
-              transition={{ duration: secs, repeat: Infinity, ease: 'linear' }}
-            >
-              <motion.img
-                src={A.feathers[2]}
-                alt=""
-                loading="lazy"
-                decoding="async"
-                className="pointer-events-auto block h-full w-auto cursor-pointer saturate-100 transition-[filter] duration-300 hover:saturate-[1.75]"
-                whileHover={{
-                  rotate: [0, -16, 13, -9, 6, -3, 0],
-                  scale: [1, 1.12, 1.1, 1.08, 1.06, 1.05, 1.05],
-                  y: [0, -10, -6, -8, -5, -6, -6],
-                  transition: { duration: 0.7, ease: 'easeOut' },
-                }}
-                transition={{ duration: 0.35, ease: 'easeOut' }}
+              <Feather
+                key={i}
+                left={left}
+                top={top}
+                vw={vw}
+                cap={cap}
+                secs={secs}
+                dir={dir}
+                // A shorter flight on phones: the section is only as tall as
+                // its content there, so there is less air above each feather
+                // before this layer's own `overflow-hidden`.
+                lift={phone ? 0.16 : 0.25}
               />
-            </motion.div>
             )
           })}
         </div>
@@ -368,7 +436,14 @@ export default function NestTeaser() {
       {/* `pt-9` on phones is now the WHOLE gap between the button and the
           wizard's plate (the section is content-height there) — enough for
           the sparkles off his hat to clear the button, and no more. */}
-      <div className="relative z-20 flex min-h-0 flex-1 items-end justify-center pb-[0.5%] pt-9 sm:pt-[min(4vw,2.5rem)]">
+      {/* `pointer-events-none` on the COLUMN, `auto` back on the wizard.
+          This box is the full width of the section and sits at `z-20`, over
+          the feather layer — so although the feathers opted in to the
+          pointer, it never reached them: every hover on the flanks landed on
+          this empty column instead. That is why they did nothing under the
+          mouse. The column is only layout; the wizard is the one thing in it
+          that wants the pointer. */}
+      <div className="pointer-events-none relative z-20 flex min-h-0 flex-1 items-end justify-center pb-[0.5%] pt-9 sm:pt-[min(4vw,2.5rem)]">
         <motion.div
           onPointerEnter={() => setHovered(true)}
           onPointerLeave={() => setHovered(false)}
@@ -406,7 +481,7 @@ export default function NestTeaser() {
           // there, this box was the whole column rather than the owl's own
           // box, and the sparkle cluster — placed as a share of this box —
           // hung in the empty space under the button instead of off his hat.
-          className="relative flex h-auto items-end justify-center sm:h-full"
+          className="pointer-events-auto relative flex h-auto items-end justify-center sm:h-full"
         >
           {/* Resting image dictating normal layout flow and sizing */}
           <img

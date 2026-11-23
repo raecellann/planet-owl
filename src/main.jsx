@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 import BlogIndex from './blog/BlogIndex.jsx'
 import BlogPost from './blog/BlogPost.jsx'
+import Privacy from './blog/Privacy.jsx'
 import { findPost } from './blog/posts.js'
 import './index.css'
 
@@ -33,6 +34,8 @@ probe.remove()
  *
  *   #/blog          the index
  *   #/blog/<slug>   one article
+ *   #/privacy       the privacy page (same frame as the blog, so it rides the
+ *                   `blog` branch below and gets the same scroll-to-top)
  *   anything else   the landing page
  *
  * Hash routes rather than `/blog` paths because they need nothing from the
@@ -45,6 +48,7 @@ probe.remove()
  * with `#/`, so the two cannot collide.
  */
 const parseRoute = () => {
+  if (/^#\/privacy\/?$/.test(window.location.hash)) return { blog: true, slug: null, privacy: true }
   const m = window.location.hash.match(/^#\/blog(?:\/([^/?#]+))?\/?$/)
   return m ? { blog: true, slug: m[1] ? decodeURIComponent(m[1]) : null } : { blog: false }
 }
@@ -69,9 +73,10 @@ function Root() {
     if (!route.blog) return
     seenBlog.current = true
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
-    if (!route.slug) document.title = 'Blog — Planet Owl'
-  }, [route.blog, route.slug])
+    if (!route.slug && !route.privacy) document.title = 'Blog — Planet Owl'
+  }, [route.blog, route.slug, route.privacy])
 
+  if (route.privacy) return <Privacy />
   if (route.blog) {
     const post = route.slug ? findPost(route.slug) : null
     // An unknown slug falls back to the index rather than to an empty page.

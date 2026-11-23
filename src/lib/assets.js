@@ -172,5 +172,6 @@ export const FOOTER_LINKS = [
   { label: 'Careers', href: '#the-flock' },
   // The blog is its own page, on a hash route — see `src/blog/`.
   { label: 'Blog', href: '#/blog' },
-  { label: 'Privacy', href: '#start' },
+  // Its own page, on a hash route like the blog — see `src/blog/Privacy.jsx`.
+  { label: 'Privacy', href: '#/privacy' },
 ]
