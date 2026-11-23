@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import BlogLayout from './BlogLayout'
 import { CONTACT_EMAIL, submitContact } from '../lib/signup'
 import { A } from '../lib/assets'
+import cloudImg from '../../assets/section 2/image 35 copy.png'
 
 /**
  * The contact page, at `#/contact` — a message form that can also book a call.
@@ -26,6 +27,24 @@ const SLOTS = Array.from({ length: 17 }, (_, i) => {
   const label = `${((h + 11) % 12) + 1}:${String(m).padStart(2, '0')} ${h < 12 ? 'AM' : 'PM'}`
   return label
 })
+
+/**
+ * The weather behind the page: the studio's own puff, five times over at five
+ * different sizes, on white (both by request — the page opened on the blog's
+ * lavender sky before).
+ *
+ * [left or right edge, top, width, opacity, mirrored]. Widths are `vw` with a
+ * `rem` floor so the small ones do not vanish on a phone. They sit behind the
+ * content (`z-0` under its `z-10`) and bleed off the sides, which the
+ * wrapper's `overflow-hidden` trims, so none of them can widen the page.
+ */
+const CLOUDS = [
+  { side: 'left', at: '-9vw', top: '5rem', w: 'max(15rem,34vw)', o: 0.55, flip: true },
+  { side: 'right', at: '-6vw', top: '9rem', w: 'max(11rem,22vw)', o: 0.5, flip: false },
+  { side: 'left', at: '30vw', top: '21rem', w: 'max(7rem,12vw)', o: 0.4, flip: false },
+  { side: 'right', at: '-12vw', top: '34rem', w: 'max(16rem,38vw)', o: 0.45, flip: false },
+  { side: 'left', at: '-5vw', top: '46rem', w: 'max(9rem,18vw)', o: 0.5, flip: true },
+]
 
 const EMPTY = {
   firstName: '',
@@ -85,8 +104,19 @@ export default function Contact() {
 
   return (
     <BlogLayout onBlog={false} newsletter={false}>
-      <div className="bg-[linear-gradient(180deg,#cdd8f4_0%,#dfe7fa_38%,#ffffff_100%)] px-5 pb-16 pt-[clamp(8rem,12vw,10.5rem)] sm:px-8">
-        <div className="mx-auto max-w-[1180px]">
+      <div className="relative overflow-hidden bg-white px-5 pb-16 pt-[clamp(8rem,12vw,10.5rem)] sm:px-8">
+        {CLOUDS.map((c, i) => (
+          <img
+            key={i}
+            src={cloudImg}
+            alt=""
+            aria-hidden
+            loading="lazy"
+            style={{ [c.side]: c.at, top: c.top, width: c.w, opacity: c.o, transform: c.flip ? 'scaleX(-1)' : undefined }}
+            className="pointer-events-none absolute z-0 max-w-none select-none"
+          />
+        ))}
+        <div className="relative z-10 mx-auto max-w-[1180px]">
           <h1 className="font-['Momo_Trust_Display'] text-[clamp(2rem,4.6vw,3.6rem)] font-normal leading-[1.1] text-plum-700">
             Got a Project? Call in the Owls
           </h1>
@@ -125,6 +155,17 @@ export default function Contact() {
                     <path d="M4 5.5h16v10H9l-5 4z" />
                   </Icon>
                   <span>Or leave a message in the form</span>
+                </li>
+                {/* Where the studio works, not a street address: the client
+                    asked for "anywhere in the US" and there is no office
+                    address to print. Swap this line for the real one when
+                    there is. */}
+                <li className="flex items-center gap-4">
+                  <Icon>
+                    <path d="M12 21s-6.5-5.6-6.5-10.5a6.5 6.5 0 0 1 13 0C18.5 15.4 12 21 12 21z" />
+                    <circle cx="12" cy="10.5" r="2.3" />
+                  </Icon>
+                  <span>Serving clients across the United States</span>
                 </li>
               </ul>
 

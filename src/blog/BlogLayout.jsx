@@ -116,9 +116,13 @@ export default function BlogLayout({ children, onBlog = true, newsletter = true 
           is still the room the plane needs. */}
       {/* `newsletter={false}` (the contact page, which is already a form)
           keeps only the room the footer's plane needs. */}
-      {!newsletter && <div className="bg-white pb-[18vw]" />}
+      {!newsletter && <div className="bg-white pb-[5vw]" />}
       {newsletter && (
-      <section className="bg-white px-5 pb-[18vw] pt-[clamp(4rem,8vw,7rem)] sm:px-8">
+      /* `pb-[7vw]`, down from 18. The 18 was called "the room the plane
+          needs", but the plane only stands 2.2vw clear of the footer's
+          scalloped strip — the rest of it is INSIDE the footer — so most of
+          that padding was simply empty white under the form. */
+      <section className="bg-white px-5 pb-[7vw] pt-[clamp(4rem,8vw,7rem)] sm:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.8rem,4vw,3rem)] font-normal leading-[1.1] text-plum-700">
             Fresh Notes From the Nest
