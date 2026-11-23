@@ -122,7 +122,7 @@ const FEATHERS = [
   // Two per flank caps out around 1.12x, which is barely larger than they
   // started. One per flank clears the current 1.35x with room over: the
   // nearest pair left is 3-5, 460px apart against 378px of radii.
-  [-1.7, 22.5, 35.1, 56.2, 34, 1],
+  [3.2, 22.5, 35.1, 56.2, 34, 1],
   [79.9, 21.4, 29.7, 47.5, 46, -1],
   [69.4, 76.4, 12.8, 20.5, 26, -1],
 ]

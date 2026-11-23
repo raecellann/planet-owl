@@ -35,7 +35,7 @@ const BRANDS = [
     id: 'shopify-stores',
     title: 'Shopify Stores',
     kind: 'Storefront design & build',
-    alt: 'Four Shopify storefronts side by side: AG1, Galifornia Undies, OsiOils and Lockhart\'s',
+    alt: 'Four Shopify storefronts side by side: ALOR, xyab, Rebalance Health and Paper Money',
     tags: ['website'],
     wide: true,
     links: {
@@ -196,7 +196,7 @@ const BRANDS = [
     title: 'Landing Page Showreel',
     kind: 'Promo film',
     alt: 'A sprinter crouched at the start in a dark industrial hall',
-    tags: ['video', 'website'],
+    tags: ['video'],
     videos: { '01-film': '1jGFKF89sZt1FXiPG_DjsJOsQCEDaol9u' },
   },
   {

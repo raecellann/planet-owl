@@ -95,10 +95,10 @@ const TILE = {
 }
 
 const TILES = [
-  { title: 'One flock.', copy: 'Design, digital, development and AI under one roof.', tone: 'bg-white' },
-  { title: 'Move up a plan.', copy: 'Need another craft? Step up to the next one.', tone: 'bg-white' },
-  { title: 'Built for your brand.', copy: 'Refined in the nest before it reaches you.', tone: 'bg-white' },
-  { title: 'Custom scope.', copy: 'Parliament is shaped around what you are building.', tone: 'bg-teal-400' },
+  { title: 'One flock.', copy: 'Design, digital, development and AI under one roof.', tone: 'bg-white', owl: A.owl.crown },
+  { title: 'Move up a plan.', copy: 'Need another craft? Step up to the next one.', tone: 'bg-white', owl: A.owl.astronaut },
+  { title: 'Built for your brand.', copy: 'Refined in the nest before it reaches you.', tone: 'bg-white', owl: A.owl.flower },
+  { title: 'Custom scope.', copy: 'Parliament is shaped around what you are building.', tone: 'bg-teal-400', owl: A.owl.tophat },
 ]
 
 const Check = ({ className = '' }) => (
@@ -132,7 +132,7 @@ export default function Pricing() {
         </div>
       </header>
 
-      <section className="bg-white px-5 pb-24 sm:px-8 sm:pb-32">
+      <section className="relative z-10 bg-white px-5 pb-24 pt-2 sm:px-8 sm:pb-32">
         <ul className="mx-auto grid max-w-[1320px] gap-5 sm:grid-cols-2 xl:grid-cols-4">
           {PLANS.map((p) => (
             <li
@@ -196,11 +196,10 @@ export default function Pricing() {
           it is gone, by request.) */}
       <section className="bg-plum-800 px-5 pb-24 pt-20 sm:px-8 sm:pb-32 sm:pt-28">
         <div className="mx-auto max-w-[1320px]">
-          <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-gold-500">
-            Standard Issue on Every Plan
-          </h2>
-          <div className="mt-14">
+          <div>
             <StackCards
+              heading="Standard Issue on Every Plan"
+              headingClass="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-gold-500"
               tones={['bg-white text-plum-800', 'bg-gold-200 text-plum-900', 'bg-[#e7b248] text-plum-900']}
               items={STANDARD.map((g) => ({
                 title: g.title,
@@ -234,7 +233,8 @@ export default function Pricing() {
             variants={{ on: { transition: { staggerChildren: 0.12 } } }}
             className="mt-10 grid gap-4 md:grid-cols-3"
           >
-            <motion.div variants={TILE} whileHover={reduce ? undefined : { y: -6 }} className="rounded-[1.5rem] bg-teal-400 p-6 text-plum-900 md:row-span-2">
+            <motion.div variants={TILE} whileHover={reduce ? undefined : { y: -6 }} className="relative overflow-hidden rounded-[1.5rem] bg-teal-400 p-6 text-plum-900 md:row-span-2">
+              <img src={A.owl.broom} alt="" aria-hidden loading="lazy" className="pointer-events-none absolute -right-4 bottom-1 w-[58%] max-w-[15rem] object-contain" />
               <h3 className="font-ui text-xl font-bold">Month by month.</h3>
               <p className="mt-2 font-ui leading-snug">One flat price on your plan, billed monthly.</p>
               <ol className="relative mt-6 space-y-4 pl-6">
@@ -260,10 +260,13 @@ export default function Pricing() {
                 key={t.title}
                 variants={TILE}
                 whileHover={reduce ? undefined : { y: -6 }}
-                className={`rounded-[1.5rem] p-6 text-plum-900 ${t.tone}`}
+                className={`flex items-center justify-between gap-3 rounded-[1.5rem] p-6 text-plum-900 ${t.tone}`}
               >
-                <h3 className="font-ui text-xl font-bold">{t.title}</h3>
-                <p className="mt-2 font-ui leading-snug">{t.copy}</p>
+                <div>
+                  <h3 className="font-ui text-xl font-bold">{t.title}</h3>
+                  <p className="mt-2 font-ui leading-snug">{t.copy}</p>
+                </div>
+                <img src={t.owl} alt="" aria-hidden loading="lazy" className="h-28 w-28 shrink-0 object-contain" />
               </motion.div>
             ))}
             <motion.div variants={TILE} whileHover={reduce ? undefined : { y: -6 }} className="rounded-[1.5rem] bg-gold-500 p-6 text-plum-900 md:col-span-3">
@@ -272,6 +275,7 @@ export default function Pricing() {
                   <h3 className="font-ui text-xl font-bold">Free 2-week trial.</h3>
                   <p className="mt-2 font-ui leading-snug">See how the nest handles your brand first.</p>
                 </div>
+                <img src={A.owl.pilot} alt="" aria-hidden loading="lazy" className="mx-auto h-28 w-auto object-contain" />
                 <ol className="flex items-center gap-3 font-ui text-sm font-bold">
                   {['Try', 'Decide', 'Stay'].map((t, i) => (
                     <li key={t} className="flex items-center gap-3">

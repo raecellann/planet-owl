@@ -272,16 +272,10 @@ export default function About() {
       {/* -------------------------------------------------- how we work -- */}
       <section className="bg-white px-5 py-14 sm:px-8 sm:py-20">
         <div className="mx-auto max-w-[1180px]">
-          <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-plum-700">
-            What We Are Here to Do
-          </h2>
-          {/* STACKED, by request — the same dealt-deck scroll as the pricing
-              page. Each panel is sticky and pins a step lower than the last,
-              so the next one slides up over it as the page moves. The
-              offsets clear the fixed nav; nothing above this list may clip
-              or the pinning stops. */}
-          <div className="mt-10">
+          <div>
             <StackCards
+              heading="What We Are Here to Do"
+              headingClass="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-plum-700"
               tones={['bg-gold-200 text-plum-900', 'bg-[#e7b248] text-plum-900', 'bg-plum-800 text-gold-200']}
               items={PROMISES.map((p) => ({
                 title: p.title,
@@ -290,30 +284,9 @@ export default function About() {
             />
           </div>
 
-          <p className="mt-14 font-['Momo_Trust_Display'] text-[clamp(1.5rem,3vw,2.3rem)] leading-tight text-plum-700">
-            <span className="text-teal-600">No</span> guesswork. <span className="text-teal-600">No</span>{' '}
-            revisions. <span className="text-teal-600">No</span> changes.
-          </p>
         </div>
       </section>
 
-      {/* ------------------------------------------------------ the ask -- */}
-      <section className="bg-white px-5 pb-10 sm:px-8">
-        <div className="mx-auto max-w-[1180px] rounded-[1.75rem] bg-[#e7b248] p-8 sm:p-12">
-          <p className="font-['Momo_Trust_Display'] text-[clamp(1.6rem,3.2vw,2.5rem)] leading-tight text-plum-900">
-            But enough about us. Let’s talk about your idea.
-          </p>
-          <p className="mt-3 max-w-xl font-ui leading-relaxed text-plum-900/85">
-            Bring us the ambitious one — the complex one that still feels just out of reach.
-          </p>
-          <a
-            href="#/contact"
-            className="btn-type mt-7 inline-flex h-12 items-center rounded-full bg-plum-800 px-6 font-ui font-semibold text-white no-underline shadow-[0_6px_0_-2px_var(--color-plum-950)] transition-colors hover:bg-plum-700"
-          >
-            Contact Us
-          </a>
-        </div>
-      </section>
     </BlogLayout>
   )
 }
