@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { AnimatePresence, motion } from 'motion/react'
 import { A, NAV_LINKS } from '../lib/assets'
 import { GoldButton } from '../components/ui/Button'
 import StartProjectModal from '../components/StartProjectModal'
@@ -27,8 +28,11 @@ export default function BlogLayout({ children, onBlog = true, newsletter = true,
   const here = page || (onBlog ? { label: 'Blog', href: BLOG_HOME } : null)
   const hereIsBlog = here?.href === BLOG_HOME
   const [projectOpen, setProjectOpen] = useState(false)
+  // The phone menu — the same drawer the landing page's bar opens.
+  const [menuOpen, setMenuOpen] = useState(false)
   const openProject = (e) => {
     e.preventDefault()
+    setMenuOpen(false)
     setProjectOpen(true)
   }
 
@@ -59,7 +63,7 @@ export default function BlogLayout({ children, onBlog = true, newsletter = true,
                 the CTA in the same 351px, and at the landing page's `h-8`
                 the row was 25px wider than the pill — the CTA hung off the
                 right-hand end. */}
-            <img src={A.logo} alt="Planet Owl" className="h-6 w-auto sm:h-[max(1.5rem,2vw)]" />
+            <img src={A.logo} alt="Planet Owl" className="h-8 w-auto sm:h-[max(1.5rem,2vw)]" />
           </a>
 
           <ul className="ml-auto hidden shrink-0 items-center gap-[max(1rem,2vw)] pl-6 lg:flex">
@@ -101,29 +105,103 @@ export default function BlogLayout({ children, onBlog = true, newsletter = true,
             )}
           </ul>
 
-          {/* Phones have room for one label: the page you are on. */}
-          <a
-            href={here ? here.href : BLOG_HOME}
-            aria-current={here ? 'page' : undefined}
-            className={`ml-auto font-ui text-sm font-bold no-underline lg:hidden ${here ? 'text-teal-600' : 'text-plum-700'}`}
-          >
-            {here ? here.label : 'Blog'}
-          </a>
+          {/* Below `lg` the bar is the LANDING page's own: the logo and the
+              burger, with the links in a drawer underneath — by request. It
+              used to swap to a different bar here (a text label and a small
+              CTA, no menu), so tapping Privacy or Blog on a phone changed
+              how the navigation looked and took the section links away. The
+              drawer is that same list with the page you are on added after
+              The Nest. From `sm` the CTA sits in the bar as well, as it does
+              on the landing page. */}
+          <div className="ml-auto flex shrink-0 items-center gap-2 lg:ml-9">
+            <div className="hidden -translate-y-[3px] sm:block">
+              <GoldButton
+                href="#start"
+                withOwl
+                iconSrc={A.buttonOwl}
+                iconAsBadge
+                whileHover={{}}
+                onClick={openProject}
+                className="h-[max(2.5rem,3.3vw)] whitespace-nowrap text-[max(0.8rem,1.05vw)] !shadow-[0_6px_0_-2px_var(--color-plum-900),0_16px_28px_-16px_rgba(20,12,10,0.55)]"
+              >
+                Start a Project
+              </GoldButton>
+            </div>
 
-          <div className="ml-2 shrink-0 -translate-y-[3px] sm:ml-4 lg:ml-9">
-            <GoldButton
-              href="#start"
-              withOwl
-              iconSrc={A.buttonOwl}
-              iconAsBadge
-              whileHover={{}}
-              onClick={openProject}
-              className="h-10 whitespace-nowrap !px-3 text-[0.8rem] !shadow-[0_6px_0_-2px_var(--color-plum-900),0_16px_28px_-16px_rgba(20,12,10,0.55)] sm:h-[max(2.5rem,3.3vw)] sm:!px-6 sm:text-[max(0.8rem,1.05vw)]"
+            <button
+              type="button"
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-expanded={menuOpen}
+              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+              className="grid size-11 place-items-center rounded-full bg-plum-700 text-white lg:hidden"
             >
-              Start a Project
-            </GoldButton>
+              <span className="relative block h-3.5 w-5">
+                <motion.span
+                  animate={menuOpen ? { rotate: 45, y: 6 } : { rotate: 0, y: 0 }}
+                  className="absolute inset-x-0 top-0 h-0.5 rounded bg-current"
+                />
+                <motion.span
+                  animate={menuOpen ? { opacity: 0 } : { opacity: 1 }}
+                  className="absolute inset-x-0 top-1.5 h-0.5 rounded bg-current"
+                />
+                <motion.span
+                  animate={menuOpen ? { rotate: -45, y: -6 } : { rotate: 0, y: 0 }}
+                  className="absolute inset-x-0 top-3 h-0.5 rounded bg-current"
+                />
+              </span>
+            </button>
           </div>
         </nav>
+
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.28, ease: 'easeOut' }}
+              className="mx-auto mt-2 max-w-6xl overflow-hidden rounded-3xl bg-white/97 p-4 shadow-[0_24px_50px_-26px_rgba(54,14,57,0.7)] backdrop-blur-md lg:hidden"
+            >
+              <ul className="flex flex-col">
+                {NAV_LINKS.map((l) => (
+                  <li key={l.href}>
+                    <a
+                      href={l.href}
+                      onClick={() => setMenuOpen(false)}
+                      className="block rounded-2xl px-4 py-3 font-ui text-lg font-bold text-plum-700 no-underline transition-colors hover:bg-plum-100"
+                    >
+                      {l.label}
+                    </a>
+                  </li>
+                ))}
+                {here && (
+                  <li>
+                    <a
+                      href={here.href}
+                      aria-current="page"
+                      onClick={() => setMenuOpen(false)}
+                      className="block rounded-2xl px-4 py-3 font-ui text-lg font-bold text-teal-600 no-underline"
+                    >
+                      {here.label}
+                    </a>
+                  </li>
+                )}
+              </ul>
+              <div className="mt-2 sm:hidden">
+                <GoldButton
+                  href="#start"
+                  withOwl
+                  iconSrc={A.buttonOwl}
+                  iconAsBadge
+                  onClick={openProject}
+                  className="w-full justify-center"
+                >
+                  Start a Project
+                </GoldButton>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
       <main className="bg-white font-ui text-plum-900">{children}</main>
