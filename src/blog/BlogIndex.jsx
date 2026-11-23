@@ -90,12 +90,29 @@ export default function BlogIndex() {
             transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
             className="group mx-auto grid max-w-[1180px] overflow-hidden rounded-[1.75rem] bg-white no-underline shadow-[0_30px_60px_-30px_rgba(54,14,57,0.5)] ring-1 ring-plum-900/5 md:grid-cols-[1.05fr_1fr]"
           >
-            {/* The cover keeps its own 16:10 and is centred on a matching
-                ground. Stretching it to the row's height (`h-full`) made its
-                WIDTH follow from that height, which pushed it out of its
-                column and over the text beside it. */}
-            <div className="relative flex items-center bg-[#e7b248]">
-              <BlogCover cover={featured.cover} title={featured.title} className="w-full" />
+            {/* The cover FILLS its half of the card, edge to edge.
+
+                It used to keep its own 16:10 and sit centred on a flat gold
+                ground, because stretching it with `h-full` made its WIDTH
+                follow from the height (it still had an aspect ratio) and
+                pushed it over the text. But the text column is taller than
+                16:10 of this one, so the cover ended short of the card's top
+                and bottom, and its own gradient against the flat fill showed
+                as a picture floating inside a gold frame.
+
+                From `md` up, where the two sit side by side, the cover drops
+                its ratio and is pinned to this box's four sides instead: no
+                ratio means no width to derive, so it cannot leave its column.
+                The `min-h` is the 16:10 it would have had, so a short text
+                column cannot squash it. Stacked (below `md`) it is a plain
+                16:10 block the full width of the card, as before. */}
+            <div className="relative bg-[#e7b248] md:min-h-[min(31vw,23rem)]">
+              <BlogCover
+                cover={featured.cover}
+                title={featured.title}
+                ratio="aspect-[16/10] md:aspect-auto"
+                className="w-full md:absolute md:inset-0 md:h-full"
+              />
               <CategoryChip className="absolute left-4 top-4">{featured.category}</CategoryChip>
             </div>
             <div className="flex flex-col justify-center p-7 sm:p-10">

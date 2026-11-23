@@ -13,6 +13,9 @@ import { A } from '../lib/assets'
  * drawn as a small card in the grid or as the full-width image on an article.
  *
  * Set `cover.image` on a post to replace all of this with a finished picture.
+ *
+ * `ratio` is the box the cover draws itself in — 16:10 unless the caller has a
+ * frame of its own to fill (the featured card on the index does, see there).
  */
 const GROUNDS = {
   gold: 'bg-[radial-gradient(ellipse_at_50%_35%,#f4cb6b_0%,#e7b248_62%,#d99f33_100%)]',
@@ -34,10 +37,18 @@ const DOTS = {
   white: 'bg-teal-500',
 }
 
-export default function BlogCover({ cover, title, className = '' }) {
+/**
+ * Feathers the cloud plate's own rectangle away. The plate is not fully
+ * transparent out to its edges, so on a flat ground its box showed as a
+ * faintly lighter rectangle with a hard vertical edge through the cover.
+ */
+const CLOUD_EDGE =
+  '[mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_55%,transparent_100%)]'
+
+export default function BlogCover({ cover, title, className = '', ratio = 'aspect-[16/10]' }) {
   if (cover.image) {
     return (
-      <div className={`aspect-[16/10] overflow-hidden ${className}`}>
+      <div className={`${ratio} overflow-hidden ${className}`}>
         <img src={cover.image} alt={title} loading="lazy" className="size-full object-cover" />
       </div>
     )
@@ -49,20 +60,20 @@ export default function BlogCover({ cover, title, className = '' }) {
     <div
       role="img"
       aria-label={title}
-      className={`@container relative aspect-[16/10] overflow-hidden ${GROUNDS[theme]} ${className}`}
+      className={`@container relative ${ratio} overflow-hidden ${GROUNDS[theme]} ${className}`}
     >
       {/* soft weather behind the owl, so the ground is not a flat fill */}
       <img
         src={A.cloud}
         alt=""
         aria-hidden
-        className={`pointer-events-none absolute -left-[12%] bottom-[-18%] w-[70%] select-none ${theme === 'plum' ? 'opacity-15' : 'opacity-60'}`}
+        className={`pointer-events-none absolute -left-[12%] bottom-[-18%] w-[70%] select-none ${CLOUD_EDGE} ${theme === 'plum' ? 'opacity-15' : 'opacity-60'}`}
       />
       <img
         src={A.cloud}
         alt=""
         aria-hidden
-        className={`pointer-events-none absolute -right-[16%] top-[-10%] w-[62%] -scale-x-100 select-none ${theme === 'plum' ? 'opacity-10' : 'opacity-45'}`}
+        className={`pointer-events-none absolute -right-[16%] top-[-10%] w-[62%] -scale-x-100 select-none ${CLOUD_EDGE} ${theme === 'plum' ? 'opacity-10' : 'opacity-45'}`}
       />
 
       {/* the caption card the owl stands in front of */}
