@@ -168,7 +168,7 @@ function HowItWorks() {
 
   return (
     <div ref={track} className={reduce ? '' : 'h-[220svh]'}>
-      <div className={`flex flex-col pb-6 pt-[calc(max(5.25rem,2.92vw+max(3.25rem,4.4vw))+1.75rem)] ${reduce ? '' : 'sticky top-0 h-[100svh]'}`}>
+      <div className={`flex flex-col pb-6 pt-[calc(max(5.25rem,2.92vw+max(3.25rem,4.4vw))+2.75rem)] lg:pt-[calc(max(5.25rem,2.92vw+max(3.25rem,4.4vw))+clamp(2.25rem,12svh,7.5rem))] ${reduce ? '' : 'sticky top-0 h-[100svh]'}`}>
         <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-plum-700">
           How It Hatches
         </h2>
