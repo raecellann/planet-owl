@@ -37,13 +37,22 @@ const SLOTS = Array.from({ length: 17 }, (_, i) => {
  * `rem` floor so the small ones do not vanish on a phone. They sit behind the
  * content (`z-0` under its `z-10`) and bleed off the sides, which the
  * wrapper's `overflow-hidden` trims, so none of them can widen the page.
+ *
+ * Kept OFF the text, by request. The first set had one puff drifting through
+ * the contact details and another under the heading, which greyed the type.
+ * Every one now hangs off an edge with at most a fifth of its width in the
+ * margin beside the content column: the column is 1180px wide and centred,
+ * so each cloud's inboard edge stops short of it (`calc(50% - 590px)` from
+ * its own side), and the small centre one is gone. On windows narrower than
+ * the column they are pushed almost entirely off screen rather than under
+ * the words.
  */
 const CLOUDS = [
-  { side: 'left', at: '-9vw', top: '5rem', w: 'max(15rem,34vw)', o: 0.55, flip: true },
-  { side: 'right', at: '-6vw', top: '9rem', w: 'max(11rem,22vw)', o: 0.5, flip: false },
-  { side: 'left', at: '30vw', top: '21rem', w: 'max(7rem,12vw)', o: 0.4, flip: false },
-  { side: 'right', at: '-12vw', top: '34rem', w: 'max(16rem,38vw)', o: 0.45, flip: false },
-  { side: 'left', at: '-5vw', top: '46rem', w: 'max(9rem,18vw)', o: 0.5, flip: true },
+  { side: 'left', at: 'min(-14vw, calc(50vw - 590px - 30vw))', top: '4rem', w: 'max(13rem,28vw)', o: 0.55, flip: true },
+  { side: 'right', at: 'min(-8vw, calc(50vw - 590px - 20vw))', top: '8rem', w: 'max(10rem,19vw)', o: 0.5, flip: false },
+  { side: 'right', at: 'min(-16vw, calc(50vw - 590px - 31vw))', top: '36rem', w: 'max(14rem,30vw)', o: 0.45, flip: false },
+  { side: 'left', at: 'min(-7vw, calc(50vw - 590px - 15vw))', top: '34rem', w: 'max(8rem,14vw)', o: 0.5, flip: true },
+  { side: 'left', at: 'min(-10vw, calc(50vw - 590px - 21vw))', top: '56rem', w: 'max(10rem,20vw)', o: 0.45, flip: false },
 ]
 
 const EMPTY = {

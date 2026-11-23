@@ -133,19 +133,19 @@ export default function Pricing() {
                   : 'bg-white text-plum-900 ring-plum-900/10 shadow-[0_30px_60px_-36px_rgba(54,14,57,0.45)]'
               }`}
             >
+              {/* The owl on TOP of the card and large, by request — it was a
+                  5rem figure tucked beside the plan's name. */}
+              <img src={p.owl} alt="" aria-hidden loading="lazy" className="mx-auto h-44 w-auto object-contain sm:h-48" />
               <p
-                className={`self-start rounded-full px-3 py-1.5 font-ui text-xs font-bold uppercase tracking-wide ${
+                className={`mt-6 self-start rounded-full px-3 py-1.5 font-ui text-xs font-bold uppercase tracking-wide ${
                   p.featured ? 'bg-gold-500 text-plum-900' : 'bg-plum-100 text-plum-800'
                 }`}
               >
                 {p.tag}
               </p>
-              <div className="mt-5 flex items-end justify-between gap-3">
-                <h2 className={`font-['Momo_Trust_Display'] text-3xl font-normal ${p.featured ? 'text-gold-500' : 'text-plum-700'}`}>
-                  {p.name}
-                </h2>
-                <img src={p.owl} alt="" aria-hidden loading="lazy" className="h-20 w-auto object-contain" />
-              </div>
+              <h2 className={`mt-4 font-['Momo_Trust_Display'] text-3xl font-normal ${p.featured ? 'text-gold-500' : 'text-plum-700'}`}>
+                {p.name}
+              </h2>
               <p className="mt-4 font-ui">
                 {p.from && <span className={`mr-1.5 text-sm ${p.featured ? 'text-gold-200' : 'text-plum-600'}`}>from</span>}
                 <span className="text-[2.6rem] font-bold leading-none">{p.price}</span>
