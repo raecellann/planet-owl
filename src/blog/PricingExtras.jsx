@@ -49,7 +49,7 @@ export function CompareTable() {
   const label = 'sticky left-0 z-10 flex items-center bg-plum-800 pr-3 font-ui'
 
   return (
-    <div className="mt-24">
+    <div>
       <h2 className="text-center font-['Momo_Trust_Display'] text-[clamp(1.9rem,4vw,3.2rem)] font-normal leading-[1.1] text-gold-500">
         Why Brands Nest With Us
       </h2>

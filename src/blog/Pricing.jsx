@@ -340,26 +340,7 @@ export default function Pricing() {
       <SectionBreak edge="top" />
       <section className="-my-px bg-plum-800 px-5 pb-24 pt-20 sm:px-8 sm:pb-32 sm:pt-28">
         <div className="mx-auto max-w-[1320px]">
-          <div>
-            <StackCards
-              heading="Standard Issue on Every Plan"
-              headingClass="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-gold-500"
-              tones={['bg-white text-plum-700', 'bg-gold-200 text-plum-700', 'bg-[#e7b248] text-plum-700']}
-              items={STANDARD.map((g) => ({
-                title: g.title,
-                body: (
-                  <ul className="space-y-3">
-                    {g.items.map((item) => (
-                      <li key={item} className="flex items-start gap-3 font-ui text-lg leading-snug">
-                        <Check className="mt-1 text-teal-600" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                ),
-              }))}
-            />
-          </div>
+          <CompareTable />
 
           {/* The tile grid, laid out after the reference. Its wording is only
               what the studio has actually said. The reference's cancel-anytime,
@@ -423,11 +404,33 @@ export default function Pricing() {
               </div>
             </motion.div>
           </motion.div>
-
-          <CompareTable />
         </div>
       </section>
       <SectionBreak edge="bottom" />
+
+      {/* Standard Issue, on its own, right before How It Hatches. */}
+      <section className="bg-white px-5 pb-16 pt-20 sm:px-8 sm:pb-24 sm:pt-24">
+        <div className="mx-auto max-w-[1320px]">
+            <StackCards
+              heading="Standard Issue on Every Plan"
+              headingClass="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-plum-700"
+              tones={['bg-plum-100 text-plum-700', 'bg-gold-200 text-plum-700', 'bg-[#e7b248] text-plum-700']}
+              items={STANDARD.map((g) => ({
+                title: g.title,
+                body: (
+                  <ul className="space-y-3">
+                    {g.items.map((item) => (
+                      <li key={item} className="flex items-start gap-3 font-ui text-lg leading-snug">
+                        <Check className="mt-1 text-teal-600" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                ),
+              }))}
+            />
+        </div>
+      </section>
 
       {/* ------------------------------------------------ how it works --
           A ROADMAP that draws itself, by request ("animated, like an
