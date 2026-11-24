@@ -6,6 +6,12 @@ import { WORK } from '../sections/02-portfolio/work'
 import StackCards from '../components/StackCards'
 import SectionBreak from '../components/SectionBreak'
 import OwlBubble, { OWL_INTROS } from '../components/OwlBubble'
+import owlBold from '../../assets/about-owls/bold.webp'
+import owlFlock from '../../assets/about-owls/flock.webp'
+import owlBrand from '../../assets/about-owls/brand.webp'
+import owlNest from '../../assets/about-owls/nest.webp'
+import owlPlain from '../../assets/about-owls/plain.webp'
+import owlTech from '../../assets/about-owls/tech.webp'
 
 /**
  * The About page, at `#/about`.
@@ -32,12 +38,12 @@ import OwlBubble, { OWL_INTROS } from '../components/OwlBubble'
  * turnaround times or revision terms belong here until the studio sets them.
  */
 const VALUES = [
-  { title: 'Bold Over Safe', owl: A.owl.vr, copy: 'We make work for brands that want to rise above the ordinary and be remembered.' },
-  { title: 'One Flock, One Roof', owl: A.owl.crown, copy: 'Design, development, digital and AI sit together, so your idea never gets passed between agencies.' },
-  { title: 'Your Brand, Never a Template', owl: A.owl.flower, copy: 'Everything we make starts with who you are and is built around your brand.' },
-  { title: 'Refined in the Nest', owl: A.owl.develop, copy: 'Work is shaped, built and polished in one place before it reaches you.' },
-  { title: 'Plain Words Welcome', owl: A.owl.digital, copy: 'Tell us what you need the way you would say it. Working out the rest is our job.' },
-  { title: 'Tech With a Purpose', owl: A.owl.ai, copy: 'We use AI and automation where they simplify real work and help your business move faster.' },
+  { title: 'Bold Over Safe', owl: owlBold, copy: 'We make work for brands that want to rise above the ordinary and be remembered.' },
+  { title: 'One Flock, One Roof', owl: owlFlock, copy: 'Design, development, digital and AI sit together, so your idea never gets passed between agencies.' },
+  { title: 'Your Brand, Never a Template', owl: owlBrand, copy: 'Everything we make starts with who you are and is built around your brand.' },
+  { title: 'Refined in the Nest', owl: owlNest, copy: 'Work is shaped, built and polished in one place before it reaches you.' },
+  { title: 'Plain Words Welcome', owl: owlPlain, copy: 'Tell us what you need the way you would say it. Working out the rest is our job.' },
+  { title: 'Tech With a Purpose', owl: owlTech, copy: 'We use AI and automation where they simplify real work and help your business move faster.' },
 ]
 
 /**
@@ -235,7 +241,7 @@ export default function About() {
                   alt=""
                   aria-hidden
                   loading="lazy"
-                  className="h-28 w-auto origin-bottom object-contain transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:-translate-y-1.5 group-hover:-rotate-3 group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:transform-none sm:h-32"
+                  className="h-32 w-auto max-w-[11rem] origin-bottom object-contain object-left transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:-translate-y-1.5 group-hover:-rotate-3 group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:transform-none sm:h-36"
                 />
                 <h3 className="mt-5 font-ui text-xl font-bold leading-snug text-gold-500">{v.title}</h3>
                 <span aria-hidden className="mt-3 block h-1 w-full origin-left scale-x-[0.18] rounded-full bg-gold-500 transition-transform duration-500 ease-out group-hover:scale-x-100 motion-reduce:transition-none" />
