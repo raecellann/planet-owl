@@ -594,6 +594,13 @@ export default function NestView({ onReveal }) {
           />
         </motion.div>
         <div ref={frameRef} className="sticky top-0 h-[100lvh] w-full overflow-hidden">
+          {/* A solid backing behind the shot, fading out with it. Top Secrets
+              is mounted behind this frame before the dissolve, and on a
+              phone the cave does not always reach every edge of the screen,
+              so its heading and copy showed through around the nest while
+              scrolling (by request). Now nothing behind is visible until the
+              shot itself dissolves. */}
+          <motion.div aria-hidden style={{ opacity: shot }} className="pointer-events-none absolute inset-0 bg-[#140c0a]" />
           {/* Centred on the HOLE rather than on the panel's own middle: the
               opening sits 53.5% down the plate, and it is what the visitor
               has to be looking at for the whole sequence. The panel overflows
