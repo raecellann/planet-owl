@@ -154,31 +154,44 @@ const PROMISES = [
 const VALUE_TONES = ['bg-gold-200', 'bg-[#e7b248]', 'bg-plum-100', 'bg-gold-500', 'bg-white', 'bg-teal-400']
 
 /**
- * One value card in the side stack. Each slides in from the right over its
- * stretch of the scroll and settles a step lower and further right than the
- * one before, so the deck builds up as the reader scrolls.
+ * Where each card lands: across and down the stage (0 to 1) and its tilt, so
+ * the finished pile looks tossed rather than stacked.
+ */
+const SCATTER = [
+  { fx: 0.02, fy: 0.06, rot: -8 },
+  { fx: 0.52, fy: 0.0, rot: 6 },
+  { fx: 0.98, fy: 0.2, rot: -5 },
+  { fx: 0.18, fy: 0.9, rot: 7 },
+  { fx: 0.8, fy: 0.98, rot: -9 },
+  { fx: 0.5, fy: 0.5, rot: 3 },
+]
+
+/**
+ * One value card. Over its stretch of the scroll it flies in from alternate
+ * sides, spinning, and lands at its own spot and angle on the pile.
  */
 function ValueCard({ v, i, n, progress }) {
-  const start = (i - 1) / n
-  const end = i / n
-  const x = useTransform(progress, [Math.max(0, start), end], i === 0 ? ['0%', '0%'] : ['120%', '0%'])
-  const rotate = useTransform(progress, [Math.max(0, start), end], i === 0 ? [0, 0] : [6, 0])
+  const spot = SCATTER[i % SCATTER.length]
+  const from = i % 2 ? 1 : -1
+  const range = [i / (n + 0.5), (i + 0.85) / (n + 0.5)]
+  const x = useTransform(progress, range, [`${from * 110}vw`, '0vw'])
+  const y = useTransform(progress, range, ['-18svh', '0svh'])
+  const rotate = useTransform(progress, range, [spot.rot + from * 28, spot.rot])
   return (
     <motion.li
-      style={{ x, rotate, top: `calc(var(--step) * ${i})`, left: `calc(var(--step) * ${i})`, width: `calc(100% - var(--step) * ${n - 1})`, zIndex: i + 1 }}
-      className={`absolute grid origin-bottom-left items-center gap-4 rounded-[1.75rem] p-6 sm:grid-cols-[auto_minmax(0,1fr)] shadow-[0_24px_50px_-28px_rgba(20,4,22,0.7)] sm:gap-8 sm:p-9 ${VALUE_TONES[i % VALUE_TONES.length]}`}
+      style={{ x, y, rotate, left: `${spot.fx * 100}%`, top: `${spot.fy * 100}%`, translate: `-${spot.fx * 100}% -${spot.fy * 100}%`, zIndex: i + 1 }}
+      className={`absolute w-[min(23rem,82%)] rounded-[1.5rem] p-5 shadow-[0_24px_50px_-24px_rgba(20,4,22,0.75)] sm:w-[min(23rem,40%)] sm:p-6 ${VALUE_TONES[i % VALUE_TONES.length]}`}
     >
-      <img src={v.owl} alt="" aria-hidden loading="lazy" className="h-20 w-auto max-w-[6rem] object-contain sm:h-44 sm:max-w-[11rem]" />
-      <div>
-        <p className="font-ui text-sm font-bold text-plum-700">{String(i + 1).padStart(2, '0')}</p>
-        <h3 className="mt-1 font-['Momo_Trust_Display'] text-[clamp(1.4rem,2.6vw,2.2rem)] font-normal leading-[1.1] text-plum-700">{v.title}</h3>
-        <p className="mt-3 max-w-md font-ui leading-relaxed text-plum-700 sm:text-lg">{v.copy}</p>
+      <div className="flex items-center gap-4">
+        <img src={v.owl} alt="" aria-hidden loading="lazy" className="h-16 w-auto max-w-[5rem] object-contain sm:h-24 sm:max-w-[7rem]" />
+        <h3 className="font-['Momo_Trust_Display'] text-[clamp(1.25rem,2vw,1.7rem)] font-normal leading-[1.1] text-plum-700">{v.title}</h3>
       </div>
+      <p className="mt-3 font-ui text-sm leading-relaxed text-plum-700 sm:text-base">{v.copy}</p>
     </motion.li>
   )
 }
 
-/** The values as a pinned stage: the cards deal in from the side on the scroll. */
+/** The values as a pinned stage: the cards are tossed in and scatter on the scroll. */
 function ValuesStack() {
   const reduce = useReducedMotion()
   const track = useRef(null)
@@ -213,7 +226,7 @@ function ValuesStack() {
       <div className="sticky top-0 flex h-[100svh] flex-col justify-center overflow-hidden pt-24">
         <div className="mx-auto w-full max-w-[1180px]">
           {heading}
-          <ul className="relative mt-8 h-[min(24rem,58svh)] max-w-[52rem] [--step:0.45rem] sm:mt-10 sm:h-[min(26rem,52svh)] sm:[--step:0.9rem]">
+          <ul className="relative mt-6 h-[min(30rem,62svh)] w-full sm:mt-8 sm:h-[min(34rem,64svh)]">
             {VALUES.map((v, i) => (
               <ValueCard key={v.title} v={v} i={i} n={VALUES.length} progress={scrollYProgress} />
             ))}
@@ -288,8 +301,8 @@ export default function About() {
       </section>
 
       {/* ------------------------------------------------------- values --
-          A side stack, by request: pinned while the cards deal in from the
-          right, one per stretch of scroll. */}
+          Scattered cards, by request: pinned while each card is tossed in
+          from a side and lands at its own spot and tilt. */}
       <SectionBreak edge="top" />
       <section className="-my-px bg-plum-800 px-5 sm:px-8">
         <ValuesStack />
