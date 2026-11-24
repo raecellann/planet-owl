@@ -205,9 +205,6 @@ export default function WhatWeDo() {
   // read, and pull away as the visitor scrolls on past it.
   const sectionRef = useRef(null)
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start start', 'end start'] })
-  const cloudLeftX = useTransform(scrollYProgress, [0, 0.8], ['0vw', '-24vw'])
-  const cloudRightX = useTransform(scrollYProgress, [0, 0.8], ['0vw', '24vw'])
-  const cloudY = useTransform(scrollYProgress, [0, 0.8], ['0vw', '5vw'])
 
   const go = useCallback(
     (step) => {
@@ -273,86 +270,9 @@ export default function WhatWeDo() {
           opaque background. As a see-through overlay on white, the section's
           first pixel row blended with that white and drew a faint line. */}
 
-      {/* The puff, on the section's own right edge with exactly half of it
-          showing.
+      
 
-          It hung under the carousel's arrows before, which made it a piece of
-          that little control cluster rather than weather on the section, and
-          it read as a grey smudge parked beside two buttons. Out here it
-          belongs to the section.
-
-          The half-off framing is arithmetic, not an eyeball: the plate is
-          `46vw` wide and sits at `-right-[23vw]`, and 23 is half of 46 — so
-          precisely half of it is outside the frame at every window size, and
-          it stays half-out through any zoom. Both figures are `vw`, so the
-          cloud and its own overhang scale together; a `%` offset would have
-          been a share of the SECTION while the width was a share of the
-          window, and the two would drift apart.
-
-          It was 28vw/14vw, which put about 200px of cloud on screen at the
-          reference width — small enough to read as a smudge rather than as
-          weather. 46vw is two thirds up on that (about 330px showing at
-          1440), and the pair has to move together: raising the width alone
-          would have slid the plate inboard and put more than half of it in
-          frame. It grows DOWNWARD from `top-[52%]`, which is why it can take
-          this much without reaching the arrows or the services list above
-          it; the section's own `overflow-hidden` takes care of the bottom. */}
-      <motion.img
-        src={cloudImg}
-        alt=""
-        aria-hidden
-        loading="lazy"
-        style={reduce ? undefined : { x: cloudRightX, y: cloudY }}
-        // `top-[17vw]`, down from 13.8 — both puffs sit a little lower now.
-        className="pointer-events-none absolute -right-[29.7vw] top-[17vw] z-0 w-[46vw] max-w-none select-none opacity-60"
-      />
-
-      {/* Its counterpart on the LEFT flank, which the reference carries and
-          this section did not — the pair is what makes the weather read as
-          belonging to the whole section rather than as one puff parked in a
-          corner.
-
-          Same three figures as the one above, mirrored: `46vw` wide against a
-          `23vw` overhang, so exactly half of it is outside the frame at every
-          window size and zoom, and both numbers are the same unit as each
-          other so they cannot drift apart.
-
-          Read off the reference in `vw` against the SECTION's top, which is
-          the only way to compare the two frames.
-
-          It is SMALLER than its opposite and sits much lower: the reference
-          shows it 0 to 19.4vw across and 34.2 to 53.7vw down - a low puff
-          under the owls' feet, not weather up around the word. At the usual
-          two-fifths bleed that visible 19.4vw is a 32vw plate at
-          `-left-[13vw]`, and `top-[34vw]` lands the rest.
-
-          An earlier pass had it at 46vw starting 6vw down, spreading it from
-          -6 to 40vw across and up level with the type. That came from reading
-          a small crop where the soft ground behind the owls was mistaken for
-          this puff; on a larger one the two are plainly different things.
-
-          `scaleX(-1)` for the same reason the hero's corner puffs carry it:
-          this export's defined edge is on its RIGHT with the wispy side
-          trailing left, which at a left-hand placement would face the crisp
-          edge inward at the owls and the soft side out at the frame. Mirrored,
-          the defined edge faces the corner it is bleeding off.
-
-          `z-0` keeps it behind the owl (`z-10`) and the word, so it is
-          atmosphere the composition stands in front of rather than a shape
-          laid over it. */}
-      <motion.img
-        src={cloudImg}
-        alt=""
-        aria-hidden
-        loading="lazy"
-        // The mirror is a motion `scaleX` rather than an inline `transform`
-        // string: Motion owns the element's transform the moment `x` is
-        // animated, and a hand-written one would be overwritten by it.
-        style={reduce ? { scaleX: -1 } : { scaleX: -1, x: cloudLeftX, y: cloudY }}
-        // `top-[38vw]`, down from 34 — it sat high enough to cut across the
-        // owls' feet; lower, it is ground haze under them.
-        className="pointer-events-none absolute z-0 w-[44vw] max-w-none select-none opacity-60 max-sm:-right-[14vw] max-sm:top-[112vw] sm:-left-[13vw] sm:top-[38vw] sm:w-[32vw]"
-      />
+      
 
       {/* 1594 — the design's own content width. The inspector puts the title
           block at X 122 W 1232 and the services list at X 1439 W 277, so the
@@ -776,7 +696,13 @@ export default function WhatWeDo() {
         </Reveal>
       </div>
 
-      <PromiseRibbon reduce={reduce} />
+      {/* The clouds drift across the two ends of the ribbon, in front of it,
+          so the words scroll in and out of them. */}
+      <div className="relative">
+        <PromiseRibbon reduce={reduce} />
+        <img src={cloudImg} alt="" aria-hidden loading="lazy" className="pointer-events-none absolute -left-[26vw] top-1/2 z-10 w-[48vw] sm:-left-[16vw] sm:w-[36vw] max-w-none -translate-y-1/2 -scale-x-100 animate-cloud select-none motion-reduce:animate-none" />
+        <img src={cloudImg} alt="" aria-hidden loading="lazy" className="pointer-events-none absolute -right-[27vw] top-1/2 z-10 w-[48vw] sm:-right-[17vw] sm:w-[36vw] max-w-none -translate-y-1/2 animate-cloud-slow select-none motion-reduce:animate-none" />
+      </div>
     </section>
   )
 }

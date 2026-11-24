@@ -76,6 +76,8 @@
   --animate-marquee: marquee 32s linear infinite;
   --animate-bob: bob 6s ease-in-out infinite;
   --animate-sway: sway 9s ease-in-out infinite;
+  --animate-cloud: cloud-float 11s ease-in-out infinite;
+  --animate-cloud-slow: cloud-float 15s ease-in-out -5s infinite reverse;
 
   /**
    * -25%, not -50%: the track carries FOUR copies of the ribbon, so a quarter
@@ -101,6 +103,15 @@
     }
     50% {
       transform: translateY(-14px);
+    }
+  }
+  @keyframes cloud-float {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+    50% {
+      transform: translate3d(2.2vw, -0.9vw, 0);
     }
   }
   @keyframes sway {

@@ -298,7 +298,7 @@ export default function Portfolio() {
             alt=""
             aria-hidden
             loading="lazy"
-            className="pointer-events-none absolute -left-[17.2%] bottom-[-9%] z-0 w-[43%] select-none opacity-50"
+            className="pointer-events-none absolute -right-[13%] -bottom-[11%] z-0 hidden w-[38%] animate-cloud-slow select-none opacity-60 motion-reduce:animate-none sm:block"
           />
           <img
             src={cloudImg}
@@ -326,8 +326,7 @@ export default function Portfolio() {
             // headline sits in exactly that corner, so the cloud was covering
             // the one line of the piece a visitor is meant to read. Behind,
             // the two fifths of it that hang outside the frame still show.
-            style={{ transform: 'scaleX(-1)' }}
-            className="pointer-events-none absolute -left-[16.8%] -top-[7%] z-0 w-[42%] select-none"
+            className="pointer-events-none absolute -left-[14%] -top-[10%] z-0 hidden w-[38%] -scale-x-100 animate-cloud select-none motion-reduce:animate-none sm:block"
           />
           {/* No puff on the top-RIGHT corner. It was the upper-left one's
               counterpart, drawn on the same terms — but that corner is also
