@@ -98,7 +98,7 @@ export default function TheFlock() {
       // bottom edge lands on a fraction of a pixel, and the dark page
       // background showed through the sliver as a grey line across the white.
       // Overlapping by one pixel leaves no gap to show through.
-      className="relative -mt-px overflow-x-clip bg-white pb-40 pt-24 sm:pb-48 sm:pt-32"
+      className="relative -mt-px overflow-x-clip bg-white pb-24 pt-14 sm:pb-48 sm:pt-32"
     >
       {/* The gold band the cards sit on. Stretched rather than cropped: its top
           and bottom edges are torn into feathers, and `cover` would slice
@@ -109,7 +109,7 @@ export default function TheFlock() {
       <div
         aria-hidden
         style={{ backgroundImage: `url(${A.goldPlate})` }}
-        className="pointer-events-none absolute inset-x-[-2%] bottom-12 top-14 bg-[length:100%_100%] bg-no-repeat sm:bottom-14 sm:top-16"
+        className="pointer-events-none absolute inset-x-[-2%] bottom-12 top-14 bg-[length:100%_100%] bg-no-repeat max-sm:bottom-6 max-sm:top-6 sm:bottom-14 sm:top-16"
       />
 
       {/* No pilot on the band's bottom-left scallop. It bled off the left edge
@@ -240,7 +240,7 @@ export default function TheFlock() {
           cards were sitting low in the gold — far more band above the
           heading than under the cards — so the whole block comes up and
           reads centred in the plate instead. */}
-      <div className="relative mx-auto max-w-6xl px-5 pt-20 sm:px-8">
+      <div className="relative mx-auto max-w-6xl px-5 pt-12 sm:px-8 sm:pt-20">
         <Reveal y={36}>
           <h2 className="text-center font-ui text-[clamp(1.9rem,4.6vw,3.35rem)] font-bold leading-[1.08] text-plum-700">
             Join 1,000+ Owls
