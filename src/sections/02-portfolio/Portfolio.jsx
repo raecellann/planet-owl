@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { useCatchUp } from '../../lib/scrollPace'
 import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { A } from '../../lib/assets'
 import Reveal from '../../components/ui/Reveal'
@@ -122,7 +123,7 @@ export default function Portfolio() {
     target: rowRef,
     offset: ['center center', 'end start'],
   })
-  const leadFlight = useTransform(leadPassed, [0, 1], ['0vw', reduce ? '0vw' : '-140vw'])
+  const leadFlight = useTransform(useCatchUp(leadPassed), [0, 1], ['0vw', reduce ? '0vw' : '-140vw'])
 
   // The row's plane does the same pass the other way. It faces right, so it
   // flies left to right: holding on the left edge until the row is centred,
@@ -132,7 +133,7 @@ export default function Portfolio() {
     target: rowRef,
     offset: ['center center', 'end start'],
   })
-  const rowFlight = useTransform(rowCentred, [0, 1], ['0vw', reduce ? '0vw' : '140vw'])
+  const rowFlight = useTransform(useCatchUp(rowCentred), [0, 1], ['0vw', reduce ? '0vw' : '140vw'])
 
   return (
     <section

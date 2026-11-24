@@ -5,6 +5,7 @@ import { A } from '../lib/assets'
 import Faq from '../components/Faq'
 import SectionBreak from '../components/SectionBreak'
 import { CompareTable } from './PricingExtras'
+import { useCatchUp } from '../lib/scrollPace'
 import cloudImg from '../../assets/section 2/image 35 copy.png'
 import owlWizard from '../../assets/about-owls/wizard.webp'
 import owlHelmet from '../../assets/about-owls/helmet.webp'
@@ -81,7 +82,8 @@ const STEPS = [
 function PlaneSteps() {
   const reduce = useReducedMotion()
   const ref = useRef(null)
-  const { scrollYProgress: s } = useScroll({ target: ref, offset: ['start 92%', 'end 28%'] })
+  const { scrollYProgress: raw } = useScroll({ target: ref, offset: ['start 92%', 'end 28%'] })
+  const s = useCatchUp(raw)
   const left = useTransform(s, [0, 0.14, 0.4, 0.68, 1], ['16.6%', '16.6%', '50%', '83.4%', '135%'])
   const tryOn = useTransform(s, [0.16, 0.28], [0, 1])
   const decideOn = useTransform(s, [0.42, 0.54], [0, 1])
@@ -130,6 +132,15 @@ function HowItWorks() {
   const reduce = useReducedMotion()
   const track = useRef(null)
   const [active, setActive] = useState(0)
+  // Where the scroll says we are. `active` walks there one step at a time,
+  // so a fast scroll still shows every step on the way instead of skipping.
+  const [target, setTarget] = useState(0)
+
+  useEffect(() => {
+    if (active === target) return undefined
+    const t = setTimeout(() => setActive((a) => a + Math.sign(target - a)), reduce ? 0 : 220)
+    return () => clearTimeout(t)
+  }, [active, target, reduce])
 
   useEffect(() => {
     const read = () => {
@@ -138,7 +149,7 @@ function HowItWorks() {
       const r = el.getBoundingClientRect()
       const travel = r.height - window.innerHeight
       const p = travel > 0 ? Math.min(0.999, Math.max(0, -r.top / travel)) : 0
-      setActive(Math.floor(p * STEPS.length))
+      setTarget(Math.floor(p * STEPS.length))
     }
     read()
     window.addEventListener('scroll', read, { passive: true })
