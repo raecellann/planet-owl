@@ -18,7 +18,7 @@ import owlHelmet from '../../assets/about-owls/helmet.webp'
 import owlMoon from '../../assets/about-owls/moon.webp'
 
 /**
- * The About page, at `#/about`.
+ * The About page, at `/about`.
  *
  * Written from the site's own words, by request ("gawa ka na lang") — there
  * was no About copy to work from. So every claim here is one the landing page
@@ -311,11 +311,11 @@ function ValuesStack() {
 
 /** Where each promise sends the reader next. */
 const PROMISE_CTAS = [
-  { label: 'Start a Project', href: '#/contact' },
-  { label: 'See Pricing', href: '#/pricing' },
-  { label: 'Book a Call', href: '#/contact' },
-  { label: 'See Pricing', href: '#/pricing' },
-  { label: 'Start Free Trial', href: '#/contact' },
+  { label: 'Start a Project', href: '/contact' },
+  { label: 'See Pricing', href: '/pricing' },
+  { label: 'Book a Call', href: '/contact' },
+  { label: 'See Pricing', href: '/pricing' },
+  { label: 'Start Free Trial', href: '/contact' },
 ]
 const PROMISE_TONES = ['bg-gold-200', 'bg-[#e7b248]', 'bg-plum-800', 'bg-teal-400', 'bg-plum-100']
 /** One icon per promise, in place of its number. */
@@ -448,7 +448,7 @@ export default function About() {
   }, [])
 
   return (
-    <BlogLayout onBlog={false} newsletter={false} page={{ label: 'About', href: '#/about' }}>
+    <BlogLayout onBlog={false} newsletter={false} page={{ label: 'About', href: '/about' }}>
       {/* --------------------------------------------------- who we are -- */}
       <section className="bg-white px-5 pb-14 pt-[clamp(10rem,15vw,13.5rem)] sm:px-8 sm:pb-20">
         <div className="mx-auto grid max-w-[1180px] items-center gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-16">

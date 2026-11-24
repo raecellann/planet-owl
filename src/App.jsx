@@ -135,7 +135,7 @@ export default function App({ skipIntro = false }) {
     window.scrollTo(0, 0)
     // The intro always lands on section 1, so a leftover section anchor
     // (`#portfolio` from the last visit) would only make the address bar lie.
-    if (window.location.hash && !window.location.hash.startsWith('#/')) {
+    if (window.location.hash && !window.location.hash.startsWith('/')) {
       window.history.replaceState(null, '', window.location.pathname + window.location.search)
     }
     return () => root.classList.remove('is-gated')

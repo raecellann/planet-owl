@@ -171,7 +171,7 @@ export const NAV_LINKS = [
   { label: 'Portfolio', href: '#portfolio' },
   { label: 'What We Do', href: '#what-we-do' },
   { label: 'The Flock', href: '#the-flock' },
-  { label: 'Pricing', href: '#/pricing' },
+  { label: 'Pricing', href: '/pricing' },
 ]
 
 /** The footer's own row, per the section 9 export — not the same set as the nav. */
@@ -180,12 +180,12 @@ export const FOOTER_LINKS = [
   { label: 'What We Do', href: '#what-we-do' },
   { label: 'The Nest', href: '#the-nest' },
   { label: 'Careers', href: '#the-flock' },
-  { label: 'About', href: '#/about' },
-  { label: 'Pricing', href: '#/pricing' },
+  { label: 'About', href: '/about' },
+  { label: 'Pricing', href: '/pricing' },
   // The blog is its own page, on a hash route — see `src/blog/`.
-  { label: 'Blog', href: '#/blog' },
+  { label: 'Blog', href: '/blog' },
   // The contact / book-a-call page — see `src/blog/Contact.jsx`.
-  { label: 'Contact', href: '#/contact' },
+  { label: 'Contact', href: '/contact' },
   // Its own page, on a hash route like the blog — see `src/blog/Privacy.jsx`.
-  { label: 'Privacy', href: '#/privacy' },
+  { label: 'Privacy', href: '/privacy' },
 ]

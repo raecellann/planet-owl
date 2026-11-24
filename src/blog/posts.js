@@ -336,5 +336,5 @@ export const formatDate = (iso) =>
   new Date(`${iso}T00:00:00`).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
 
 /** The blog lives behind hash routes so it works on any static host. */
-export const BLOG_HOME = '#/blog'
-export const postHref = (slug) => `#/blog/${slug}`
+export const BLOG_HOME = '/blog'
+export const postHref = (slug) => `/blog/${slug}`

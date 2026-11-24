@@ -11,7 +11,7 @@ import { MobileTopicBar, TOPIC_WATCH, jumpToTopic } from './TopicNav'
  * the topics list, the article itself, and the share links.
  *
  * The topics list scrolls rather than links. The blog is on hash routes
- * (`#/blog/<slug>`), so the address bar's hash is already spoken for and a
+ * (`/blog/<slug>`), so the address bar's hash is already spoken for and a
  * plain `#section` anchor would navigate AWAY from the article. Each topic is
  * a button that scrolls its heading into view instead.
  */

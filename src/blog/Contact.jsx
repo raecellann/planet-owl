@@ -7,7 +7,7 @@ import { DatePicker, TimePicker } from './BookingPickers'
 import cloudImg from '../../assets/section 2/image 35 copy.png'
 
 /**
- * The contact page, at `#/contact` — a message form that can also book a call.
+ * The contact page, at `/contact` — a message form that can also book a call.
  *
  * Laid out after the reference the client sent: the ways to reach the studio
  * down the left, the form in a white card on the right, stacked on a phone.
@@ -146,7 +146,7 @@ export default function Contact() {
   }
 
   return (
-    <BlogLayout onBlog={false} newsletter={false} page={{ label: 'Contact', href: '#/contact' }}>
+    <BlogLayout onBlog={false} newsletter={false} page={{ label: 'Contact', href: '/contact' }}>
       <div className="relative overflow-hidden bg-white px-5 pb-10 pt-[clamp(10rem,15vw,13.5rem)] sm:px-8">
         {CLOUDS.map((c, i) => (
           <img

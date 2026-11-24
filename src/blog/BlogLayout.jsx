@@ -17,7 +17,7 @@ import { BLOG_HOME } from './posts'
  * means anything here. This one is always open and always the same size.
  *
  * Its section links are the landing page's own anchors (`#portfolio` and so
- * on). Anything that is not a `#/blog` route renders the landing page, so
+ * on). Anything that is not a `/blog` route renders the landing page, so
  * following one leaves the blog and lands on that section.
  */
 /* `page` is the page this frame is wrapped round, as { label, href }. The bar

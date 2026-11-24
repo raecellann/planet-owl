@@ -5,7 +5,7 @@ import { MobileTopicBar, TOPIC_WATCH, jumpToTopic } from './TopicNav'
 import { CONTACT_EMAIL } from '../lib/signup'
 
 /**
- * The privacy page, at `#/privacy`.
+ * The privacy page, at `/privacy`.
  *
  * It lives beside the blog because it is the same kind of page: a light,
  * text-first document inside `BlogLayout`'s frame (the nav pill, the footer),
@@ -93,7 +93,7 @@ export default function Privacy() {
   }, [])
 
   return (
-    <BlogLayout onBlog={false} newsletter={false} page={{ label: 'Privacy', href: '#/privacy' }}>
+    <BlogLayout onBlog={false} newsletter={false} page={{ label: 'Privacy', href: '/privacy' }}>
       {/* The clouds belong to the whole article, behind everything, so the
           short header can no longer slice them along its bottom edge. */}
       <article className="relative isolate overflow-x-clip bg-white">

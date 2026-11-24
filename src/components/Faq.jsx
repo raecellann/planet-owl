@@ -83,7 +83,7 @@ export default function Faq({ tone = 'light', className = '', askHref = null }) 
         </h2>
         <p className={`mt-5 max-w-md font-ui text-lg leading-relaxed ${t.lead}`}>
           Still curious?{' '}
-          <a href={askHref ?? '#/contact'} className="font-bold text-inherit no-underline">
+          <a href={askHref ?? '/contact'} className="font-bold text-inherit no-underline">
             Ask the owls.
           </a>
         </p>

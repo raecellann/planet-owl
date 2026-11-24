@@ -54,13 +54,48 @@ probe.remove()
  * The landing page's own anchors (`#portfolio`, `#the-nest`…) never start
  * with `#/`, so the two cannot collide.
  */
+// Pages live at real paths now (/pricing, /blog/slug), by request: the
+// address bar used to read planetowl.studio/#/pricing. Old #/ links still
+// work: they are turned into the path the moment the site opens.
+if (typeof window !== 'undefined' && window.location.hash.startsWith('#/')) {
+  window.history.replaceState(null, '', window.location.hash.slice(1) + window.location.search)
+}
+
 const parseRoute = () => {
-  if (/^#\/privacy\/?$/.test(window.location.hash)) return { blog: true, slug: null, privacy: true }
-  if (/^#\/contact\/?$/.test(window.location.hash)) return { blog: true, slug: null, contact: true }
-  if (/^#\/about\/?$/.test(window.location.hash)) return { blog: true, slug: null, about: true }
-  if (/^#\/pricing\/?$/.test(window.location.hash)) return { blog: true, slug: null, pricing: true }
-  const m = window.location.hash.match(/^#\/blog(?:\/([^/?#]+))?\/?$/)
+  const path = window.location.pathname.replace(/\/+$/, '') || '/'
+  if (path === '/privacy') return { blog: true, slug: null, privacy: true }
+  if (path === '/contact') return { blog: true, slug: null, contact: true }
+  if (path === '/about') return { blog: true, slug: null, about: true }
+  if (path === '/pricing') return { blog: true, slug: null, pricing: true }
+  const m = path.match(/^\/blog(?:\/([^/?#]+))?$/)
   return m ? { blog: true, slug: m[1] ? decodeURIComponent(m[1]) : null } : { blog: false }
+}
+
+/** Moves to another page of the site without a reload. */
+const ROUTE_EVENT = 'planetowl:route'
+export function goTo(url) {
+  window.history.pushState(null, '', url)
+  window.dispatchEvent(new Event(ROUTE_EVENT))
+}
+
+// One listener for every link on the site, so the anchors stay plain hrefs:
+//   /pricing, /blog/...   a page of the site, opened without a reload
+//   #portfolio            a home-page section; from another page this goes
+//                         home first, and App scrolls to it on arrival
+if (typeof document !== 'undefined') {
+  document.addEventListener('click', (e) => {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
+    const a = e.target instanceof Element ? e.target.closest('a[href]') : null
+    if (!a || (a.target && a.target !== '_self') || a.hasAttribute('download')) return
+    const href = a.getAttribute('href')
+    if (href.startsWith('/') && !href.startsWith('//') && !href.startsWith('/api/') && !/\.[a-z0-9]+$/i.test(href.split(/[?#]/)[0])) {
+      e.preventDefault()
+      goTo(href)
+    } else if (href.startsWith('#') && href.length > 1 && window.location.pathname !== '/') {
+      e.preventDefault()
+      goTo('/' + href)
+    }
+  })
 }
 
 // No "save image" menu on the site's art, by request (feathers, owls, the
@@ -83,19 +118,31 @@ function Root() {
 
   useEffect(() => {
     const onHash = () => {
+      // An old #/ link followed inside the site: turn it into its path.
+      if (window.location.hash.startsWith('#/')) {
+        window.history.replaceState(null, '', window.location.hash.slice(1))
+        setRoute(parseRoute())
+        return
+      }
       setRoute(parseRoute())
       // A section link (#portfolio, #what-we-do) jumps to its section and
-      // then leaves the address bar clean, by request. Page routes (#/blog)
-      // keep their hash: that is the route.
+      // then leaves the address bar clean, by request.
       const h = window.location.hash
-      if (h && !h.startsWith('#/')) {
+      if (h) {
         setTimeout(() => {
           if (window.location.hash === h) window.history.replaceState(null, '', window.location.pathname + window.location.search)
         }, 900)
       }
     }
+    const onRoute = () => setRoute(parseRoute())
     window.addEventListener('hashchange', onHash)
-    return () => window.removeEventListener('hashchange', onHash)
+    window.addEventListener('popstate', onRoute)
+    window.addEventListener(ROUTE_EVENT, onRoute)
+    return () => {
+      window.removeEventListener('hashchange', onHash)
+      window.removeEventListener('popstate', onRoute)
+      window.removeEventListener(ROUTE_EVENT, onRoute)
+    }
   }, [])
 
   // Every blog page opens at its top. Instant, not smooth — `html` carries

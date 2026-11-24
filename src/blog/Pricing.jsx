@@ -13,7 +13,7 @@ import owlWizard from '../../assets/about-owls/wizard.webp'
 import owlHelmet from '../../assets/about-owls/helmet.webp'
 
 /**
- * The pricing page, at `#/pricing`.
+ * The pricing page, at `/pricing`.
  *
  * The four plans, their names and their prices are the proposal the client
  * approved in chat ("g sa pricing"): the studio had no price list, so the
@@ -328,7 +328,7 @@ export default function Pricing() {
   }, [])
 
   return (
-    <BlogLayout onBlog={false} newsletter={false} page={{ label: 'Pricing', href: '#/pricing' }}>
+    <BlogLayout onBlog={false} newsletter={false} page={{ label: 'Pricing', href: '/pricing' }}>
       <header className="relative overflow-hidden bg-white px-5 pb-20 pt-[clamp(10rem,15vw,13.5rem)] text-center sm:px-8 sm:pb-24">
         <img src={cloudImg} alt="" aria-hidden style={{ left: 'min(-16vw, calc(50vw - 384px - 34vw))' }} className="pointer-events-none absolute top-[9%] w-[max(13rem,31vw)] max-w-none -scale-x-100 opacity-55" />
         <img src={cloudImg} alt="" aria-hidden style={{ right: 'min(-6vw, calc(50vw - 384px - 17vw))' }} className="pointer-events-none absolute top-[24%] w-[max(7rem,12vw)] max-w-none opacity-40" />
@@ -373,7 +373,7 @@ export default function Pricing() {
               </p>
 
               <a
-                href="#/contact"
+                href="/contact"
                 className={`btn-type mt-6 inline-flex h-12 items-center justify-center rounded-full px-6 font-ui font-semibold no-underline transition-colors ${p.featured ? 'bg-gold-500 !text-plum-700 shadow-[0_6px_0_-2px_var(--color-plum-950)] hover:bg-gold-400' : 'bg-plum-800 text-white shadow-[0_6px_0_-2px_var(--color-plum-950)] hover:bg-plum-700'}`}
               >
                 {p.from ? 'Let’s Talk' : 'Start Free Trial'}
@@ -502,7 +502,7 @@ export default function Pricing() {
         <img src={cloudImg} alt="" aria-hidden loading="lazy" style={{ right: 'min(-14vw, calc(50vw - 660px - 30vw))' }} className="pointer-events-none absolute bottom-[-6%] w-[max(13rem,28vw)] max-w-none opacity-45" />
         <img src={cloudImg} alt="" aria-hidden loading="lazy" style={{ left: 'min(-8vw, calc(50vw - 660px - 15vw))' }} className="pointer-events-none absolute bottom-[31%] w-[max(6rem,8vw)] max-w-none opacity-30" />
         <div className="relative mx-auto max-w-[1320px]">
-          <Faq tone="light" askHref="#/contact" />
+          <Faq tone="light" askHref="/contact" />
         </div>
       </section>
 

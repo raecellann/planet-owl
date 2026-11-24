@@ -297,7 +297,7 @@ export default function ApplyModal() {
               </label>
               <p className="font-ui text-xs leading-relaxed text-plum-700">
                 We keep your resume privately and only use it to review your application. See our{' '}
-                <a href="#/privacy" className="font-bold text-plum-700 underline">privacy page</a>.
+                <a href="/privacy" className="font-bold text-plum-700 underline">privacy page</a>.
               </p>
               <div className="flex flex-wrap items-center gap-4 pt-1">
                 <motion.button
