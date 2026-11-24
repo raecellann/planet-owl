@@ -554,7 +554,7 @@ export default function NestView({ onReveal }) {
        * That is the point — it grows with the branch, so the clearance under
        * the wizard holds at every width.
        */
-      className="relative z-10 w-full pt-[calc(27.8vw+2rem)] sm:pt-[calc(19.5vw+2rem)] lg:pt-[calc(14.6vw+2rem)]"
+      className="relative z-10 w-full overflow-x-clip pt-[calc(27.8vw+2rem)] sm:pt-[calc(19.5vw+2rem)] lg:pt-[calc(14.6vw+2rem)]"
     >
 
       {/* The white only covers the branch's clearance, not the whole section.
