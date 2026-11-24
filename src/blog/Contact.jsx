@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { motion } from 'motion/react'
 import { useReducedMotion } from '../lib/motionPref'
 import BlogLayout from './BlogLayout'
 import { CONTACT_EMAIL, submitContact } from '../lib/signup'
@@ -231,23 +232,7 @@ export default function Contact() {
             {/* ------------------------------------------------------ the form -- */}
             <div className="rounded-[1.75rem] bg-white p-6 shadow-[0_30px_60px_-30px_rgba(54,14,57,0.5)] ring-1 ring-plum-900/5 sm:p-8">
               {state === 'sent' ? (
-                <div role="status" className="py-10 text-center">
-                  <h3 className="font-['Momo_Trust_Display'] text-3xl font-normal text-plum-700">
-                    {booked ? 'Call requested!' : 'Message sent!'}
-                  </h3>
-                  <p className="mx-auto mt-4 max-w-sm font-ui leading-relaxed text-plum-700">
-                    {booked
-                      ? `Thanks, ${form.firstName || 'friend'}. We have your request for ${form.date}${form.time ? ` at ${form.time}` : ''} and will confirm it by email.`
-                      : `Thanks, ${form.firstName || 'friend'}. We will get back to you by email.`}
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => { setForm(EMPTY); setState('idle') }}
-                    className="mt-7 font-ui font-semibold text-teal-600 underline"
-                  >
-                    Send another
-                  </button>
-                </div>
+                <SentCard booked={booked} form={form} onAgain={() => { setForm(EMPTY); setState('idle') }} />
               ) : (
                 <form onSubmit={onSubmit} noValidate={false}>
                   <div className="grid gap-5 sm:grid-cols-2">
@@ -352,5 +337,92 @@ function Icon({ children }) {
     >
       {children}
     </svg>
+  )
+}
+
+/** "Feb 3, 2026" from the form's yyyy-mm-dd. */
+const prettyDate = (v) => {
+  if (!v) return ''
+  const [y, m, d] = v.split('-').map(Number)
+  return new Date(y, m - 1, d).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })
+}
+
+/**
+ * What a visitor sees after sending the form: an owl pops up with a tick,
+ * the booked slot is shown as a little ticket, and the next steps and two
+ * ways onward are laid out, so it no longer ends on a line of plain text.
+ */
+function SentCard({ booked, form, onAgain }) {
+  const name = form.firstName || 'friend'
+  const pop = { initial: { opacity: 0, y: 16, scale: 0.96 }, animate: { opacity: 1, y: 0, scale: 1 } }
+  const steps = booked
+    ? ['We confirm your slot by email', 'We talk it through on the call', 'Your free 2-week trial can start']
+    : ['We read every message ourselves', 'We reply by email', 'Your free 2-week trial can start']
+  return (
+    <div role="status" className="relative overflow-hidden py-4 text-center">
+      {[{ x: '12%', y: '14%', c: 'bg-gold-500' }, { x: '84%', y: '10%', c: 'bg-teal-500' }, { x: '8%', y: '48%', c: 'bg-plum-300' }, { x: '90%', y: '44%', c: 'bg-gold-400' }, { x: '20%', y: '30%', c: 'bg-teal-400' }, { x: '78%', y: '28%', c: 'bg-plum-500' }].map((d, i) => (
+        <motion.span
+          key={i}
+          aria-hidden
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: [0, 1, 1], scale: [0, 1.2, 1], y: [0, -8, 0] }}
+          transition={{ duration: 0.7, delay: 0.25 + i * 0.06 }}
+          style={{ left: d.x, top: d.y }}
+          className={`absolute size-2.5 rounded-full ${d.c}`}
+        />
+      ))}
+      <motion.div {...pop} transition={{ type: 'spring', stiffness: 220, damping: 16 }} className="relative mx-auto w-fit">
+        <img src={A.owl.digital} alt="" aria-hidden className="mx-auto h-36 w-auto drop-shadow-[0_16px_24px_rgba(36,5,31,0.3)] sm:h-44" />
+        <motion.span
+          aria-hidden
+          initial={{ scale: 0, rotate: -40 }}
+          animate={{ scale: 1, rotate: 0 }}
+          transition={{ type: 'spring', stiffness: 380, damping: 14, delay: 0.35 }}
+          className="absolute -right-2 bottom-3 grid size-12 place-items-center rounded-full bg-teal-500 text-white shadow-[0_6px_0_-2px_var(--color-plum-900)]"
+        >
+          <svg viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+        </motion.span>
+      </motion.div>
+      <motion.h3 {...pop} transition={{ duration: 0.5, delay: 0.15 }} className="mt-4 font-['Momo_Trust_Display'] text-3xl font-normal text-plum-700">
+        {booked ? 'Call requested!' : 'Message sent!'}
+      </motion.h3>
+      <motion.p {...pop} transition={{ duration: 0.5, delay: 0.22 }} className="mx-auto mt-2 max-w-sm font-ui leading-relaxed text-plum-700">
+        Thanks, {name}. {booked ? 'Your call request is in the nest.' : 'Your message is in the nest.'}
+      </motion.p>
+
+      {booked && (
+        <motion.div {...pop} transition={{ duration: 0.5, delay: 0.3 }} className="mx-auto mt-5 flex max-w-xs items-stretch overflow-hidden rounded-2xl bg-gold-200 text-left ring-1 ring-plum-900/10">
+          <span className="grid w-14 shrink-0 place-items-center bg-plum-800 text-gold-400">
+            <svg viewBox="0 0 24 24" aria-hidden className="size-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2.5" /><path d="M3.5 9.5h17M8 3v4M16 3v4" /></svg>
+          </span>
+          <span className="px-4 py-3 font-ui text-plum-700">
+            <span className="block text-xs font-bold uppercase tracking-wide">Requested slot</span>
+            <span className="block font-semibold">{prettyDate(form.date)}</span>
+            {form.time && <span className="block text-sm">{form.time}</span>}
+          </span>
+        </motion.div>
+      )}
+
+      <motion.ol {...pop} transition={{ duration: 0.5, delay: 0.38 }} className="mx-auto mt-6 max-w-xs space-y-2 text-left">
+        {steps.map((t, i) => (
+          <li key={t} className="flex items-center gap-3 font-ui text-sm text-plum-700">
+            <span className="grid size-7 shrink-0 place-items-center rounded-full bg-plum-800 font-bold text-gold-400">{i + 1}</span>
+            {t}
+          </li>
+        ))}
+      </motion.ol>
+
+      <motion.div {...pop} transition={{ duration: 0.5, delay: 0.45 }} className="mt-7 flex flex-wrap justify-center gap-3">
+        <a href="/pricing" className="btn-type inline-flex h-11 items-center rounded-full bg-gold-500 px-5 font-ui font-semibold text-plum-700 no-underline shadow-[0_5px_0_-1px_var(--color-plum-900)]">
+          See Pricing
+        </a>
+        <a href="/" className="btn-type inline-flex h-11 items-center rounded-full bg-plum-800 px-5 font-ui font-semibold text-white no-underline shadow-[0_5px_0_-1px_var(--color-plum-950)]">
+          Back to Home
+        </a>
+      </motion.div>
+      <button type="button" onClick={onAgain} className="mt-4 font-ui text-sm font-semibold text-teal-600 underline">
+        Send another
+      </button>
+    </div>
   )
 }
