@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { motion, useScroll, useSpring, useTransform, useVelocity } from 'motion/react'
+import { motion, useMotionValue, useMotionValueEvent, useScroll, useSpring, useTransform, useVelocity } from 'motion/react'
 import { useReducedMotion, useSoftMotion } from '../lib/motionPref'
 import BlogLayout from './BlogLayout'
 import { A } from '../lib/assets'
@@ -388,7 +388,11 @@ function PromiseArc() {
   const phone = useMediaQuery(PHONE)
   const track = useRef(null)
   const { scrollYProgress: rawProgress } = useScroll({ target: track, offset: ['start start', 'end end'] })
-  const scrollYProgress = useCatchUp(rawProgress)
+  // Snapped to a whole card, so wherever the scroll stops one card is always
+  // dead centre; the spring carries the track from one card to the next.
+  const snapped = useMotionValue(0)
+  useMotionValueEvent(rawProgress, 'change', (v) => snapped.set(Math.round(v * PROMISES.length) / PROMISES.length))
+  const scrollYProgress = useSpring(snapped, { stiffness: 140, damping: 22, mass: 0.5 })
   const heading = (
     <h2 className="text-center font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-plum-700">
       What We Are Here to Do
@@ -416,9 +420,9 @@ function PromiseArc() {
 
   return (
     <div ref={track} className="relative h-[300svh] sm:h-[420svh]">
-      <div className="sticky top-0 -mx-5 flex h-[100svh] flex-col justify-start overflow-hidden pt-[7.25rem] sm:-mx-8 sm:justify-center sm:pt-20">
+      <div className="sticky top-0 -mx-5 flex h-[100svh] flex-col justify-center overflow-hidden pt-16 sm:-mx-8 sm:pt-20">
         {heading}
-        <ul className="relative mx-auto mt-5 h-[24rem] w-full sm:mt-10 sm:h-[28rem]">
+        <ul className="relative mx-auto mt-5 h-[22.5rem] w-full sm:mt-10 sm:h-[28rem]">
           {PROMISES.map((p, i) => (
             <PromiseCard key={p.title} p={p} i={i} progress={scrollYProgress} spread={phone ? 108 : 112} drop={phone ? 30 : 44} />
           ))}

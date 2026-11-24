@@ -287,7 +287,7 @@ export default function Contact() {
                   </fieldset>
 
                   <Field label="Message (optional)" className="mt-6">
-                    <textarea rows={5} value={form.message} onChange={set('message')} placeholder="Tell us about your project" className={`${FIELD} resize-y`} />
+                    <textarea rows={5} value={form.message} onChange={set('message')} placeholder="Tell us about your project" className={`${FIELD} resize-none`} />
                   </Field>
 
                   {state === 'error' && (

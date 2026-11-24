@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { AnimatePresence, animate, motion, useInView, useMotionValue, useTransform } from 'motion/react'
+import { AnimatePresence, motion, useScroll, useTransform } from 'motion/react'
+import { useCatchUp } from '../lib/scrollPace'
 import { useReducedMotion } from '../lib/motionPref'
 import BlogLayout from './BlogLayout'
 import { A } from '../lib/assets'
@@ -82,16 +83,11 @@ const STEPS = [
 function PlaneSteps() {
   const reduce = useReducedMotion()
   const ref = useRef(null)
-  // Played on a clock once the tile is properly in view, not scrubbed by the
-  // scroll: tied to the scroll it only finished on screens tall enough to
-  // carry the tile most of the way up, and stalled half way on short ones.
-  const s = useMotionValue(reduce ? 1 : 0)
-  const seen = useInView(ref, { once: true, amount: 0.6 })
-  useEffect(() => {
-    if (!seen || reduce) return undefined
-    const run = animate(s, 1, { duration: 3.4, ease: 'linear', delay: 0.2 })
-    return () => run.stop()
-  }, [seen, reduce, s])
+  // Moves with the scroll (by request), and is done by the time the tile
+  // reaches the middle of the screen. It used to need the tile carried most
+  // of the way up the screen, which short screens never did, so it stalled.
+  const { scrollYProgress: raw } = useScroll({ target: ref, offset: ['start end', 'center 62%'] })
+  const s = useCatchUp(raw)
   const left = useTransform(s, [0, 0.14, 0.4, 0.68, 1], ['16.6%', '16.6%', '50%', '83.4%', '135%'])
   const tryOn = useTransform(s, [0.16, 0.28], [0, 1])
   const decideOn = useTransform(s, [0.42, 0.54], [0, 1])
@@ -286,7 +282,7 @@ function HowItWorks() {
             ))}
           </ol>
           </div>
-          <div className="relative flex min-h-0 items-center justify-center">
+          <div className="relative flex min-h-0 items-start justify-center lg:items-center">
             <HatchCard art={STEP_ART[active]} active={active} reduce={reduce} />
           </div>
         </div>
