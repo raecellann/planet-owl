@@ -195,11 +195,13 @@ export default function Contact() {
                     them. (Earlier asks were for a made-up US address; those
                     were not used.) */}
                 <li className="flex items-center gap-4">
+                  {/* WhatsApp, by request: the same number, opening a chat. */}
                   <Icon>
-                    <path d="M6.5 3.5h3l1.5 4-2 1.5a11 11 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.5 5.7 2 2 0 0 1 6.5 3.5z" />
+                    <path d="M4 20l1.2-4.1A8.3 8.3 0 1 1 8.4 19L4 20z" />
+                    <path d="M9.2 8.4c.2-.5.5-.5.8-.5h.5c.2 0 .4 0 .5.4l.7 1.7c.1.2 0 .4-.1.6l-.5.6c-.1.1-.2.3 0 .5.5.9 1.3 1.7 2.3 2.2.2.1.4.1.5 0l.6-.7c.2-.2.4-.2.6-.1l1.6.8c.2.1.3.2.3.4 0 .5-.3 1.3-.9 1.6-.6.3-1.6.4-3.4-.6-2-1.1-3.3-3.2-3.5-3.6-.2-.4-.8-1.6 0-3.3z" />
                   </Icon>
-                  <a href="tel:+639679812402" className="font-semibold text-plum-700 no-underline hover:text-plum-700">
-                    0967 981 2402
+                  <a href="https://wa.me/639679812402" target="_blank" rel="noopener noreferrer" className="font-semibold text-plum-700 no-underline hover:text-plum-700">
+                    0967 981 2402 <span className="font-normal">(WhatsApp)</span>
                   </a>
                 </li>
                 <li className="flex items-start gap-4">

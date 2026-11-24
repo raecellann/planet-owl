@@ -19,7 +19,7 @@ import { A } from '../../lib/assets'
  * the middle and the resting state needs no special case. Leaving just sets
  * them back to 0 and the badge glides home.
  */
-export function useCursorPlayBadge({ stiffness = 260, damping = 26, mass = 0.6 } = {}) {
+export function useCursorPlayBadge({ stiffness = 260, damping = 26, mass = 0.6, keepInside = 0 } = {}) {
   const reduce = useReducedMotion()
   const x = useMotionValue(0)
   const y = useMotionValue(0)
@@ -36,8 +36,12 @@ export function useCursorPlayBadge({ stiffness = 260, damping = 26, mass = 0.6 }
     onPointerMove: (e) => {
       if (reduce) return
       const r = e.currentTarget.getBoundingClientRect()
-      x.set(e.clientX - r.left - r.width / 2)
-      y.set(e.clientY - r.top - r.height / 2)
+      // `keepInside` is half the badge: it stops at the zone's edge instead
+      // of hanging out over it.
+      const mx = Math.max(0, r.width / 2 - keepInside)
+      const my = Math.max(0, r.height / 2 - keepInside)
+      x.set(Math.max(-mx, Math.min(mx, e.clientX - r.left - r.width / 2)))
+      y.set(Math.max(-my, Math.min(my, e.clientY - r.top - r.height / 2)))
     },
     onPointerLeave: () => {
       setLive(false)

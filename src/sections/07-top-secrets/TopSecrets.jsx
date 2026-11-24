@@ -212,7 +212,6 @@ function NestHotspot({ review, open, onToggle, play }) {
               // every width.
               left: `min(calc(${x} + 0.5rem), calc(100% - max(15rem, 32%) - 0.75rem))`,
             }}
-            {...(plate ? play.handlers : {})}
             // A share of the PLATE with a floor, not a percentage under a
             // pixel ceiling.
             //
@@ -239,7 +238,12 @@ function NestHotspot({ review, open, onToggle, play }) {
                   draggable={false}
                   className="block w-full select-none drop-shadow-[0_20px_36px_rgba(0,0,0,0.55)]"
                 />
-                <CursorPlayBadge {...play} size={30} />
+                {/* The play badge lives on the interview photo only, not the
+                    whole card: it rests in the photo's middle and, on a
+                    desktop, follows the pointer without leaving the photo. */}
+                <div {...play.handlers} className="absolute left-[5.2%] top-[6.1%] h-[46%] w-[89.4%] rounded-[3%]">
+                  <CursorPlayBadge {...play} size={30} />
+                </div>
               </>
             ) : (
               <div className="rounded-2xl bg-white px-4 py-3.5 drop-shadow-[0_20px_36px_rgba(0,0,0,0.55)]">
@@ -614,7 +618,7 @@ function Quote({ copyRef }) {
   // Which card is showing, by id — one at a time, so opening a second closes
   // the first rather than littering the nest with cards.
   const [open, setOpen] = useState(null)
-  const play = useCursorPlayBadge()
+  const play = useCursorPlayBadge({ keepInside: 18 })
   const reduce = useReducedMotion()
   const imgRef = useRef(null)
   // `pullUp`/`reveal`/`ready` live as MOTION VALUES, not React state, and
