@@ -163,40 +163,39 @@ const FEATHERS_PHONE = [
   [88, 70],
 ]
 
-/** The one feather the cursor is holding. Only ever one, so they never all come along. */
+/** The one feather being dragged. Only one can be carried at a time. */
 let heldFeather = null
 
 /**
- * One feather. It turns on its own clock. Brush it with the mouse and it is
- * pulled a short way after the cursor, then lets go: when the cursor gets too
- * far away, stops, or has held it for about a second. It then drifts home
- * swaying, and cannot be caught again until it has landed.
+ * One feather. It turns on its own clock and can be picked up and dragged
+ * anywhere in the section, by request: press on it and it follows the cursor
+ * or finger; let go and it drifts back home, swaying. Only one feather can be
+ * carried at a time.
  *
  * `limits` keeps the whole circle the feather sweeps inside the section. The
  * layer clips at the section's top and bottom, so without this a feather
  * pulled downward was sliced along a straight line.
  *
- * The flight sits outside the turning box so "toward the cursor" stays on the
- * screen's axes rather than the feather's rotated ones.
+ * The drag sits outside the turning box so it stays on the screen's axes
+ * rather than the feather's rotated ones.
  */
-function Feather({ left, top, vw, cap, secs, dir, lift }) {
+function Feather({ left, top, vw, cap, secs, dir }) {
   const home = useRef(null)
-  const limits = useRef({ minX: 0, maxX: 0, minY: 0, maxY: 0, grip: 120 })
+  const limits = useRef({ minX: 0, maxX: 0, minY: 0, maxY: 0 })
   const x = useMotionValue(0)
   const y = useMotionValue(0)
   const r = useMotionValue(0)
-  const sx = useSpring(x, { stiffness: 46, damping: 13, mass: 0.9 })
-  const sy = useSpring(y, { stiffness: 46, damping: 13, mass: 0.9 })
-  const sr = useSpring(r, { stiffness: 34, damping: 7 })
+  // Stiff enough to stay under the pointer while dragging, soft enough to
+  // smooth out a jerky hand.
+  const sx = useSpring(x, { stiffness: 420, damping: 34, mass: 0.6 })
+  const sy = useSpring(y, { stiffness: 420, damping: 34, mass: 0.6 })
+  const sr = useSpring(r, { stiffness: 120, damping: 10 })
   // A hard stop on what is drawn, so a spring's overshoot cannot reach the edge either.
   const safeX = useTransform(sx, (v) => Math.max(limits.current.minX, Math.min(limits.current.maxX, v)))
   const safeY = useTransform(sy, (v) => Math.max(limits.current.minY, Math.min(limits.current.maxY, v)))
-  const caught = useRef(false)
-  const landing = useRef(false)
-  const idle = useRef(null)
-  const heldSince = useRef(0)
-  const lastX = useRef(0)
+  const grab = useRef(null)
   const flight = useRef([])
+  const [held, setHeld] = useState(false)
 
   const stopFlight = () => {
     flight.current.forEach((c) => c.stop())
@@ -206,92 +205,84 @@ function Feather({ left, top, vw, cap, secs, dir, lift }) {
   const measure = () => {
     const b = home.current.getBoundingClientRect()
     const area = home.current.parentElement.getBoundingClientRect()
+    // Where the feather sits now, less the drag already applied, is home.
+    const cx = b.left + b.width / 2 - area.left - x.get()
+    const cy = b.top + b.height / 2 - area.top - y.get()
     const radius = Math.hypot(b.width, b.height) / 2
-    const cx = b.left + b.width / 2 - area.left
-    const cy = b.top + b.height / 2 - area.top
     limits.current = {
       minX: Math.min(0, radius * 0.35 - cx),
       maxX: Math.max(0, area.width - radius * 0.35 - cx),
-      minY: Math.min(0, radius - cy),
-      maxY: Math.max(0, area.height - radius - cy),
-      grip: b.height * 0.5,
+      minY: Math.min(0, radius * 0.5 - cy),
+      maxY: Math.max(0, area.height - radius * 0.5 - cy),
     }
   }
 
   const keep = (v, lo, hi) => Math.max(lo, Math.min(hi, v))
 
-  // Lets go, and falls from wherever it is, swinging across its own path.
-  const drop = (fromX = x.get(), fromY = y.get()) => {
-    caught.current = false
+  // Let go: it floats back home from wherever it was dropped, swinging
+  // across its own path.
+  const goHome = () => {
     if (heldFeather === home) heldFeather = null
-    clearTimeout(idle.current)
+    grab.current = null
+    setHeld(false)
     stopFlight()
-    landing.current = true
-    const { minX, maxX, minY, maxY } = limits.current
+    const fromX = x.get()
+    const fromY = y.get()
     const h = home.current?.offsetHeight ?? 200
-    const swing = h * 0.1 * dir
-    const opts = { duration: 3.2, ease: 'easeInOut', times: [0, 0.3, 0.58, 0.82, 1] }
-    const pathX = [fromX, fromX * 0.65 + swing, fromX * 0.35 - swing, fromX * 0.1 + swing * 0.4, 0]
-    const pathY = [fromY, fromY * 0.7 - h * 0.03, fromY * 0.4, fromY * 0.12, 0]
-    const done = animate(r, [r.get(), 16 * dir, -12 * dir, 5 * dir, 0], {
-      ...opts,
-      onComplete: () => {
-        landing.current = false
-      },
-    })
+    const swing = Math.min(h * 0.1, Math.hypot(fromX, fromY) * 0.15) * dir
+    const opts = { duration: 1.6, ease: 'easeInOut', times: [0, 0.3, 0.6, 0.85, 1] }
     flight.current = [
-      animate(x, pathX.map((v) => keep(v, minX, maxX)), opts),
-      animate(y, pathY.map((v) => keep(v, minY, maxY)), opts),
-      done,
+      animate(x, [fromX, fromX * 0.6 + swing, fromX * 0.3 - swing, fromX * 0.08 + swing * 0.3, 0], opts),
+      animate(y, [fromY, fromY * 0.62, fromY * 0.3, fromY * 0.08, 0], opts),
+      animate(r, [r.get(), 14 * dir, -9 * dir, 4 * dir, 0], opts),
     ]
   }
 
-  useEffect(() => {
-    const onMove = (e) => {
-      if (!caught.current || !home.current) return
-      const b = home.current.getBoundingClientRect()
-      const { minX, maxX, minY, maxY, grip } = limits.current
-      const dx = e.clientX - (b.left + b.width / 2)
-      const dy = e.clientY - (b.top + b.height / 2)
-      // Out of reach, or held long enough: it slips off the cursor.
-      if (Math.hypot(dx - x.get(), dy - y.get()) > grip || performance.now() - heldSince.current > 1100) {
-        drop()
-        return
-      }
-      x.set(keep(dx * 0.7, minX, maxX))
-      y.set(keep(dy * 0.7, minY, maxY))
-      r.set(keep((e.clientX - lastX.current) * 1.5, -30, 30))
-      lastX.current = e.clientX
-      clearTimeout(idle.current)
-      idle.current = setTimeout(() => drop(), 380)
-    }
-    window.addEventListener('pointermove', onMove, { passive: true })
-    return () => {
-      window.removeEventListener('pointermove', onMove)
-      clearTimeout(idle.current)
+  useEffect(
+    () => () => {
       stopFlight()
       if (heldFeather === home) heldFeather = null
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    },
+    [],
+  )
 
-  const touch = (e) => {
-    if (landing.current || caught.current || heldFeather) return
+  const onDown = (e) => {
+    if (heldFeather && heldFeather !== home) return
+    e.preventDefault()
+    stopFlight()
     measure()
-    if (e.pointerType === 'mouse') {
-      heldFeather = home
-      caught.current = true
-      heldSince.current = performance.now()
-      lastX.current = e.clientX
-      idle.current = setTimeout(() => drop(), 380)
-      return
+    heldFeather = home
+    grab.current = { dx: e.clientX - x.get(), dy: e.clientY - y.get(), lastX: e.clientX, id: e.pointerId }
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId)
+    } catch {
+      // No live pointer to capture (a synthetic event): the drag still works.
     }
-    const h = home.current.offsetHeight
-    drop(h * lift * 0.5 * dir, -h * lift)
+    setHeld(true)
+  }
+
+  const onMove = (e) => {
+    const g = grab.current
+    if (!g || e.pointerId !== g.id) return
+    const { minX, maxX, minY, maxY } = limits.current
+    x.set(keep(e.clientX - g.dx, minX, maxX))
+    y.set(keep(e.clientY - g.dy, minY, maxY))
+    // Tilts with the direction it is being carried, like a real feather.
+    r.set(keep((e.clientX - g.lastX) * 2, -35, 35))
+    g.lastX = e.clientX
+  }
+
+  const onUp = (e) => {
+    if (!grab.current || e.pointerId !== grab.current.id) return
+    goHome()
   }
 
   return (
-    <div ref={home} className="absolute" style={{ left: `${left}%`, top: `${top}%`, height: `min(${vw}vw, ${cap}%)` }}>
+    <div
+      ref={home}
+      className={`absolute ${held ? 'z-10' : ''}`}
+      style={{ left: `${left}%`, top: `${top}%`, height: `min(${vw}vw, ${cap}%)` }}
+    >
       <motion.div className="h-full" style={{ x: safeX, y: safeY, rotate: sr }}>
         <motion.div
           className="h-full"
@@ -303,9 +294,15 @@ function Feather({ left, top, vw, cap, secs, dir, lift }) {
             alt=""
             loading="lazy"
             decoding="async"
-            onPointerEnter={touch}
-            onPointerDown={touch}
-            className="pointer-events-auto block h-full w-auto cursor-pointer touch-manipulation saturate-100 transition-[filter] duration-300 hover:saturate-[1.75]"
+            draggable={false}
+            onPointerDown={onDown}
+            onPointerMove={onMove}
+            onPointerUp={onUp}
+            onPointerCancel={onUp}
+            onLostPointerCapture={onUp}
+            // `touch-none` so a finger on a feather drags it rather than
+            // scrolling the page.
+            className={`pointer-events-auto block h-full w-auto touch-none select-none saturate-100 transition-[filter] duration-300 hover:saturate-[1.75] ${held ? 'cursor-grabbing saturate-[1.75]' : 'cursor-grab'}`}
           />
         </motion.div>
       </motion.div>
@@ -422,10 +419,6 @@ export default function NestTeaser() {
                 cap={cap}
                 secs={secs}
                 dir={dir}
-                // A shorter flight on phones: the section is only as tall as
-                // its content there, so there is less air above each feather
-                // before this layer's own `overflow-hidden`.
-                lift={phone ? 0.16 : 0.25}
               />
             )
           })}
