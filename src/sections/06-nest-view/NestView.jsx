@@ -148,20 +148,19 @@ export default function NestView({ onReveal }) {
   )
 
   /**
-   * The page waits for the dive to finish, by request. A fast scroll used to
-   * carry the visitor out of the pinned frame while the camera, the fade and
-   * the Top Secrets heading were still catching up, so the reveal was never
-   * seen. The first time the visitor reaches the end of the pin, the page is
-   * held there (wheel, touch and keys do nothing, and a flick that already
-   * overshot is brought back) until the sequence has caught up and the
-   * heading has faded in. Once only: later passes scroll freely.
+   * The dive finishes before the visitor moves on, by request, without
+   * feeling like a stop. A fast scroll used to carry the visitor out of the
+   * pinned frame while the camera was still catching up, so the reveal was
+   * never seen. Now, the first time the end of the pin is reached with the
+   * camera behind, the sequence jumps to its end at once and the page rests
+   * there for a moment (under a second) while the Top Secrets heading fades
+   * in. Once only: later passes scroll freely.
    */
   useEffect(() => {
     if (reduce) return undefined
     let state = 'idle' // idle | holding | done
     let holdAt = 0
     let timer = null
-    let safety = null
     const block = (e) => {
       if (state === 'holding' && e.cancelable) e.preventDefault()
     }
@@ -175,12 +174,6 @@ export default function NestView({ onReveal }) {
     const release = () => {
       state = 'done'
       clearTimeout(timer)
-      clearTimeout(safety)
-    }
-    const tryRelease = () => {
-      // The camera has caught up with the scroll; give the heading its
-      // fade-in (it starts 1.3s after Top Secrets mounts) and let go.
-      if (state === 'holding' && p.get() > 0.99 && !timer) timer = setTimeout(release, 1500)
     }
     const offProg = scrollYProgress.on('change', (v) => {
       if (state !== 'idle' || v < 0.985) return
@@ -192,20 +185,17 @@ export default function NestView({ onReveal }) {
         return
       }
       state = 'holding'
-      // A hard stop, so a stalled spring can never trap anyone.
-      safety = setTimeout(release, 4000)
+      p.jump(1)
       holdAt = track.getBoundingClientRect().top + window.scrollY + track.offsetHeight - window.innerHeight
       pin()
+      timer = setTimeout(release, 850)
     })
-    const offP = p.on('change', tryRelease)
     window.addEventListener('wheel', block, { passive: false })
     window.addEventListener('touchmove', block, { passive: false })
     window.addEventListener('keydown', keys)
     window.addEventListener('scroll', pin, { passive: true })
     return () => {
       offProg()
-      offP()
-      clearTimeout(safety)
       clearTimeout(timer)
       window.removeEventListener('wheel', block)
       window.removeEventListener('touchmove', block)

@@ -332,27 +332,29 @@ function Feather({ left, top, vw, cap, secs, dir, hint }) {
       </motion.div>
       <AnimatePresence>
         {showHint && (
+          // A pinching hand, no words, by request: the thumb and finger
+          // close on the feather, carry it a little way, and open again.
           <motion.span
+            aria-hidden
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
             transition={{ duration: 0.3 }}
-            className="pointer-events-none absolute left-1/2 top-1/2 z-10 flex -translate-x-1/2 -translate-y-1/2 items-center gap-1.5 whitespace-nowrap rounded-full bg-white/95 px-3.5 py-2 font-ui text-sm font-bold text-plum-700 shadow-[0_8px_20px_-8px_rgba(54,14,57,0.55)] ring-1 ring-plum-900/10"
+            className="pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2"
           >
-            <motion.svg
-              viewBox="0 0 24 24"
-              className="size-4 text-plum-700"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              animate={{ x: [0, 6, 0] }}
-              transition={{ duration: 1.1, repeat: Infinity, ease: 'easeInOut' }}
+            <motion.span
+              className="grid size-12 place-items-center rounded-full bg-white/95 text-plum-700 shadow-[0_8px_20px_-8px_rgba(54,14,57,0.55)] ring-1 ring-plum-900/10"
+              animate={{ x: [0, 0, 16, 16, 0], y: [0, 0, -6, -6, 0] }}
+              transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut', times: [0, 0.25, 0.6, 0.8, 1] }}
             >
-              <path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V10m0-1.5a1.5 1.5 0 0 1 3 0V11m0-1a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1-6 6h-.6a6 6 0 0 1-4.7-2.3L4.4 15a1.6 1.6 0 0 1 2.5-2L9 15V11" />
-            </motion.svg>
-            Drag me
+              <motion.span
+                className="text-2xl leading-none"
+                animate={{ scale: [1, 0.82, 0.82, 0.82, 1] }}
+                transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut', times: [0, 0.25, 0.6, 0.8, 1] }}
+              >
+                🤏
+              </motion.span>
+            </motion.span>
           </motion.span>
         )}
       </AnimatePresence>

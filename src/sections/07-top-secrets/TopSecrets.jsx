@@ -413,7 +413,7 @@ export default function TopSecrets() {
           hand over to this one. That hand-off only works if the two sit in
           exactly the same place — a 34px rise here would slide this out
           from under the copy still being shown on top of it. */}
-      <Reveal y={0} delay={1.3} onMount className="relative">
+      <Reveal y={0} delay={0.35} onMount className="relative">
         <img
           src={A.secrets.heading}
           alt="Top Secrets"
