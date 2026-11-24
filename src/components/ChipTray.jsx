@@ -63,6 +63,7 @@ export default function ChipTray({ items, value, onChange, layoutId, label, role
           ref={rowRef}
           role={role}
           aria-label={label}
+          style={more ? { maskImage: 'linear-gradient(90deg,#000 0%,#000 62%,transparent 94%)', WebkitMaskImage: 'linear-gradient(90deg,#000 0%,#000 62%,transparent 94%)' } : undefined}
           className="flex snap-x gap-2.5 overflow-x-auto px-1 pb-3 pt-1 pr-14 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [&>*]:shrink-0 [&>*]:snap-start"
         >
           {chips}
@@ -72,7 +73,7 @@ export default function ChipTray({ items, value, onChange, layoutId, label, role
             type="button"
             aria-label="Show more options"
             onClick={() => rowRef.current?.scrollBy({ left: rowRef.current.clientWidth * 0.6, behavior: 'smooth' })}
-            className="absolute right-0 top-1 grid size-9 place-items-center rounded-full bg-gold-500 text-plum-700 shadow-[0_4px_0_-1px_var(--color-plum-900)]"
+            className="absolute right-0 top-[calc(50%-0.25rem)] grid size-9 -translate-y-1/2 place-items-center rounded-full bg-gold-500 text-plum-700 shadow-[0_4px_0_-1px_var(--color-plum-900)]"
           >
             <svg viewBox="0 0 24 24" aria-hidden className="size-4" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
           </button>

@@ -6,7 +6,7 @@ const RIVALS = [
   { id: 'freelancers', label: 'Freelancers' },
   { id: 'agency', label: 'Marketing Agencies' },
   { id: 'inhouse', label: 'In-House Designer' },
-  { id: 'subs', label: 'Other Design Subscriptions' },
+  { id: 'subs', label: 'Other Subscriptions' },
 ]
 
 /**
