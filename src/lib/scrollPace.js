@@ -1,4 +1,4 @@
-import { useReducedMotion, useSpring } from 'motion/react'
+import { useAnimationControls, useReducedMotion, useSpring } from 'motion/react'
 
 /**
  * How fast the visitor is scrolling, so the animations can keep up with them.
@@ -49,4 +49,22 @@ export function useCatchUp(progress) {
   const reduce = useReducedMotion()
   const eased = useSpring(progress, { stiffness: 150, damping: 28, mass: 0.4, restDelta: 0.0005 })
   return reduce ? progress : eased
+}
+
+/**
+ * A speed-aware stand-in for `whileInView` + `transition`. Spread the result
+ * onto a motion element that keeps its own `initial` and `viewport`:
+ *
+ *   const enter = usePaceInView({ opacity: 1, y: 0 }, { duration: 0.8 })
+ *   <motion.div initial={{ opacity: 0, y: 40 }} viewport={{ once: true }} {...enter} />
+ */
+export function usePaceInView(to, { duration = 0.8, delay = 0, ease = [0.16, 1, 0.3, 1] } = {}) {
+  const controls = useAnimationControls()
+  return {
+    animate: controls,
+    onViewportEnter: () => {
+      const pace = scrollPace()
+      controls.start({ ...to, transition: { duration: duration * (1 - 0.6 * pace), delay: delay * (1 - pace), ease } })
+    },
+  }
 }

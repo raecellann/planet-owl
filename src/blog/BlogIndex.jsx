@@ -2,6 +2,7 @@ import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import cloudImg from '../../assets/section 2/image 35 copy.png'
 import { motion } from 'motion/react'
 import BlogCover from './BlogCover'
+import Reveal from '../components/ui/Reveal'
 import ChipTray from '../components/ChipTray'
 import BlogLayout, { CategoryChip } from './BlogLayout'
 import { CATEGORIES, POSTS, postHref } from './posts'
@@ -162,13 +163,7 @@ export default function BlogIndex() {
           ) : (
             <ul className="mt-12 grid gap-x-7 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
               {results.map((p, i) => (
-                <motion.li
-                  key={p.slug}
-                  initial={{ opacity: 0, y: 26 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-8% 0px' }}
-                  transition={{ duration: 0.7, delay: (i % 3) * 0.08, ease: [0.16, 1, 0.3, 1] }}
-                >
+                <Reveal as="li" key={p.slug} y={26} duration={0.7} delay={(i % 3) * 0.08}>
                   <a href={postHref(p.slug)} className="group block no-underline">
                     <div className="relative overflow-hidden rounded-2xl ring-1 ring-plum-900/5 transition-transform duration-300 group-hover:-translate-y-1">
                       <BlogCover cover={p.cover} title={p.title} />
@@ -178,7 +173,7 @@ export default function BlogIndex() {
                       {p.title}
                     </h3>
                   </a>
-                </motion.li>
+                </Reveal>
               ))}
             </ul>
           )}

@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { useCatchUp } from '../../lib/scrollPace'
+import { useCatchUp, usePaceInView } from '../../lib/scrollPace'
 import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { A } from '../../lib/assets'
 import Reveal from '../../components/ui/Reveal'
@@ -123,6 +123,8 @@ export default function Portfolio() {
     target: rowRef,
     offset: ['center center', 'end start'],
   })
+  const planeInA = usePaceInView({ opacity: 1, x: 0, y: 0, rotate: 0 }, { duration: 1.1, delay: 0.2 })
+  const planeInB = usePaceInView({ opacity: 1, x: 0, y: 0, rotate: 0 }, { duration: 1.1, delay: 0.35 })
   const leadFlight = useTransform(useCatchUp(leadPassed), [0, 1], ['0vw', reduce ? '0vw' : '-140vw'])
 
   // The row's plane does the same pass the other way. It faces right, so it
@@ -345,9 +347,8 @@ export default function Portfolio() {
               loading="lazy"
               draggable={false}
               initial={reduce ? false : { opacity: 0, x: -40, y: 24, rotate: -8 }}
-              whileInView={{ opacity: 1, x: 0, y: 0, rotate: 0 }}
               viewport={{ once: true, margin: '-10% 0px' }}
-              transition={{ duration: 1.1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              {...planeInA}
               className="owl-shadow block w-full select-none"
             />
           </motion.div>
@@ -364,9 +365,8 @@ export default function Portfolio() {
               draggable={false}
               style={{ scaleX: -1 }}
               initial={reduce ? false : { opacity: 0, x: 40, y: 22, rotate: 8 }}
-              whileInView={{ opacity: 1, x: 0, y: 0, rotate: 0 }}
               viewport={{ once: true, margin: '-10% 0px' }}
-              transition={{ duration: 1.1, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              {...planeInB}
               className="owl-shadow block w-full select-none"
             />
           </motion.div>

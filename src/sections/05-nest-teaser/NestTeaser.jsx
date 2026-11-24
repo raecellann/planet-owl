@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { usePaceInView } from '../../lib/scrollPace'
 import { animate, motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'motion/react'
 import { A } from '../../lib/assets'
 import Reveal from '../../components/ui/Reveal'
@@ -313,6 +314,7 @@ function Feather({ left, top, vw, cap, secs, dir, lift }) {
 }
 
 export default function NestTeaser() {
+  const owlIn = usePaceInView({ opacity: 1, y: 0, x: '-2.475%' }, { duration: 1 })
   const reduce = useReducedMotion()
   const phone = useMediaQuery(PHONE)
   const [hovered, setHovered] = useState(false)
@@ -534,9 +536,8 @@ export default function NestTeaser() {
           // width at this file's 1440px reference (646.5px) instead of an
           // absolute distance.
           initial={reduce ? false : { opacity: 0, y: 50, x: '-2.475%' }}
-          whileInView={{ opacity: 1, y: 0, x: '-2.475%' }}
           viewport={{ once: true, margin: '-12% 0px' }}
-          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          {...(reduce ? { animate: { opacity: 1, y: 0, x: '-2.475%' } } : owlIn)}
           // `h-full` is what makes `max-h-full` on the owl below actually mean
           // something. Its own parent aligns with `items-end`, not `stretch`,
           // so without an explicit height here this box sizes to its CONTENT

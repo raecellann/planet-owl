@@ -3,6 +3,7 @@ import { A } from '../../lib/assets'
 import Reveal from '../../components/ui/Reveal'
 import { GoldButton, TealButton } from '../../components/ui/Button'
 import CardCarousel from './CardCarousel'
+import { usePaceInView } from '../../lib/scrollPace'
 import ApplyModal, { openApply } from '../../components/ApplyModal'
 import DrawnDoodle from '../../components/ui/DrawnDoodle'
 import { PHONE, useMediaQuery } from '../../lib/useMediaQuery'
@@ -74,6 +75,8 @@ export default function TheFlock() {
   // Phones only, and not under reduced motion — there the pilots keep their
   // parked positions rather than looping across the screen for ever.
   const flyAcross = useMediaQuery(PHONE) && !reduce
+  const pilotInA = usePaceInView({ opacity: 1, x: 0, y: 0, rotate: 0 }, { duration: 1.1, delay: 0.1 })
+  const pilotInB = usePaceInView({ opacity: 1, x: 0, y: 0, rotate: 0 }, { duration: 1.1, delay: 0.15 })
   return (
     <section
       id="the-flock"
@@ -213,9 +216,8 @@ export default function TheFlock() {
       <motion.div
         aria-hidden
         initial={{ opacity: 0, x: 36, y: -30, rotate: 10 }}
-        whileInView={{ opacity: 1, x: 0, y: 0, rotate: 0 }}
         viewport={{ once: true, margin: '-10% 0px' }}
-        transition={{ duration: 1.1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+        {...pilotInA}
         className="pointer-events-none absolute -top-[5.5rem] right-[-6%] z-10 w-[42%] select-none sm:-top-[20vw] sm:right-[0vw] sm:w-[28%]"
       >
         <motion.img
@@ -338,9 +340,8 @@ export default function TheFlock() {
         loading="lazy"
         draggable={false}
         initial={{ opacity: 0, x: -90, y: 40, rotate: -10 }}
-        whileInView={{ opacity: 1, x: 0, y: 0, rotate: 0 }}
         viewport={{ once: true, margin: '-10% 0px' }}
-        transition={{ duration: 1.1, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+        {...pilotInB}
         // `-bottom-28`, down from `-bottom-16` — pushed an extra half inch
         // (48px, `-16`→`-28` on Tailwind's 4px scale) further below the
         // band, per direct feedback that it sat too high.
