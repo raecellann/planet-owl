@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import cloudImg from '../../assets/section 2/image 35 copy.png'
 import { motion } from 'motion/react'
 import BlogCover from './BlogCover'
@@ -17,6 +17,20 @@ import { CATEGORIES, POSTS, postHref } from './posts'
 export default function BlogIndex() {
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('All')
+  // A filter changes how much sits above and below the grid. The heading is
+  // held where it was on screen, so pressing a chip never moves the reader.
+  const headingRef = useRef(null)
+  const headingTop = useRef(null)
+  const pickCategory = (next) => {
+    headingTop.current = headingRef.current?.getBoundingClientRect().top ?? null
+    setCategory(next)
+  }
+  useLayoutEffect(() => {
+    if (headingTop.current == null || !headingRef.current) return
+    const moved = headingRef.current.getBoundingClientRect().top - headingTop.current
+    headingTop.current = null
+    if (moved) window.scrollBy({ top: moved, behavior: 'instant' })
+  }, [category])
 
   const filtering = query.trim() !== '' || category !== 'All'
   const featured = POSTS[0]
@@ -125,9 +139,9 @@ export default function BlogIndex() {
       )}
 
       {/* --------------------------------------------------- all articles -- */}
-      <section className={`px-5 pb-10 sm:px-8 ${filtering ? 'relative z-10 -mt-[clamp(3rem,7vw,6rem)]' : 'pt-[clamp(4rem,8vw,7rem)]'}`}>
+      <section className={`min-h-[100svh] px-5 pb-10 [overflow-anchor:none] sm:px-8 ${filtering ? 'relative z-10 -mt-[clamp(3rem,7vw,6rem)]' : 'pt-[clamp(4rem,8vw,7rem)]'}`}>
         <div className="mx-auto max-w-[1180px]">
-          <h2 className="text-center font-['Momo_Trust_Display'] text-[clamp(1.9rem,4.2vw,3.2rem)] font-normal leading-none text-plum-700">
+          <h2 ref={headingRef} className="text-center font-['Momo_Trust_Display'] text-[clamp(1.9rem,4.2vw,3.2rem)] font-normal leading-none text-plum-700">
             All Articles
           </h2>
 
@@ -137,7 +151,7 @@ export default function BlogIndex() {
               layoutId="blog-chip-active"
               items={CATEGORIES.map((c) => ({ id: c, label: c }))}
               value={category}
-              onChange={setCategory}
+              onChange={pickCategory}
             />
           </div>
 

@@ -3,7 +3,6 @@ import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } fr
 import BlogLayout from './BlogLayout'
 import { A } from '../lib/assets'
 import Faq from '../components/Faq'
-import StackCards from '../components/StackCards'
 import SectionBreak from '../components/SectionBreak'
 import { CompareTable } from './PricingExtras'
 import cloudImg from '../../assets/section 2/image 35 copy.png'
@@ -62,26 +61,6 @@ const PLANS = [
     lead: 'Everything in Nest, plus:',
     items: ['AI Assistants & Chatbots', 'Automation', 'Custom Software', 'Analytics & Integration', 'Custom scope'],
     owl: A.owl.ai,
-  },
-]
-
-/**
- * "On every plan" — only things the site already says or that follow from how
- * the plans are built. No turnaround, revision count or guarantee: those have
- * not been set (see the note at the top).
- */
-const STANDARD = [
-  {
-    title: 'The Team',
-    items: ['The same flock on your brand, month to month', 'Design, digital, development and AI under one roof', 'One place to send every request'],
-  },
-  {
-    title: 'The Work',
-    items: ['No guesswork. No revisions. No changes.', 'Refined in the nest before it reaches you', 'Built around your brand, not a template'],
-  },
-  {
-    title: 'The Plan',
-    items: ['Billed monthly', 'Starts with a free 2-week trial', 'Move up a plan when you need another craft'],
   },
 ]
 
@@ -346,7 +325,7 @@ export default function Pricing() {
               what the studio has actually said. The reference's cancel-anytime,
               refund and no-fee promises are that company's terms, so none is
               repeated here until Planet Owl decides its own. */}
-          <h2 className="mt-24 text-center font-['Momo_Trust_Display'] text-[clamp(1.9rem,4vw,3.2rem)] font-normal leading-[1.1] text-gold-500">
+          <h2 className="mt-32 text-center font-['Momo_Trust_Display'] text-[clamp(1.9rem,4vw,3.2rem)] font-normal leading-[1.1] text-gold-500 sm:mt-44">
             Simple Plans. No Guesswork.
           </h2>
           {/* Tiles rise in one after another when the grid scrolls into view,
@@ -407,30 +386,6 @@ export default function Pricing() {
         </div>
       </section>
       <SectionBreak edge="bottom" />
-
-      {/* Standard Issue, on its own, right before How It Hatches. */}
-      <section className="bg-white px-5 pb-16 pt-20 sm:px-8 sm:pb-24 sm:pt-24">
-        <div className="mx-auto max-w-[1320px]">
-            <StackCards
-              heading="Standard Issue on Every Plan"
-              headingClass="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-plum-700"
-              tones={['bg-plum-100 text-plum-700', 'bg-gold-200 text-plum-700', 'bg-[#e7b248] text-plum-700']}
-              items={STANDARD.map((g) => ({
-                title: g.title,
-                body: (
-                  <ul className="space-y-3">
-                    {g.items.map((item) => (
-                      <li key={item} className="flex items-start gap-3 font-ui text-lg leading-snug">
-                        <Check className="mt-1 text-teal-600" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                ),
-              }))}
-            />
-        </div>
-      </section>
 
       {/* ------------------------------------------------ how it works --
           A ROADMAP that draws itself, by request ("animated, like an

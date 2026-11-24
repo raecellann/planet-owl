@@ -251,7 +251,7 @@ export default function About() {
             id="craft-panel"
             role="tabpanel"
             aria-labelledby={`craft-tab-${craft}`}
-            className="mt-8 overflow-hidden rounded-[1.75rem] bg-white p-6 sm:p-10"
+            className="mt-10 overflow-hidden"
           >
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
@@ -269,15 +269,15 @@ export default function About() {
                   className="mx-auto h-[min(60vw,18rem)] w-auto object-contain"
                 />
                 <div>
-                  <h3 className="font-['Momo_Trust_Display'] text-[clamp(2rem,4.5vw,3.5rem)] font-normal leading-none text-plum-700">
+                  <h3 className="font-['Momo_Trust_Display'] text-[clamp(2rem,4.5vw,3.5rem)] font-normal leading-none text-gold-500">
                     {CRAFTS[craft].title}
                   </h3>
-                  <p className="mt-3 font-ui text-lg text-plum-700">{CRAFTS[craft].line}</p>
+                  <p className="mt-3 font-ui text-lg text-white">{CRAFTS[craft].line}</p>
                   <ul className="mt-6 flex flex-wrap gap-2.5">
                     {CRAFTS[craft].items.map((item) => (
                       <li
                         key={item}
-                        className="rounded-full bg-plum-100 px-4 py-2 font-ui text-sm font-semibold text-plum-700"
+                        className="rounded-full bg-white/15 px-4 py-2 font-ui text-sm font-semibold text-white"
                       >
                         {item}
                       </li>
