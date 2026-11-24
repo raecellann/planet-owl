@@ -211,7 +211,7 @@ function NestHotspot({ review, open, onToggle, play }) {
               // 15rem card ran ~60px off the right of the screen, where the
               // section's `overflow-hidden` cut it; Nike's did the same at
               // every width.
-              left: `min(calc(${x} + 0.5rem), calc(100% - max(15rem, 32%) - 0.75rem))`,
+              left: `min(calc(${x} + 0.5rem), calc(100% - max(13.5rem, 25%) - 0.75rem))`,
             }}
             // A share of the PLATE with a floor, not a percentage under a
             // pixel ceiling.
@@ -228,7 +228,8 @@ function NestHotspot({ review, open, onToggle, play }) {
             // nest at every width, and the 15rem floor only takes over on
             // phones, where 32% of the plate would be too narrow to set a
             // quote in. A floor cannot freeze it the way a ceiling did.
-            className="absolute z-30 m-0 w-[max(15rem,32%)]"
+            // Smaller, by request: the cards were too big against the nest.
+            className="absolute z-30 m-0 w-[max(13.5rem,25%)] [container-type:inline-size]"
           >
             {plate ? (
               <>
@@ -253,34 +254,37 @@ function NestHotspot({ review, open, onToggle, play }) {
               // initial, and the name and role are visible placeholders
               // until a real client gives theirs. No real person's face or
               // name is put to a quote they did not give.
-              <div className="overflow-hidden rounded-[1.1rem] border-b-4 border-gold-500 bg-white p-[4.5%] drop-shadow-[0_20px_36px_rgba(0,0,0,0.55)]">
+              // Every size here is a share of the card's width (cqw), read
+              // off the Maserati export (649px wide): the same type, the
+              // same proportions, at whatever size the card is drawn.
+              <div className="overflow-hidden rounded-[4.5cqw] border-b-[0.9cqw] border-gold-500 bg-white px-[5.2cqw] pb-[5cqw] pt-[5.2cqw] drop-shadow-[0_20px_36px_rgba(0,0,0,0.55)]">
                 <div
                   aria-hidden
-                  className="aspect-[2/1] w-full rounded-[0.8rem] bg-no-repeat"
+                  className="aspect-[580/224] w-full rounded-[3cqw] bg-no-repeat"
                   style={{
                     backgroundImage: `url(${A.nest.brands})`,
                     backgroundSize: `${(1400 / crop.w) * 100}% auto`,
-                    backgroundPosition: `${(crop.x / (1400 - crop.w)) * 100}% ${(crop.y / (1866 - crop.w / 2)) * 100}%`,
+                    backgroundPosition: `${(crop.x / (1400 - crop.w)) * 100}% ${(crop.y / (1866 - crop.w * (224 / 580))) * 100}%`,
                   }}
                 />
-                <blockquote className="mt-3 font-ui text-sm leading-snug text-plum-950">
+                <blockquote className="mt-[4.6cqw] font-ui text-[2.65cqw] font-medium leading-[1.4] text-[#111]">
                   “{quote}”
                 </blockquote>
-                <div aria-hidden className="mt-2.5 flex gap-1 text-gold-500">
+                <div aria-hidden className="mt-[3.6cqw] flex gap-[1.1cqw] text-gold-500">
                   {[0, 1, 2, 3, 4].map((n) => (
-                    <svg key={n} viewBox="0 0 20 20" className="size-4 fill-current">
+                    <svg key={n} viewBox="0 0 20 20" className="size-[3.6cqw] fill-current">
                       <path d="M10 1.6l2.5 5.4 5.9.7-4.4 4 1.2 5.8L10 14.6l-5.2 2.9L6 11.7l-4.4-4 5.9-.7z" />
                     </svg>
                   ))}
                 </div>
-                <figcaption className="mt-2.5 flex items-center gap-3">
-                  <span aria-hidden className="grid size-11 shrink-0 place-items-center rounded-full bg-plum-800 font-display text-lg font-bold text-gold-400">
+                <figcaption className="mt-[3.6cqw] flex items-center gap-[2.6cqw]">
+                  <span aria-hidden className="grid size-[10.2cqw] shrink-0 place-items-center rounded-full bg-plum-800 font-display text-[4.4cqw] font-bold text-gold-400">
                     {brand[0]}
                   </span>
-                  <span className="min-w-0 leading-tight">
-                    <span className="block font-display text-lg font-bold text-plum-950">{brand}</span>
-                    <span className="block font-ui text-sm text-plum-700/60">Client Name</span>
-                    <span className="block font-ui text-xs text-plum-700/60">Position</span>
+                  <span className="min-w-0 leading-[1.2]">
+                    <span className="block font-display text-[3.6cqw] font-bold text-[#111]">{brand}</span>
+                    <span className="block font-ui text-[2.6cqw] font-medium text-[#111]">Client Name</span>
+                    <span className="block font-ui text-[2cqw] text-[#111]">Position</span>
                   </span>
                 </figcaption>
               </div>

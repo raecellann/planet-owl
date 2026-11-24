@@ -189,7 +189,7 @@ function Feather({ left, top, vw, cap, secs, dir }) {
   // smooth out a jerky hand.
   const sx = useSpring(x, { stiffness: 420, damping: 34, mass: 0.6 })
   const sy = useSpring(y, { stiffness: 420, damping: 34, mass: 0.6 })
-  const sr = useSpring(r, { stiffness: 120, damping: 10 })
+  const sr = useSpring(r, { stiffness: 120, damping: 20 })
   // A hard stop on what is drawn, so a spring's overshoot cannot reach the edge either.
   const safeX = useTransform(sx, (v) => Math.max(limits.current.minX, Math.min(limits.current.maxX, v)))
   const safeY = useTransform(sy, (v) => Math.max(limits.current.minY, Math.min(limits.current.maxY, v)))
@@ -219,23 +219,15 @@ function Feather({ left, top, vw, cap, secs, dir }) {
 
   const keep = (v, lo, hi) => Math.max(lo, Math.min(hi, v))
 
-  // Let go: it floats back home from wherever it was dropped, swinging
-  // across its own path.
+  // Let go: it glides straight back home and settles, by request (the
+  // swaying return looked odd).
   const goHome = () => {
     if (heldFeather === home) heldFeather = null
     grab.current = null
     setHeld(false)
     stopFlight()
-    const fromX = x.get()
-    const fromY = y.get()
-    const h = home.current?.offsetHeight ?? 200
-    const swing = Math.min(h * 0.1, Math.hypot(fromX, fromY) * 0.15) * dir
-    const opts = { duration: 1.6, ease: 'easeInOut', times: [0, 0.3, 0.6, 0.85, 1] }
-    flight.current = [
-      animate(x, [fromX, fromX * 0.6 + swing, fromX * 0.3 - swing, fromX * 0.08 + swing * 0.3, 0], opts),
-      animate(y, [fromY, fromY * 0.62, fromY * 0.3, fromY * 0.08, 0], opts),
-      animate(r, [r.get(), 14 * dir, -9 * dir, 4 * dir, 0], opts),
-    ]
+    const glide = { type: 'spring', stiffness: 70, damping: 18, mass: 1 }
+    flight.current = [animate(x, 0, glide), animate(y, 0, glide), animate(r, 0, glide)]
   }
 
   useEffect(
