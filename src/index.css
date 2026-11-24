@@ -384,3 +384,11 @@
 .apply-scroll::-webkit-scrollbar {
   display: none;
 }
+
+/* Site art is not offered for saving: no long-press menu on phones, no
+   drag-out on desktop (see the contextmenu guard in main.jsx). */
+img {
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  user-select: none;
+}

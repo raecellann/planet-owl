@@ -424,8 +424,8 @@ function PromiseArc() {
   }
 
   return (
-    <div ref={track} className="relative py-12 sm:h-[420svh] sm:py-0">
-      <div className="-mx-5 flex flex-col justify-center overflow-hidden sm:sticky sm:top-0 sm:-mx-8 sm:h-[100svh] sm:pt-20">
+    <div ref={track} className="relative pt-10 sm:h-[420svh] sm:pt-0">
+      <div className="-mx-5 flex flex-col justify-center overflow-hidden pb-14 sm:sticky sm:pb-0 sm:top-0 sm:-mx-8 sm:h-[100svh] sm:pt-20">
         {heading}
         <ul className="relative mx-auto mt-5 h-[22.5rem] w-full sm:mt-10 sm:h-[28rem]">
           {PROMISES.map((p, i) => (

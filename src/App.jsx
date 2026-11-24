@@ -117,6 +117,8 @@ export default function App({ skipIntro = false }) {
     const t = setTimeout(() => {
       if (target) target.scrollIntoView({ behavior: 'instant', block: 'start' })
       else window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+      // Landed on the section: the address bar goes back to the plain page.
+      if (target) window.history.replaceState(null, '', window.location.pathname + window.location.search)
     }, 60)
     return () => clearTimeout(t)
   }, [skipIntro])

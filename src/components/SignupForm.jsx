@@ -32,7 +32,7 @@ export default function SignupForm({ source = 'footer', compact = false, autoFoc
       setMessage(
         via === 'mailto'
           ? 'Your mail app should have opened with the message ready. Just hit send.'
-          : `Thanks, we will be in touch at ${email.trim()}.`,
+          : 'Thanks! We will be in touch soon.',
       )
       onSent?.(email.trim())
     } catch (err) {
@@ -118,7 +118,7 @@ export default function SignupForm({ source = 'footer', compact = false, autoFoc
         id={`${id}-status`}
         role="status"
         aria-live="polite"
-        className={`mt-3 min-h-[1.25rem] px-2 font-display text-sm font-semibold transition-opacity duration-300 ${
+        className={`mt-2 min-h-[1rem] px-3 font-display text-xs font-semibold leading-snug transition-opacity duration-300 ${
           state === 'error' ? 'text-red-700' : 'text-plum-700'
         } ${message ? 'opacity-100' : 'opacity-0'}`}
       >

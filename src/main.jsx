@@ -63,6 +63,17 @@ const parseRoute = () => {
   return m ? { blog: true, slug: m[1] ? decodeURIComponent(m[1]) : null } : { blog: false }
 }
 
+// No "save image" menu on the site's art, by request (feathers, owls, the
+// wizard). A deterrent only; it does not stop a screenshot.
+if (typeof document !== 'undefined') {
+  document.addEventListener('contextmenu', (e) => {
+    if (e.target instanceof HTMLImageElement) e.preventDefault()
+  })
+  document.addEventListener('dragstart', (e) => {
+    if (e.target instanceof HTMLImageElement) e.preventDefault()
+  })
+}
+
 function Root() {
   const [route, setRoute] = useState(parseRoute)
   // Once the blog has been open, coming back to the landing page skips its
@@ -71,7 +82,18 @@ function Root() {
   const seenBlog = useRef(route.blog)
 
   useEffect(() => {
-    const onHash = () => setRoute(parseRoute())
+    const onHash = () => {
+      setRoute(parseRoute())
+      // A section link (#portfolio, #what-we-do) jumps to its section and
+      // then leaves the address bar clean, by request. Page routes (#/blog)
+      // keep their hash: that is the route.
+      const h = window.location.hash
+      if (h && !h.startsWith('#/')) {
+        setTimeout(() => {
+          if (window.location.hash === h) window.history.replaceState(null, '', window.location.pathname + window.location.search)
+        }, 900)
+      }
+    }
     window.addEventListener('hashchange', onHash)
     return () => window.removeEventListener('hashchange', onHash)
   }, [])
