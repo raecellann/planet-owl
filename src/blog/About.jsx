@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from 'react'
-import { motion, useReducedMotion } from 'motion/react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import BlogLayout from './BlogLayout'
 import { A } from '../lib/assets'
 import { WORK } from '../sections/02-portfolio/work'
@@ -9,7 +9,7 @@ import OwlBubble, { OWL_INTROS } from '../components/OwlBubble'
 import owlBold from '../../assets/about-owls/bold.webp'
 import owlFlock from '../../assets/about-owls/flock.webp'
 import owlBrand from '../../assets/about-owls/brand.webp'
-import owlNest from '../../assets/about-owls/nest.webp'
+import owlHalo from '../../assets/about-owls/halo.webp'
 import owlPlain from '../../assets/about-owls/plain.webp'
 import owlTech from '../../assets/about-owls/tech.webp'
 
@@ -41,7 +41,7 @@ const VALUES = [
   { title: 'Bold Over Safe', owl: owlBold, copy: 'We make work for brands that want to rise above the ordinary and be remembered.' },
   { title: 'One Flock, One Roof', owl: owlFlock, copy: 'Design, development, digital and AI sit together, so your idea never gets passed between agencies.' },
   { title: 'Your Brand, Never a Template', owl: owlBrand, copy: 'Everything we make starts with who you are and is built around your brand.' },
-  { title: 'Refined in the Nest', owl: owlNest, copy: 'Work is shaped, built and polished in one place before it reaches you.' },
+  { title: 'Refined in the Nest', owl: owlHalo, copy: 'Work is shaped, built and polished in one place before it reaches you.' },
   { title: 'Plain Words Welcome', owl: owlPlain, copy: 'Tell us what you need the way you would say it. Working out the rest is our job.' },
   { title: 'Tech With a Purpose', owl: owlTech, copy: 'We use AI and automation where they simplify real work and help your business move faster.' },
 ]
@@ -151,6 +151,79 @@ const PROMISES = [
   },
 ]
 
+const VALUE_TONES = ['bg-gold-200', 'bg-[#e7b248]', 'bg-plum-100', 'bg-gold-500', 'bg-white', 'bg-teal-400']
+
+/**
+ * One value card in the side stack. Each slides in from the right over its
+ * stretch of the scroll and settles a step lower and further right than the
+ * one before, so the deck builds up as the reader scrolls.
+ */
+function ValueCard({ v, i, n, progress }) {
+  const start = (i - 1) / n
+  const end = i / n
+  const x = useTransform(progress, [Math.max(0, start), end], i === 0 ? ['0%', '0%'] : ['120%', '0%'])
+  const rotate = useTransform(progress, [Math.max(0, start), end], i === 0 ? [0, 0] : [6, 0])
+  return (
+    <motion.li
+      style={{ x, rotate, top: `calc(var(--step) * ${i})`, left: `calc(var(--step) * ${i})`, width: `calc(100% - var(--step) * ${n - 1})`, zIndex: i + 1 }}
+      className={`absolute grid origin-bottom-left items-center gap-4 rounded-[1.75rem] p-6 sm:grid-cols-[auto_minmax(0,1fr)] shadow-[0_24px_50px_-28px_rgba(20,4,22,0.7)] sm:gap-8 sm:p-9 ${VALUE_TONES[i % VALUE_TONES.length]}`}
+    >
+      <img src={v.owl} alt="" aria-hidden loading="lazy" className="h-20 w-auto max-w-[6rem] object-contain sm:h-44 sm:max-w-[11rem]" />
+      <div>
+        <p className="font-ui text-sm font-bold text-plum-700">{String(i + 1).padStart(2, '0')}</p>
+        <h3 className="mt-1 font-['Momo_Trust_Display'] text-[clamp(1.4rem,2.6vw,2.2rem)] font-normal leading-[1.1] text-plum-700">{v.title}</h3>
+        <p className="mt-3 max-w-md font-ui leading-relaxed text-plum-700 sm:text-lg">{v.copy}</p>
+      </div>
+    </motion.li>
+  )
+}
+
+/** The values as a pinned stage: the cards deal in from the side on the scroll. */
+function ValuesStack() {
+  const reduce = useReducedMotion()
+  const track = useRef(null)
+  const { scrollYProgress } = useScroll({ target: track, offset: ['start start', 'end end'] })
+  const heading = (
+    <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-gold-500">
+      What the Nest Runs On
+    </h2>
+  )
+
+  if (reduce) {
+    return (
+      <div className="mx-auto max-w-[1180px]">
+        {heading}
+        <ul className="mt-10 space-y-5">
+          {VALUES.map((v, i) => (
+            <li key={v.title} className={`grid grid-cols-[auto_minmax(0,1fr)] items-center gap-5 rounded-[1.75rem] p-6 ${VALUE_TONES[i % VALUE_TONES.length]}`}>
+              <img src={v.owl} alt="" aria-hidden loading="lazy" className="h-28 w-auto max-w-[7rem] object-contain" />
+              <div>
+                <h3 className="font-['Momo_Trust_Display'] text-2xl font-normal text-plum-700">{v.title}</h3>
+                <p className="mt-2 font-ui leading-relaxed text-plum-700">{v.copy}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )
+  }
+
+  return (
+    <div ref={track} style={{ height: `${VALUES.length * 55 + 45}svh` }} className="relative">
+      <div className="sticky top-0 flex h-[100svh] flex-col justify-center overflow-hidden pt-24">
+        <div className="mx-auto w-full max-w-[1180px]">
+          {heading}
+          <ul className="relative mt-8 h-[min(24rem,58svh)] max-w-[52rem] [--step:0.45rem] sm:mt-10 sm:h-[min(26rem,52svh)] sm:[--step:0.9rem]">
+            {VALUES.map((v, i) => (
+              <ValueCard key={v.title} v={v} i={i} n={VALUES.length} progress={scrollYProgress} />
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function About() {
   const [owl, setOwl] = useState(null)
 
@@ -215,41 +288,11 @@ export default function About() {
       </section>
 
       {/* ------------------------------------------------------- values --
-          No containers, by request. Each value rises in on the scroll, and
-          pointing at one lifts its owl and draws the gold line. */}
+          A side stack, by request: pinned while the cards deal in from the
+          right, one per stretch of scroll. */}
       <SectionBreak edge="top" />
-      <section className="-my-px bg-plum-800 px-5 py-14 sm:px-8 sm:py-20">
-        <div className="mx-auto max-w-[1180px]">
-          <h2 className="text-center font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-gold-500">
-            What the Nest Runs On
-          </h2>
-          <motion.ul
-            initial={reduce ? false : 'off'}
-            whileInView="on"
-            viewport={{ once: true, margin: '-10% 0px' }}
-            variants={{ on: { transition: { staggerChildren: 0.09 } } }}
-            className="mt-12 grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-3"
-          >
-            {VALUES.map((v) => (
-              <motion.li
-                key={v.title}
-                variants={reduce ? undefined : { off: { opacity: 0, y: 26 }, on: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } } }}
-                className="group"
-              >
-                <img
-                  src={v.owl}
-                  alt=""
-                  aria-hidden
-                  loading="lazy"
-                  className="h-32 w-auto max-w-[11rem] origin-bottom object-contain object-left transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:-translate-y-1.5 group-hover:-rotate-3 group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:transform-none sm:h-36"
-                />
-                <h3 className="mt-5 font-ui text-xl font-bold leading-snug text-gold-500">{v.title}</h3>
-                <span aria-hidden className="mt-3 block h-1 w-full origin-left scale-x-[0.18] rounded-full bg-gold-500 transition-transform duration-500 ease-out group-hover:scale-x-100 motion-reduce:transition-none" />
-                <p className="mt-3 font-ui leading-relaxed text-white">{v.copy}</p>
-              </motion.li>
-            ))}
-          </motion.ul>
-        </div>
+      <section className="-my-px bg-plum-800 px-5 sm:px-8">
+        <ValuesStack />
       </section>
       <SectionBreak edge="bottom" />
 
