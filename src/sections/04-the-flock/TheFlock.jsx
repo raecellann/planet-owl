@@ -253,7 +253,7 @@ export default function TheFlock() {
           neighbours were being chopped off square at the container's edge; out
           here the row runs to the screen edges, so what trims them is the
           viewport itself and they simply carry on off-screen. */}
-      <Reveal y={48} className="relative mt-8 w-full">
+      <Reveal y={48} className="relative -mt-3 w-full sm:mt-8">
         <CardCarousel items={CARDS} label="Open roles at Planet Owl" renderItem={renderCard} />
       </Reveal>
 
