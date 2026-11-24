@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { A } from '../lib/assets'
+import owlMoon from '../../assets/about-owls/moon.webp'
 
 /** Fired by every "Join the Flock" button, with the role in `detail`. */
 export const APPLY_EVENT = 'planetowl:apply'
@@ -15,7 +16,7 @@ const ROLES = [
   { id: 'Motion Designer', owl: A.owl.vr },
   { id: 'Full-stack Engineer', owl: A.owl.develop },
   { id: 'AI Solutions Lead', owl: A.owl.ai },
-  { id: 'Other', owl: A.owl.crown },
+  { id: 'Other', owl: owlMoon },
 ]
 const OK_TYPES = /\.(pdf|docx?)$/i
 
@@ -68,7 +69,7 @@ export default function ApplyModal() {
   }
 
   const done = [name.trim(), /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()), file].filter(Boolean).length
-  const owl = ROLES.find((r) => r.id === role)?.owl ?? A.owl.crown
+  const owl = ROLES.find((r) => r.id === role)?.owl ?? owlMoon
 
   const onSubmit = async (e) => {
     e.preventDefault()

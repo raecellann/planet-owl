@@ -12,6 +12,8 @@ import owlBrand from '../../assets/about-owls/brand.webp'
 import owlHalo from '../../assets/about-owls/halo.webp'
 import owlPlain from '../../assets/about-owls/plain.webp'
 import owlTech from '../../assets/about-owls/tech.webp'
+import owlHelmet from '../../assets/about-owls/helmet.webp'
+import owlMoon from '../../assets/about-owls/moon.webp'
 
 /**
  * The About page, at `#/about`.
@@ -90,7 +92,7 @@ function CountUp({ to }) {
   )
 }
 
-const STAT_OWLS = [A.owl.flower, A.owl.crown, A.owl.tophat, A.owl.astronaut]
+const STAT_OWLS = [A.owl.flower, owlHelmet, A.owl.tophat, owlMoon]
 
 /**
  * One figure, out of its box. Pointing at it recounts the number, lifts it,
@@ -126,11 +128,9 @@ function StatTile({ stat, owl }) {
 /** The flock around the island: the hero's own owls, at different depths. */
 const TEAM = [
   { src: A.owl.tophat, x: 2, y: 10, w: 21 },
-  { src: A.owl.crown, x: 25, y: 0, w: 19 },
   { src: A.owl.flower, x: 72, y: 3, w: 22 },
   { src: A.owl.pumpkin, x: 0, y: 47, w: 20 },
   { src: A.owl.flame, x: 79, y: 40, w: 20 },
-  { src: A.owl.astronaut, x: 17, y: 66, w: 22 },
   { src: A.owl.wizard, x: 50, y: 45, w: 38 },
 ]
 

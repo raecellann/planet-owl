@@ -6,6 +6,8 @@ import Faq from '../components/Faq'
 import SectionBreak from '../components/SectionBreak'
 import { CompareTable } from './PricingExtras'
 import cloudImg from '../../assets/section 2/image 35 copy.png'
+import owlWizard from '../../assets/about-owls/wizard.webp'
+import owlHelmet from '../../assets/about-owls/helmet.webp'
 
 /**
  * The pricing page, at `#/pricing`.
@@ -218,8 +220,8 @@ const TILE = {
 }
 
 const TILES = [
-  { title: 'One flock.', copy: 'Design, digital, development and AI under one roof.', tone: 'bg-white', owl: A.owl.crown },
-  { title: 'Move up a plan.', copy: 'Need another craft? Step up to the next one.', tone: 'bg-white', owl: A.owl.astronaut },
+  { title: 'One flock.', copy: 'Design, digital, development and AI under one roof.', tone: 'bg-white', owl: owlWizard },
+  { title: 'Move up a plan.', copy: 'Need another craft? Step up to the next one.', tone: 'bg-white', owl: owlHelmet },
   { title: 'Built for your brand.', copy: 'Refined in the nest before it reaches you.', tone: 'bg-white', owl: A.owl.flower },
   { title: 'Custom scope.', copy: 'Parliament is shaped around what you are building.', tone: 'bg-teal-400', owl: A.owl.tophat },
 ]
