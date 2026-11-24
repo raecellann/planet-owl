@@ -55,10 +55,6 @@ export default function Album({ work, onClose }) {
               <h3 className="truncate font-ui text-xl font-bold leading-tight text-white sm:text-2xl">
                 {work.title}
               </h3>
-              <p className="truncate text-sm text-plum-300">
-                {work.kind}
-                {n > 1 && ` · ${n} pieces`}
-              </p>
             </div>
             {work.href && (
               <a
@@ -93,7 +89,9 @@ export default function Album({ work, onClose }) {
 }
 
 function Piece({ item, work, index }) {
-  const [playing, setPlaying] = useState(false)
+  // A tile wearing the play badge opens straight into its film, so the visitor
+  // presses play once rather than again on a poster inside the album.
+  const [playing, setPlaying] = useState(Boolean(work.film && index === 0))
   const label = item.link?.label ?? `${work.title}, piece ${index + 1} of ${work.items.length}`
   const frame = 'mb-5 block break-inside-avoid overflow-hidden rounded-2xl bg-plum-900'
 

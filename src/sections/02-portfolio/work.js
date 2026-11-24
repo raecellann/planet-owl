@@ -251,4 +251,4 @@ export const WORK = BRANDS.map((b) => {
 }).filter((b) => b.cover)
 
 /** A Drive file, playing in Drive's own embeddable player. */
-export const driveEmbed = (id) => `https://drive.google.com/file/d/${id}/preview`
+export const driveEmbed = (id) => `https://drive.google.com/file/d/${id}/preview?autoplay=1`

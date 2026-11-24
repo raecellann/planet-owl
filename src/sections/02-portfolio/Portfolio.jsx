@@ -39,18 +39,11 @@ const FILTERS = [
  */
 const CHIPS = FILTERS.filter((f) => f.id === 'all' || WORK.some((w) => w.tags.includes(f.id)))
 
-/** "5 pieces", set after the kind, only where there is more than one. */
-const count = (work) => (work.items.length > 1 ? ` · ${work.items.length} pieces` : '')
-
 function Caption({ work }) {
   return (
-    <figcaption className="mt-3 px-1 text-left sm:mt-4">
-      <span className="block text-[0.95rem] font-bold leading-snug text-plum-700 sm:text-base">
-        {work.title}
-      </span>
-      <span className="block text-sm leading-snug text-plum-600">
-        {work.kind}
-        {count(work)}
+    <figcaption className="mt-3 text-left sm:mt-4">
+      <span className="inline-flex max-w-full rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-plum-700 shadow-[0_10px_24px_-12px_rgba(54,14,57,0.6)] sm:px-4 sm:py-2 sm:text-sm">
+        <span className="truncate">{work.title}</span>
       </span>
     </figcaption>
   )
@@ -516,14 +509,7 @@ export default function Portfolio() {
                       would land in the gap the row is spaced by. Bottom-left
                       is the capture's own empty navy. */}
                   <figcaption className="absolute bottom-[4%] left-[2.5%] flex max-w-[80%] items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold text-plum-700 shadow-[0_10px_24px_-12px_rgba(54,14,57,0.6)] sm:px-4 sm:py-2 sm:text-sm">
-                    <span className="truncate">
-                      {lead.title}
-                      <span className="font-normal text-plum-600">
-                        {' '}
-                        · {lead.kind}
-                        {count(lead)}
-                      </span>
-                    </span>
+                    <span className="truncate">{lead.title}</span>
                   </figcaption>
                 </button>
 
