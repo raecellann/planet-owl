@@ -41,10 +41,8 @@ const CHIPS = FILTERS.filter((f) => f.id === 'all' || WORK.some((w) => w.tags.in
 
 function Caption({ work }) {
   return (
-    <figcaption className="mt-3 text-left sm:mt-4">
-      <span className="inline-flex max-w-full rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-plum-700 shadow-[0_10px_24px_-12px_rgba(54,14,57,0.6)] sm:px-4 sm:py-2 sm:text-sm">
-        <span className="truncate">{work.title}</span>
-      </span>
+    <figcaption className="mt-3 truncate px-1 text-left text-[0.95rem] font-bold leading-snug text-plum-700 sm:mt-4 sm:text-base">
+      {work.title}
     </figcaption>
   )
 }
