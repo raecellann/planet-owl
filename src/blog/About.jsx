@@ -179,8 +179,8 @@ const SCATTER = [
 function useScrollKick() {
   const { scrollY } = useScroll()
   const speed = useVelocity(scrollY)
-  const smooth = useSpring(speed, { stiffness: 260, damping: 22, mass: 0.4 })
-  return useTransform(smooth, [-2600, 0, 2600], [-11, 0, 11], { clamp: true })
+  const smooth = useSpring(speed, { stiffness: 160, damping: 30, mass: 0.6 })
+  return useTransform(smooth, [-3000, 0, 3000], [-3.5, 0, 3.5], { clamp: true })
 }
 
 function CardFace({ v }) {
@@ -320,21 +320,27 @@ function PromiseCard({ p, i, progress, spread, drop }) {
   const x = useTransform(k, (v) => `calc(-50% + ${v * spread}%)`)
   const y = useTransform(k, (v) => Math.abs(v) * drop)
   const rotate = useTransform(k, (v) => v * 9)
-  const scale = useTransform(k, (v) => 1 - Math.min(Math.abs(v), 2) * 0.08)
-  const opacity = useTransform(k, (v) => Math.max(0, Math.min(1, (2.45 - Math.abs(v)) * 3)))
+  const scale = useTransform(k, (v) => 1 - Math.min(Math.abs(v), 2) * 0.1)
+  // The centre card is the one to read; its neighbours step back so they
+  // frame it rather than compete with it.
+  const opacity = useTransform(k, (v) => {
+    const a = Math.abs(v)
+    const fade = Math.max(0, Math.min(1, (2.45 - a) * 3))
+    return fade * (a < 1 ? 1 - a * 0.55 : 0.45)
+  })
   const zIndex = useTransform(k, (v) => Math.round(10 - Math.abs(v) * 3))
   const dark = PROMISE_TONES[i] === 'bg-plum-800'
   return (
     <motion.li
       style={{ x, y, rotate, scale, opacity, zIndex }}
-      className={`absolute left-1/2 top-0 flex h-[24rem] w-[min(30rem,84%)] origin-bottom flex-col rounded-[1.75rem] p-7 shadow-[0_30px_60px_-30px_rgba(20,4,22,0.55)] sm:h-[20rem] sm:p-9 ${PROMISE_TONES[i]}`}
+      className={`absolute left-1/2 top-0 flex h-[26rem] w-[min(30rem,84%)] origin-bottom flex-col rounded-[1.75rem] p-7 shadow-[0_30px_60px_-30px_rgba(20,4,22,0.55)] sm:h-[23rem] sm:p-10 ${PROMISE_TONES[i]}`}
     >
       <p className={`font-ui text-sm font-bold ${dark ? 'text-gold-400' : 'text-plum-700'}`}>{String(i + 1).padStart(2, '0')}</p>
       <h3 className={`mt-1 font-['Momo_Trust_Display'] text-[clamp(1.4rem,2.4vw,1.9rem)] font-normal leading-[1.12] ${dark ? 'text-gold-200' : 'text-plum-700'}`}>{p.title}</h3>
-      <p className={`mt-3 font-ui leading-relaxed ${dark ? 'text-gold-200' : 'text-plum-700'}`}>{p.copy}</p>
+      <p className={`mb-8 mt-4 font-ui leading-relaxed ${dark ? 'text-gold-200' : 'text-plum-700'}`}>{p.copy}</p>
       <a
         href={PROMISE_CTAS[i].href}
-        className={`btn-type mt-auto inline-flex h-12 w-fit items-center rounded-full px-6 font-ui font-semibold no-underline shadow-[0_6px_0_-2px_var(--color-plum-950)] transition-colors ${dark ? 'bg-gold-500 text-plum-700 hover:bg-gold-400' : 'bg-plum-800 text-white hover:bg-plum-700'}`}
+        className={`btn-type mt-auto inline-flex h-12 w-fit shrink-0 items-center rounded-full px-6 font-ui font-semibold no-underline shadow-[0_6px_0_-2px_var(--color-plum-950)] transition-colors ${dark ? 'bg-gold-500 text-plum-700 hover:bg-gold-400' : 'bg-plum-800 text-white hover:bg-plum-700'}`}
       >
         {PROMISE_CTAS[i].label}
       </a>
@@ -381,9 +387,9 @@ function PromiseArc() {
     <div ref={track} className="relative h-[420svh]">
       <div className="sticky top-0 -mx-5 flex h-[100svh] flex-col justify-center overflow-hidden pt-20 sm:-mx-8">
         {heading}
-        <ul className="relative mx-auto mt-10 h-[29rem] w-full sm:h-[25rem]">
+        <ul className="relative mx-auto mt-10 h-[31rem] w-full sm:h-[28rem]">
           {PROMISES.map((p, i) => (
-            <PromiseCard key={p.title} p={p} i={i} progress={scrollYProgress} spread={phone ? 104 : 98} drop={phone ? 30 : 44} />
+            <PromiseCard key={p.title} p={p} i={i} progress={scrollYProgress} spread={phone ? 108 : 112} drop={phone ? 30 : 44} />
           ))}
         </ul>
       </div>
