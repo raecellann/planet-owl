@@ -218,21 +218,26 @@ function ValueCard({ v, i, n, progress, kick }) {
   )
 }
 
-/** On a phone: one loose column, each card tossed in as it scrolls into view. */
+/**
+ * On a phone: one loose column, each card tossed in as it scrolls into view.
+ * The `li` stays in place and watches the viewport; only the card inside it
+ * flies in. (Watching the card itself never fired: parked off to the side,
+ * it is never "in view", so the cards never appeared.)
+ */
 function PhoneValueCard({ v, i, kick }) {
   const from = i % 2 ? 1 : -1
   const rot = SCATTER[i % SCATTER.length].rot
   const rotate = useTransform(kick, (k) => rot + k * (i % 2 ? -1 : 1))
   return (
-    <motion.li
-      initial={{ x: `${from * 110}vw`, opacity: 0 }}
-      whileInView={{ x: 0, opacity: 1 }}
-      viewport={{ once: true, margin: '-12% 0px' }}
-      transition={{ type: 'spring', stiffness: 120, damping: 16 }}
-      style={{ rotate }}
-      className={`w-[88%] rounded-[1.5rem] p-5 shadow-[0_24px_50px_-24px_rgba(20,4,22,0.75)] ${i % 2 ? 'ml-auto' : ''} ${VALUE_TONES[i % VALUE_TONES.length]}`}
-    >
-      <CardFace v={v} />
+    <motion.li initial="off" whileInView="on" viewport={{ once: true, amount: 0.3 }} className={`w-[88%] ${i % 2 ? 'ml-auto' : ''}`}>
+      <motion.div
+        variants={{ off: { x: `${from * 110}vw`, opacity: 0 }, on: { x: 0, opacity: 1 } }}
+        transition={{ type: 'spring', stiffness: 120, damping: 16 }}
+        style={{ rotate }}
+        className={`rounded-[1.5rem] p-5 shadow-[0_24px_50px_-24px_rgba(20,4,22,0.75)] ${VALUE_TONES[i % VALUE_TONES.length]}`}
+      >
+        <CardFace v={v} />
+      </motion.div>
     </motion.li>
   )
 }
@@ -333,11 +338,11 @@ function PromiseCard({ p, i, progress, spread, drop }) {
   return (
     <motion.li
       style={{ x, y, rotate, scale, opacity, zIndex }}
-      className={`absolute left-1/2 top-0 flex h-[26rem] w-[min(30rem,84%)] origin-bottom flex-col rounded-[1.75rem] p-7 shadow-[0_30px_60px_-30px_rgba(20,4,22,0.55)] sm:h-[23rem] sm:p-10 ${PROMISE_TONES[i]}`}
+      className={`absolute left-1/2 top-0 flex h-[22rem] w-[min(30rem,84%)] origin-bottom flex-col rounded-[1.75rem] p-6 shadow-[0_30px_60px_-30px_rgba(20,4,22,0.55)] sm:h-[23rem] sm:p-10 ${PROMISE_TONES[i]}`}
     >
       <p className={`font-ui text-sm font-bold ${dark ? 'text-gold-400' : 'text-plum-700'}`}>{String(i + 1).padStart(2, '0')}</p>
       <h3 className={`mt-1 font-['Momo_Trust_Display'] text-[clamp(1.4rem,2.4vw,1.9rem)] font-normal leading-[1.12] ${dark ? 'text-gold-200' : 'text-plum-700'}`}>{p.title}</h3>
-      <p className={`mb-8 mt-4 font-ui leading-relaxed ${dark ? 'text-gold-200' : 'text-plum-700'}`}>{p.copy}</p>
+      <p className={`mb-8 mt-3 font-ui text-sm leading-relaxed sm:mt-4 sm:text-base ${dark ? 'text-gold-200' : 'text-plum-700'}`}>{p.copy}</p>
       <a
         href={PROMISE_CTAS[i].href}
         className={`btn-type mt-auto inline-flex h-12 w-fit shrink-0 items-center rounded-full px-6 font-ui font-semibold no-underline shadow-[0_6px_0_-2px_var(--color-plum-950)] transition-colors ${dark ? 'bg-gold-500 text-plum-700 hover:bg-gold-400' : 'bg-plum-800 text-white hover:bg-plum-700'}`}
@@ -384,10 +389,10 @@ function PromiseArc() {
   }
 
   return (
-    <div ref={track} className="relative h-[420svh]">
-      <div className="sticky top-0 -mx-5 flex h-[100svh] flex-col justify-center overflow-hidden pt-20 sm:-mx-8">
+    <div ref={track} className="relative h-[340svh] sm:h-[420svh]">
+      <div className="sticky top-0 -mx-5 flex h-[100svh] flex-col justify-start overflow-hidden pt-24 sm:-mx-8 sm:justify-center sm:pt-20">
         {heading}
-        <ul className="relative mx-auto mt-10 h-[31rem] w-full sm:h-[28rem]">
+        <ul className="relative mx-auto mt-6 h-[25rem] w-full sm:mt-10 sm:h-[28rem]">
           {PROMISES.map((p, i) => (
             <PromiseCard key={p.title} p={p} i={i} progress={scrollYProgress} spread={phone ? 108 : 112} drop={phone ? 30 : 44} />
           ))}
