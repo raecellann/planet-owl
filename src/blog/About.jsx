@@ -138,26 +138,28 @@ const TEAM = [
 
 
 
+// Each about the same length, by request, so every card is the same size and
+// its button sits at the same height.
 const PROMISES = [
   {
     title: 'Make your brand impossible to ignore',
-    copy: 'We blend bold design, storytelling, content and immersive experiences to turn attention into genuine connection, so people do not just notice your brand, they remember it.',
+    copy: 'Bold design, storytelling and immersive experiences that turn attention into a brand people remember.',
   },
   {
     title: 'Turn ambitious ideas into seamless products',
-    copy: 'From websites and mobile apps to e-commerce platforms and custom software, we design and develop digital products that look exceptional, work beautifully and support real business goals.',
+    copy: 'Websites, apps, stores and custom software that look exceptional and work beautifully.',
   },
   {
     title: 'Make technology work smarter',
-    copy: 'We use AI, automation, analytics and intelligent systems to simplify complex work, improve customer experiences and help your business move faster.',
+    copy: 'AI, automation and analytics that simplify complex work and help your business move faster.',
   },
   {
     title: 'Keep every craft under one roof',
-    copy: 'Design, development, digital and AI sit together in one nest, so your idea is shaped, built and refined in one place before it reaches you.',
+    copy: 'Design, development, digital and AI in one nest, so your idea is shaped and built in one place.',
   },
   {
     title: 'Let you try the nest first',
-    copy: 'Every plan starts with a free 2-week trial, so you can see how the flock handles your brand before you decide.',
+    copy: 'Every plan starts with a free 2-week trial, so you see how the flock handles your brand first.',
   },
 ]
 
@@ -359,13 +361,13 @@ function PromiseCard({ p, i, progress, spread, drop }) {
   return (
     <motion.li
       style={{ x, y, rotate, scale, opacity, zIndex }}
-      className={`absolute left-1/2 top-0 flex min-h-[19rem] w-[min(30rem,84%)] origin-bottom flex-col rounded-[1.75rem] p-6 pb-7 shadow-[0_30px_60px_-30px_rgba(20,4,22,0.55)] sm:h-[23rem] sm:p-10 ${PROMISE_TONES[i]}`}
+      className={`absolute left-1/2 top-0 flex h-[21rem] w-[min(30rem,84%)] origin-bottom flex-col rounded-[1.75rem] p-6 pb-7 shadow-[0_30px_60px_-30px_rgba(20,4,22,0.55)] sm:h-[22rem] sm:p-9 ${PROMISE_TONES[i]}`}
     >
       <span aria-hidden className={`grid size-12 shrink-0 place-items-center rounded-xl bg-plum-800 text-gold-400 ${dark ? 'ring-2 ring-gold-400/60' : ''}`}>
         <svg viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d={PROMISE_ICONS[i]} /></svg>
       </span>
       <h3 className={`mt-3 font-['Momo_Trust_Display'] text-[clamp(1.4rem,2.4vw,1.9rem)] font-normal leading-[1.12] ${dark ? 'text-gold-200' : 'text-plum-700'}`}>{p.title}</h3>
-      <p className={`mb-8 mt-3 font-ui text-sm leading-relaxed sm:mt-4 sm:text-base ${dark ? 'text-gold-200' : 'text-plum-700'}`}>{p.copy}</p>
+      <p className={`mb-6 mt-3 font-ui text-sm leading-relaxed sm:mt-4 sm:text-base ${dark ? 'text-gold-200' : 'text-plum-700'}`}>{p.copy}</p>
       <a
         href={PROMISE_CTAS[i].href}
         className={`btn-type mt-auto inline-flex h-12 w-fit shrink-0 items-center rounded-full px-6 font-ui font-semibold no-underline shadow-[0_6px_0_-2px_var(--color-plum-950)] transition-colors ${dark ? 'bg-gold-500 text-plum-700 hover:bg-gold-400' : 'bg-plum-800 text-white hover:bg-plum-700'}`}
