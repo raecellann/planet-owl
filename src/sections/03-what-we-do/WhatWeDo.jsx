@@ -271,7 +271,7 @@ export default function WhatWeDo() {
     // a little to spare, and does it here — on the section the plane
     // reaches INTO — rather than by shortening that reach and undercutting
     // the "crossing the gold band" effect its own placement is built for.
-    <section ref={sectionRef} id="what-we-do" className="relative -mt-px overflow-hidden bg-[linear-gradient(180deg,#dfe7fa_0,#e2e9fb_0.6rem,#e9eefc_1.2rem,#f3f6fd_1.9rem,#fbfcff_2.6rem,#ffffff_3.4rem)] pb-[11vw] pt-12 sm:pt-32">
+    <section ref={sectionRef} id="what-we-do" className="relative -mt-px overflow-hidden bg-white pb-[11vw] pt-12 sm:pt-32">
       {/* The lavender the portfolio ends on is part of this section's own
           opaque background. As a see-through overlay on white, the section's
           first pixel row blended with that white and drew a faint line. */}

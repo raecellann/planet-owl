@@ -141,7 +141,7 @@ export default function Portfolio() {
       // island's underside still in frame, so the heading needs a beat of
       // clearance under them — but `sm:pt-44`, tried first, bought so much of
       // it that the gap became the feature.
-      className="relative overflow-hidden bg-[linear-gradient(180deg,#eef3fb_0%,#e3ebfb_55%,#dfe7fa_100%)] pb-20 pt-2 sm:pb-32 sm:pt-28"
+      className="relative overflow-hidden bg-[linear-gradient(180deg,#eef3fb_0%,#e3ebfb_50%,#e9eefc_76%,#f6f8fe_90%,#ffffff_100%)] pb-20 pt-2 sm:pb-32 sm:pt-28"
     >
       {/* 1616 of the frame's 1920 — the design's own content column */}
       <div className="mx-auto max-w-[1616px] px-5 sm:px-8">
@@ -335,7 +335,7 @@ export default function Portfolio() {
               plays its one-time arrival. */}
           <motion.div
             style={{ x: rowFlight }}
-            className="pointer-events-none absolute -left-[9%] top-[29%] z-30 w-[30%] sm:-left-[15%] sm:top-[17%] sm:w-[20%]"
+            className="pointer-events-none absolute -left-[12%] top-[71%] z-30 w-[36%] sm:-left-[15%] sm:top-[34%] sm:w-[20%]"
           >
             <motion.img
               src={A.owl.plane}
@@ -353,7 +353,7 @@ export default function Portfolio() {
           {/* The second pilot, off the row's other side, flying the other way. */}
           <motion.div
             style={{ x: leadFlight }}
-            className="pointer-events-none absolute -right-[19%] top-[52%] z-30 hidden w-[20%] sm:block"
+            className="pointer-events-none absolute -right-[12%] top-[2%] z-30 w-[36%] sm:-right-[15%] sm:-top-[8%] sm:w-[20%]"
           >
             <motion.img
               src={A.owl.plane}
@@ -374,7 +374,7 @@ export default function Portfolio() {
             alt=""
             aria-hidden
             loading="lazy"
-            className="pointer-events-none absolute -left-[11%] -top-[8%] z-0 hidden w-[28%] -scale-x-100 animate-cloud select-none motion-reduce:animate-none sm:block"
+            className="pointer-events-none absolute -left-[11%] -top-[16%] z-0 hidden w-[28%] -scale-x-100 animate-cloud select-none motion-reduce:animate-none sm:block"
           />
           </>
         )}
