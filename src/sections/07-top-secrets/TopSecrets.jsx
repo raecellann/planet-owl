@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { AnimatePresence, motion, useMotionValue, useReducedMotion, useScroll, useTransform } from 'motion/react'
+import { AnimatePresence, animate, motion, useMotionValue, useReducedMotion, useScroll, useTransform } from 'motion/react'
+import { scrollPace } from '../../lib/scrollPace'
 import { A, nestSrcSet } from '../../lib/assets'
 import Reveal from '../../components/ui/Reveal'
 import { PHONE, useMediaQuery } from '../../lib/useMediaQuery'
@@ -117,7 +118,7 @@ const SECRETS = [
  * would mean a placeholder photograph of a person who does not exist.
  */
 function NestHotspot({ review, open, onToggle, play }) {
-  const { id, x, y, quote, brand, label, plate } = review
+  const { id, x, y, quote, brand, label, plate, crop } = review
 
   return (
     <>
@@ -246,32 +247,41 @@ function NestHotspot({ review, open, onToggle, play }) {
                 </div>
               </>
             ) : (
-              <div className="rounded-2xl bg-white px-4 py-3.5 drop-shadow-[0_20px_36px_rgba(0,0,0,0.55)]">
-                {/* Just the comment. No thumbnail, no avatar, no attributed
-                    person.
-                    
-                    The Maserati card is a composed export with a real
-                    interview still and a real named speaker in it. There is
-                    no such material for the other four, and the previous pass
-                    filled the same shape by cropping the artwork for a
-                    "photo" and inventing a name to sit under it — which is
-                    presenting made-up people as customers. A quote and a
-                    rating, with only the brand named, says exactly as much as
-                    is actually known. */}
-                <blockquote className="font-ui text-sm leading-relaxed text-plum-700">
+              // The same card as Maserati's, by request: picture, quote,
+              // stars, then a name block. The picture is the brand's own
+              // corner of the nest artwork, the badge is the brand's
+              // initial, and the name and role are visible placeholders
+              // until a real client gives theirs. No real person's face or
+              // name is put to a quote they did not give.
+              <div className="overflow-hidden rounded-[1.1rem] border-b-4 border-gold-500 bg-white p-[4.5%] drop-shadow-[0_20px_36px_rgba(0,0,0,0.55)]">
+                <div
+                  aria-hidden
+                  className="aspect-[2/1] w-full rounded-[0.8rem] bg-no-repeat"
+                  style={{
+                    backgroundImage: `url(${A.nest.brands})`,
+                    backgroundSize: `${(1400 / crop.w) * 100}% auto`,
+                    backgroundPosition: `${(crop.x / (1400 - crop.w)) * 100}% ${(crop.y / (1866 - crop.w / 2)) * 100}%`,
+                  }}
+                />
+                <blockquote className="mt-3 font-ui text-sm leading-snug text-plum-950">
                   “{quote}”
                 </blockquote>
-
-                <div aria-hidden className="mt-2.5 flex gap-0.5 text-gold-500">
+                <div aria-hidden className="mt-2.5 flex gap-1 text-gold-500">
                   {[0, 1, 2, 3, 4].map((n) => (
-                    <svg key={n} viewBox="0 0 20 20" className="size-3.5 fill-current">
+                    <svg key={n} viewBox="0 0 20 20" className="size-4 fill-current">
                       <path d="M10 1.6l2.5 5.4 5.9.7-4.4 4 1.2 5.8L10 14.6l-5.2 2.9L6 11.7l-4.4-4 5.9-.7z" />
                     </svg>
                   ))}
                 </div>
-
-                <figcaption className="mt-2.5 border-t border-plum-900/10 pt-2.5 font-display text-sm font-semibold text-plum-700">
-                  {brand}
+                <figcaption className="mt-2.5 flex items-center gap-3">
+                  <span aria-hidden className="grid size-11 shrink-0 place-items-center rounded-full bg-plum-800 font-display text-lg font-bold text-gold-400">
+                    {brand[0]}
+                  </span>
+                  <span className="min-w-0 leading-tight">
+                    <span className="block font-display text-lg font-bold text-plum-950">{brand}</span>
+                    <span className="block font-ui text-sm text-plum-700/60">Client Name</span>
+                    <span className="block font-ui text-xs text-plum-700/60">Position</span>
+                  </span>
                 </figcaption>
               </div>
             )}
@@ -318,6 +328,8 @@ const NEST_REVIEWS = [
     y: '58.9%',
     brand: 'Jollibee',
     label: 'the Jollibee testimonial',
+    // Where this brand sits in the nest-brands plate (1400x1866 px).
+    crop: { x: 70, y: 880, w: 520 },
     quote: 'They understood the brand before we finished explaining it, and then showed us a version of it we had not thought of.',
   },
   {
@@ -326,6 +338,8 @@ const NEST_REVIEWS = [
     y: '49.4%',
     brand: 'Cartier',
     label: 'the Cartier testimonial',
+    // Where this brand sits in the nest-brands plate (1400x1866 px).
+    crop: { x: 435, y: 860, w: 520 },
     quote: 'Restraint is the hardest thing to ask for. They gave us work that knows exactly when to stop.',
   },
   {
@@ -334,6 +348,8 @@ const NEST_REVIEWS = [
     y: '50.8%',
     brand: 'Makita',
     label: 'the Makita testimonial',
+    // Where this brand sits in the nest-brands plate (1400x1866 px).
+    crop: { x: 710, y: 830, w: 480 },
     quote: 'We build tools that have to work every single time. They approached the site the same way.',
   },
   {
@@ -342,6 +358,8 @@ const NEST_REVIEWS = [
     y: '52.7%',
     brand: 'Nike',
     label: 'the Nike testimonial',
+    // Where this brand sits in the nest-brands plate (1400x1866 px).
+    crop: { x: 860, y: 950, w: 520 },
     quote: 'Fast, sharp, and never precious about an idea. The work moved as quickly as we needed it to.',
   },
 ]
@@ -667,16 +685,35 @@ function Quote({ copyRef }) {
   const { scrollYProgress: copyProgress } = useScroll({
     target: copyRef,
     // Lifts sooner on a phone, where the copy fills more of the screen.
-    offset: phone ? ['start 0.98', 'start 0.66'] : ['start 0.85', 'start 0.35'],
+    offset: phone ? ['start 0.98', 'start 0.7'] : ['start 0.9', 'start 0.45'],
   })
-  useEffect(
-    () =>
-      copyProgress.on('change', (v) => {
-        if (!measured) return
-        revealMV.set(reduce ? 1 : v)
-      }),
-    [copyProgress, measured, reduce, revealMV],
-  )
+  // A fast scroll used to carry the copy up and away while the branch was
+  // still part-way over it, so it was never readable (by request). Now a
+  // quick flick, or the copy getting past the half-way mark, finishes the
+  // reveal at once and it stays uncovered until the copy drops back below
+  // the window. Slow scrolling still peels the branch off by hand.
+  useEffect(() => {
+    let done = false
+    let anim = null
+    return copyProgress.on('change', (v) => {
+      if (!measured) return
+      if (reduce) return revealMV.set(1)
+      if (v <= 0) {
+        done = false
+        anim?.stop()
+        return revealMV.set(0)
+      }
+      if (done) return
+      // A big jump between two scroll events is a flick too.
+      const jump = v - revealMV.get() > 0.2
+      if (v >= 0.5 || jump || scrollPace() > 0.3) {
+        done = true
+        anim = animate(revealMV, 1, { duration: 0.45, ease: [0.16, 1, 0.3, 1] })
+        return
+      }
+      revealMV.set(v)
+    })
+  }, [copyProgress, measured, reduce, revealMV])
 
   useEffect(() => {
     if (reduce) return undefined
