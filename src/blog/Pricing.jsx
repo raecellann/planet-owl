@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useScroll, useTransform } from 'motion/react'
 import { useCatchUp } from '../lib/scrollPace'
 import { useReducedMotion } from '../lib/motionPref'
+import { PHONE, useMediaQuery } from '../lib/useMediaQuery'
 import BlogLayout from './BlogLayout'
 import { A } from '../lib/assets'
 import Faq from '../components/Faq'
@@ -208,6 +209,9 @@ function HatchCard({ active, art, reduce }) {
  */
 function HowItWorks() {
   const reduce = useReducedMotion()
+  // Phones do not pin this section (too much white space around it, by
+  // feedback); the steps advance as it scrolls through the screen instead.
+  const phone = useMediaQuery(PHONE)
   const track = useRef(null)
   const [active, setActive] = useState(0)
   // Where the scroll says we are. `active` walks there one step at a time,
@@ -225,9 +229,16 @@ function HowItWorks() {
       const el = track.current
       if (!el) return
       const r = el.getBoundingClientRect()
-      const travel = r.height - window.innerHeight
-      const p = travel > 0 ? Math.min(0.999, Math.max(0, -r.top / travel)) : 0
-      setTarget(Math.floor(p * STEPS.length))
+      let p
+      if (phone) {
+        // From the section's top reaching 70% down the screen to its bottom
+        // reaching 70%: the steps play while the section is being read.
+        p = (window.innerHeight * 0.7 - r.top) / Math.max(1, r.height * 0.8)
+      } else {
+        const travel = r.height - window.innerHeight
+        p = travel > 0 ? -r.top / travel : 0
+      }
+      setTarget(Math.floor(Math.min(0.999, Math.max(0, p)) * STEPS.length))
     }
     read()
     window.addEventListener('scroll', read, { passive: true })
@@ -236,11 +247,11 @@ function HowItWorks() {
       window.removeEventListener('scroll', read)
       window.removeEventListener('resize', read)
     }
-  }, [])
+  }, [phone])
 
   return (
-    <div ref={track} className={reduce ? '' : '-mt-6 h-[300svh] lg:-mt-[17svh]'}>
-      <div className={`flex flex-col pb-2 pt-[calc(max(5.25rem,2.92vw+max(3.25rem,4.4vw))+0.75rem)] lg:pb-[16svh] lg:pt-[calc(max(5.25rem,2.92vw+max(3.25rem,4.4vw))+1.75rem)] ${reduce ? '' : 'sticky top-0 h-[100svh]'}`}>
+    <div ref={track} className={reduce || phone ? 'py-6' : '-mt-6 h-[300svh] lg:-mt-[17svh]'}>
+      <div className={`flex flex-col pb-2 pt-[calc(max(5.25rem,2.92vw+max(3.25rem,4.4vw))+0.75rem)] lg:pb-[16svh] lg:pt-[calc(max(5.25rem,2.92vw+max(3.25rem,4.4vw))+1.75rem)] ${reduce || phone ? 'max-sm:!pt-0' : 'sticky top-0 h-[100svh]'}`}>
         <div className="grid min-h-0 flex-1 grid-rows-[auto_minmax(0,1fr)] gap-1 lg:grid-cols-2 lg:grid-rows-1 lg:gap-16">
           {/* The title sits directly on top of the first stop. */}
           <div className="flex flex-col lg:justify-center">
