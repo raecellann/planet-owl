@@ -88,7 +88,6 @@ export function CompareTable() {
           ))}
         </div>
       </motion.div>
-      <p className="mt-4 font-ui text-xs text-white/70">Other columns show the usual setup. Individual freelancers, agencies and teams vary.</p>
     </div>
   )
 }
