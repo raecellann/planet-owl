@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import cloudImg from '../../assets/section 2/image 35 copy.png'
 import { motion } from 'motion/react'
 import BlogCover from './BlogCover'
+import ChipTray from '../components/ChipTray'
 import BlogLayout, { CategoryChip } from './BlogLayout'
 import { CATEGORIES, POSTS, postHref } from './posts'
 
@@ -130,23 +131,14 @@ export default function BlogIndex() {
             All Articles
           </h2>
 
-          <div className="mt-8 flex flex-wrap justify-center gap-2.5">
-            {CATEGORIES.map((c) => {
-              const on = c === category
-              return (
-                <button
-                  key={c}
-                  type="button"
-                  onClick={() => setCategory(c)}
-                  aria-pressed={on}
-                  className={`rounded-full px-4 py-2 font-ui text-sm font-semibold transition-colors ${
-                    on ? 'bg-plum-800 text-white' : 'bg-plum-100 text-plum-700 hover:bg-plum-300/60'
-                  }`}
-                >
-                  {c}
-                </button>
-              )
-            })}
+          <div className="mt-8 flex justify-center">
+            <ChipTray
+              label="Filter articles"
+              layoutId="blog-chip-active"
+              items={CATEGORIES.map((c) => ({ id: c, label: c }))}
+              value={category}
+              onChange={setCategory}
+            />
           </div>
 
           {results.length === 0 ? (

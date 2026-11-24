@@ -5,6 +5,7 @@ import { A } from '../lib/assets'
 import { WORK } from '../sections/02-portfolio/work'
 import StackCards from '../components/StackCards'
 import SectionBreak from '../components/SectionBreak'
+import ChipTray from '../components/ChipTray'
 import OwlBubble, { OWL_INTROS } from '../components/OwlBubble'
 
 /**
@@ -235,26 +236,16 @@ export default function About() {
           </h2>
           <p className="mt-3 font-ui text-gold-500">Pick a craft to see what is inside it.</p>
 
-          <div role="tablist" aria-label="Crafts" className="mt-8 flex flex-wrap gap-3">
-            {CRAFTS.map((c, n) => (
-              <button
-                key={c.title}
-                type="button"
-                role="tab"
-                id={`craft-tab-${n}`}
-                aria-selected={n === craft}
-                aria-controls="craft-panel"
-                onClick={() => setCraft(n)}
-                className={`btn-type rounded-full px-6 py-3 font-ui text-base font-semibold transition-colors ${
-                  n === craft
-                    ? 'bg-gold-500 text-plum-700 shadow-[0_6px_0_-2px_var(--color-plum-950)]'
-                    : 'bg-white/10 text-white hover:bg-white/20'
-                }`}
-              >
-                {c.title}
-              </button>
-            ))}
-          </div>
+          <ChipTray
+            role="tablist"
+            label="Crafts"
+            layoutId="craft-chip-active"
+            className="mt-8"
+            items={CRAFTS.map((c, n) => ({ id: n, label: c.title }))}
+            value={craft}
+            onChange={setCraft}
+            itemProps={(item) => ({ id: `craft-tab-${item.id}`, 'aria-controls': 'craft-panel' })}
+          />
 
           <div
             id="craft-panel"

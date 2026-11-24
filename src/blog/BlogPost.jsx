@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import cloudImg from '../../assets/section 2/image 35 copy.png'
 import BlogCover from './BlogCover'
+import { TRAY, TRAY_ICON } from '../components/ChipTray'
 import BlogLayout, { CategoryChip } from './BlogLayout'
 import { BLOG_HOME, POSTS, postHref } from './posts'
 import { MobileTopicBar, TOPIC_WATCH, jumpToTopic } from './TopicNav'
@@ -157,7 +158,7 @@ export default function BlogPost({ post }) {
           <aside className="lg:block">
             <div className="sticky top-[calc(2.92vw+max(3.25rem,4.4vw)+2rem)]">
               <p className="font-ui text-xs font-bold uppercase tracking-wider text-plum-700">Share this article</p>
-              <div className="mt-4 flex gap-2.5">
+              <div className={`${TRAY} mt-4 !flex-nowrap !gap-1.5 !p-2`}>
                 <ShareLink
                   href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`}
                   label="Share on Facebook"
@@ -174,7 +175,7 @@ export default function BlogPost({ post }) {
                   type="button"
                   onClick={copy}
                   aria-label="Copy the link to this article"
-                  className="grid size-10 place-items-center rounded-full bg-gold-500 text-plum-700 transition-colors hover:bg-gold-400"
+                  className={TRAY_ICON}
                 >
                   <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                     <rect x="9" y="9" width="11" height="11" rx="2.5" />
@@ -228,7 +229,7 @@ function ShareLink({ href, label, children }) {
       target="_blank"
       rel="noopener noreferrer"
       aria-label={label}
-      className="grid size-10 place-items-center rounded-full bg-gold-500 text-plum-700 transition-colors hover:bg-gold-400"
+      className={TRAY_ICON}
     >
       <svg viewBox="0 0 24 24" className="size-5" fill="currentColor" aria-hidden>
         {children}
