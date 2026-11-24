@@ -132,27 +132,29 @@ function PlaneSteps() {
 const STEP_ART = [A.owl.digital, A.owl.vr, A.owl.develop, A.owl.ai]
 
 /** The labels that pop up around each step's owl, worded from the step itself. */
+// Kept to the lower part of the art, by request: the faces sit in the top
+// half, and a label over a face hides the one thing people look at.
 const STEP_CHIPS = [
   [
-    { label: 'Send the details', x: 6, y: 20, tone: 'teal' },
-    { label: 'Book a call', x: 66, y: 12, tone: 'gold' },
-    { label: 'Plain words', x: 64, y: 64, tone: 'white' },
+    { label: 'Send the details', x: 0, y: 66, tone: 'teal' },
+    { label: 'Book a call', x: 66, y: 74, tone: 'gold' },
+    { label: 'Plain words', x: 10, y: 86, tone: 'white' },
   ],
   [
-    { label: 'Pick your plan', x: 5, y: 24, tone: 'white' },
-    { label: 'Free for 2 weeks', x: 62, y: 14, tone: 'gold' },
-    { label: 'Trial started', x: 8, y: 70, tone: 'teal' },
+    { label: 'Pick your plan', x: 0, y: 70, tone: 'white' },
+    { label: 'Free for 2 weeks', x: 60, y: 80, tone: 'gold' },
+    { label: 'Trial started', x: 8, y: 88, tone: 'teal' },
   ],
   [
-    { label: 'Design', x: 8, y: 18, tone: 'teal' },
-    { label: 'Digital', x: 70, y: 14, tone: 'gold' },
-    { label: 'Development', x: 4, y: 66, tone: 'white' },
-    { label: 'AI', x: 74, y: 62, tone: 'teal' },
+    { label: 'Design', x: 2, y: 64, tone: 'teal' },
+    { label: 'Digital', x: 74, y: 68, tone: 'gold' },
+    { label: 'Development', x: 6, y: 84, tone: 'white' },
+    { label: 'AI', x: 76, y: 86, tone: 'teal' },
   ],
   [
-    { label: 'One flat monthly price', x: 4, y: 16, tone: 'gold' },
-    { label: 'Billed month by month', x: 52, y: 70, tone: 'white' },
-    { label: 'Move up a plan', x: 62, y: 30, tone: 'teal' },
+    { label: 'One flat monthly price', x: 0, y: 72, tone: 'gold' },
+    { label: 'Move up a plan', x: 62, y: 80, tone: 'teal' },
+    { label: 'Billed month by month', x: 14, y: 90, tone: 'white' },
   ],
 ]
 const CHIP_TONES = { teal: 'bg-teal-500 text-white', gold: 'bg-gold-500 text-plum-700', white: 'bg-white text-plum-700 ring-1 ring-plum-900/15' }
