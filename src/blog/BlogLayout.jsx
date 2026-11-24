@@ -27,6 +27,8 @@ import { BLOG_HOME } from './posts'
 export default function BlogLayout({ children, onBlog = true, newsletter = true, page = null }) {
   const here = page || (onBlog ? { label: 'Blog', href: BLOG_HOME } : null)
   const hereIsBlog = here?.href === BLOG_HOME
+  // A page already in the bar (Pricing) lights up there instead of repeating.
+  const extra = NAV_LINKS.some((l) => l.href === here?.href) ? null : here
   const [projectOpen, setProjectOpen] = useState(false)
   // The phone menu — the same drawer the landing page's bar opens.
   const [menuOpen, setMenuOpen] = useState(false)
@@ -69,17 +71,15 @@ export default function BlogLayout({ children, onBlog = true, newsletter = true,
           <ul className="ml-auto hidden shrink-0 items-center gap-[max(1rem,2vw)] pl-6 lg:flex">
             {NAV_LINKS.map((l) => (
               <li key={l.href}>
-                <BarLink href={l.href} label={l.label} />
+                <BarLink href={l.href} label={l.label} current={l.href === here?.href} />
               </li>
             ))}
             {/* ONE slot, naming the page you are on. */}
-            <li>
-              {here ? (
-                <BarLink href={here.href} label={here.label} current />
-              ) : (
-                <BarLink href={BLOG_HOME} label="Blog" />
-              )}
-            </li>
+            {extra && (
+              <li>
+                <BarLink href={extra.href} label={extra.label} current />
+              </li>
+            )}
           </ul>
 
           {/* Below `lg` the bar is the LANDING page's own: the logo and the
@@ -145,22 +145,23 @@ export default function BlogLayout({ children, onBlog = true, newsletter = true,
                   <li key={l.href}>
                     <a
                       href={l.href}
+                      aria-current={l.href === here?.href ? 'page' : undefined}
                       onClick={() => setMenuOpen(false)}
-                      className="block rounded-2xl px-4 py-3 font-ui text-lg font-bold text-plum-700 no-underline transition-colors hover:bg-plum-100"
+                      className={`block rounded-2xl px-4 py-3 font-ui text-lg font-bold no-underline transition-colors hover:bg-plum-100 ${l.href === here?.href ? 'text-teal-600' : 'text-plum-700'}`}
                     >
                       {l.label}
                     </a>
                   </li>
                 ))}
-                {here && (
+                {extra && (
                   <li>
                     <a
-                      href={here.href}
+                      href={extra.href}
                       aria-current="page"
                       onClick={() => setMenuOpen(false)}
                       className="block rounded-2xl px-4 py-3 font-ui text-lg font-bold text-teal-600 no-underline"
                     >
-                      {here.label}
+                      {extra.label}
                     </a>
                   </li>
                 )}

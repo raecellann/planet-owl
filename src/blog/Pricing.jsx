@@ -5,6 +5,7 @@ import { A } from '../lib/assets'
 import Faq from '../components/Faq'
 import StackCards from '../components/StackCards'
 import SectionBreak from '../components/SectionBreak'
+import { CompareTable, NestKit } from './PricingExtras'
 import cloudImg from '../../assets/section 2/image 35 copy.png'
 
 /**
@@ -411,6 +412,8 @@ export default function Pricing() {
               </div>
             </motion.div>
           </motion.div>
+
+          <CompareTable />
         </div>
       </section>
       <SectionBreak edge="bottom" />
@@ -426,6 +429,7 @@ export default function Pricing() {
       <section className="px-5 sm:px-8">
         <div className="mx-auto max-w-[1320px]">
           <HowItWorks />
+          <NestKit />
         </div>
       </section>
 
@@ -433,7 +437,7 @@ export default function Pricing() {
       {/* White with clouds off the edges, by request — it sat on a pale
           yellow band. The clouds stop short of the 1320px column, so they
           frame the questions rather than sitting under them. */}
-      <section className="relative overflow-hidden bg-white px-5 pb-14 pt-8 sm:px-8 sm:pb-20 lg:-mt-[11svh] lg:pt-4">
+      <section className="relative overflow-hidden bg-white px-5 pb-14 pt-8 sm:px-8 sm:pb-20">
         <img src={cloudImg} alt="" aria-hidden loading="lazy" style={{ left: 'min(-15vw, calc(50vw - 660px - 27vw))' }} className="pointer-events-none absolute top-[-4%] w-[max(13rem,29vw)] max-w-none -scale-x-100 opacity-55" />
         <img src={cloudImg} alt="" aria-hidden loading="lazy" style={{ right: 'min(-10vw, calc(50vw - 660px - 20vw))' }} className="pointer-events-none absolute top-[47%] w-[max(7rem,10vw)] max-w-none opacity-35" />
         <img src={cloudImg} alt="" aria-hidden loading="lazy" style={{ right: 'min(-14vw, calc(50vw - 660px - 30vw))' }} className="pointer-events-none absolute bottom-[-6%] w-[max(13rem,28vw)] max-w-none opacity-45" />

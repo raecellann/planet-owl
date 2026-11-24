@@ -171,7 +171,7 @@ export const NAV_LINKS = [
   { label: 'Portfolio', href: '#portfolio' },
   { label: 'What We Do', href: '#what-we-do' },
   { label: 'The Flock', href: '#the-flock' },
-  { label: 'The Nest', href: '#the-nest' },
+  { label: 'Pricing', href: '#/pricing' },
 ]
 
 /** The footer's own row, per the section 9 export — not the same set as the nav. */
