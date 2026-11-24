@@ -5,7 +5,7 @@ import { A } from '../lib/assets'
 import Faq from '../components/Faq'
 import StackCards from '../components/StackCards'
 import SectionBreak from '../components/SectionBreak'
-import { CompareTable, NestKit } from './PricingExtras'
+import { CompareTable } from './PricingExtras'
 import cloudImg from '../../assets/section 2/image 35 copy.png'
 
 /**
@@ -86,9 +86,9 @@ const STANDARD = [
 ]
 
 const STEPS = [
-  { n: '01', title: 'Tell us what you need', copy: 'Leave your email or send the details on the contact page. Book a call if you would rather talk it through.' },
-  { n: '02', title: 'Start your free 2 weeks', copy: 'We set you up on the plan that fits and get to work, so you can see how the nest handles your brand.' },
-  { n: '03', title: 'Keep the flock on it', copy: 'Stay on the plan month to month, and step up to the next one when you need another craft.' },
+  { n: '01', title: 'Tell us what you need', items: ['Send the details or book a call', 'One place for every request', 'Plain words are all we need'] },
+  { n: '02', title: 'Start your free 2 weeks', items: ['Free for your first 2 weeks', 'Design, digital, development and AI', 'Refined in the nest before it reaches you', 'Built around your brand, not a template'] },
+  { n: '03', title: 'Keep the flock on it', items: ['One flat monthly price', 'Billed month by month', 'Move up when you need another craft'] },
 ]
 
 /**
@@ -194,7 +194,18 @@ function HowItWorks() {
                   {st.title}
                 </h3>
                 <div className={`grid transition-[grid-template-rows,opacity] duration-500 ease-out ${i === active || reduce ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
-                  <p className="max-w-md overflow-hidden pb-2 font-ui leading-snug text-plum-700 lg:pb-4 lg:leading-relaxed">{st.copy}</p>
+                  <ul className="max-w-md space-y-1 overflow-hidden pb-2 font-ui leading-snug text-plum-700 lg:space-y-2 lg:pb-4">
+                    {st.items.map((item, n) => (
+                      <li
+                        key={item}
+                        style={{ transitionDelay: i === active ? `${120 + n * 70}ms` : '0ms' }}
+                        className={`flex items-start gap-2 transition-[opacity,translate] duration-500 ease-out motion-reduce:transition-none ${i === active || reduce ? 'translate-x-0 opacity-100' : '-translate-x-3 opacity-0'}`}
+                      >
+                        <Check className="mt-px text-teal-600" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </li>
             ))}
@@ -429,7 +440,6 @@ export default function Pricing() {
       <section className="px-5 sm:px-8">
         <div className="mx-auto max-w-[1320px]">
           <HowItWorks />
-          <NestKit />
         </div>
       </section>
 
