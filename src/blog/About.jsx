@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+import { motion, useReducedMotion } from 'motion/react'
 import BlogLayout from './BlogLayout'
 import { A } from '../lib/assets'
 import { WORK } from '../sections/02-portfolio/work'
 import StackCards from '../components/StackCards'
 import SectionBreak from '../components/SectionBreak'
-import ChipTray from '../components/ChipTray'
 import OwlBubble, { OWL_INTROS } from '../components/OwlBubble'
 
 /**
@@ -27,31 +26,18 @@ import OwlBubble, { OWL_INTROS } from '../components/OwlBubble'
  * Arranged after the reference the client sent: an opening statement, who we
  * are, what we do as a row of cards, how we work, and a closing ask.
  */
-const CRAFTS = [
-  {
-    title: 'Design',
-    owl: A.owl.vr,
-    line: 'How your brand looks, moves and feels.',
-    items: ['Logos & Brand Identity', 'Packaging & Collaterals', 'Video Editing', '3D Motion', 'Website', 'UI/UX'],
-  },
-  {
-    title: 'Develop',
-    owl: A.owl.develop,
-    line: 'The products behind the picture.',
-    items: ['Web & Mobile Development', 'Custom Software', 'E-commerce', 'Databases', 'Cloud', 'CMS', 'APIs', 'Maintenance & Optimization'],
-  },
-  {
-    title: 'Digital',
-    owl: A.owl.digital,
-    line: 'Getting it in front of the right people.',
-    items: ['Content Development', 'Social Media Ads', 'Social Listening', 'Digital Films', 'E-commerce', 'Digital Collectible', 'SEO'],
-  },
-  {
-    title: 'AI Tech',
-    owl: A.owl.ai,
-    line: 'Making the work smarter and faster.',
-    items: ['AI Assistants', 'Chatbots', 'Automation', 'Generative AI', 'Analytics', 'Integration'],
-  },
+/**
+ * How the studio works, as values, which is what an agency's About page usually
+ * carries. Each line restates something the site already says. No guarantees,
+ * turnaround times or revision terms belong here until the studio sets them.
+ */
+const VALUES = [
+  { title: 'Bold Over Safe', owl: A.owl.vr, copy: 'We make work for brands that want to rise above the ordinary and be remembered.' },
+  { title: 'One Flock, One Roof', owl: A.owl.crown, copy: 'Design, development, digital and AI sit together, so your idea never gets passed between agencies.' },
+  { title: 'Your Brand, Never a Template', owl: A.owl.flower, copy: 'Everything we make starts with who you are and is built around your brand.' },
+  { title: 'Refined in the Nest', owl: A.owl.develop, copy: 'Work is shaped, built and polished in one place before it reaches you.' },
+  { title: 'Plain Words Welcome', owl: A.owl.digital, copy: 'Tell us what you need the way you would say it. Working out the rest is our job.' },
+  { title: 'Tech With a Purpose', owl: A.owl.ai, copy: 'We use AI and automation where they simplify real work and help your business move faster.' },
 ]
 
 /**
@@ -160,7 +146,6 @@ const PROMISES = [
 ]
 
 export default function About() {
-  const [craft, setCraft] = useState(0)
   const [owl, setOwl] = useState(null)
 
   const closeOwl = useCallback(() => setOwl(null), [])
@@ -223,70 +208,41 @@ export default function About() {
         </ul>
       </section>
 
-      {/* --------------------------------------------------- what we do --
-          INTERACTIVE, by request: four tabs, one per craft. Picking one
-          brings up that craft's owl and everything it covers. It was four
-          still cards. (The client offered made-up figures as the other way
-          to fill this page; there are none here — see the note at the top.) */}
+      {/* ------------------------------------------------------- values --
+          No containers, by request. Each value rises in on the scroll, and
+          pointing at one lifts its owl and draws the gold line. */}
       <SectionBreak edge="top" />
       <section className="-my-px bg-plum-800 px-5 py-14 sm:px-8 sm:py-20">
         <div className="mx-auto max-w-[1180px]">
-          <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-gold-500">
-            Four Crafts, One Nest
+          <h2 className="text-center font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-gold-500">
+            What the Nest Runs On
           </h2>
-          <p className="mt-3 font-ui text-gold-500">Pick a craft to see what is inside it.</p>
-
-          <ChipTray
-            role="tablist"
-            label="Crafts"
-            layoutId="craft-chip-active"
-            className="mt-8 !justify-start"
-            items={CRAFTS.map((c, n) => ({ id: n, label: c.title }))}
-            value={craft}
-            onChange={setCraft}
-            itemProps={(item) => ({ id: `craft-tab-${item.id}`, 'aria-controls': 'craft-panel' })}
-          />
-
-          <div
-            id="craft-panel"
-            role="tabpanel"
-            aria-labelledby={`craft-tab-${craft}`}
-            className="mt-10 overflow-hidden"
+          <motion.ul
+            initial={reduce ? false : 'off'}
+            whileInView="on"
+            viewport={{ once: true, margin: '-10% 0px' }}
+            variants={{ on: { transition: { staggerChildren: 0.09 } } }}
+            className="mt-12 grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-3"
           >
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                key={CRAFTS[craft].title}
-                initial={reduce ? false : { opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={reduce ? undefined : { opacity: 0, y: -10 }}
-                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                className="grid items-center gap-8 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] md:gap-12"
+            {VALUES.map((v) => (
+              <motion.li
+                key={v.title}
+                variants={reduce ? undefined : { off: { opacity: 0, y: 26 }, on: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } } }}
+                className="group"
               >
                 <img
-                  src={CRAFTS[craft].owl}
+                  src={v.owl}
                   alt=""
                   aria-hidden
-                  className="mx-auto h-[min(60vw,18rem)] w-auto object-contain"
+                  loading="lazy"
+                  className="h-28 w-auto origin-bottom object-contain transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:-translate-y-1.5 group-hover:-rotate-3 group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:transform-none sm:h-32"
                 />
-                <div>
-                  <h3 className="font-['Momo_Trust_Display'] text-[clamp(2rem,4.5vw,3.5rem)] font-normal leading-none text-gold-500">
-                    {CRAFTS[craft].title}
-                  </h3>
-                  <p className="mt-3 font-ui text-lg text-white">{CRAFTS[craft].line}</p>
-                  <ul className="mt-6 flex flex-wrap gap-2.5">
-                    {CRAFTS[craft].items.map((item) => (
-                      <li
-                        key={item}
-                        className="rounded-full bg-white/15 px-4 py-2 font-ui text-sm font-semibold text-white"
-                      >
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
+                <h3 className="mt-5 font-ui text-xl font-bold leading-snug text-gold-500">{v.title}</h3>
+                <span aria-hidden className="mt-3 block h-1 w-full origin-left scale-x-[0.18] rounded-full bg-gold-500 transition-transform duration-500 ease-out group-hover:scale-x-100 motion-reduce:transition-none" />
+                <p className="mt-3 font-ui leading-relaxed text-white">{v.copy}</p>
+              </motion.li>
+            ))}
+          </motion.ul>
         </div>
       </section>
       <SectionBreak edge="bottom" />

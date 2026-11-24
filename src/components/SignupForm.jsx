@@ -43,10 +43,10 @@ export default function SignupForm({ source = 'footer', compact = false, autoFoc
 
   const pill = compact
     ? // Fixed height for the popup card: 64px pill, 48px button inside it.
-      'min-h-[64px] flex-col gap-3 rounded-[2rem] p-1.5 sm:flex-row sm:items-center sm:rounded-full sm:p-2'
+      'min-h-[64px] flex-col gap-3 rounded-[2rem] p-1.5 sm:flex-row sm:items-center sm:rounded-full sm:py-2.5 sm:pb-3.5 sm:pl-2 sm:pr-3'
     : // The footer's own figures. Sized by ASPECT against the reference in `vw`
       // so the shape holds at every width; `max()` floors it for phones.
-      'min-h-[76px] flex-col gap-4 rounded-[2.5rem] p-2 sm:min-h-[max(4.5rem,7.3vw)] sm:flex-row sm:items-center sm:rounded-full sm:p-[max(0.5rem,0.85vw)]'
+      'min-h-[76px] flex-col gap-4 rounded-[2.5rem] p-2 sm:min-h-[max(4.5rem,7.3vw)] sm:flex-row sm:items-center sm:rounded-full sm:pb-[calc(max(0.625rem,1vw)+5px)] sm:pl-[max(0.5rem,0.85vw)] sm:pr-[max(0.875rem,1.3vw)] sm:pt-[max(0.625rem,1vw)]'
 
   const input = compact
     ? 'px-5 py-2.5 text-base sm:px-6 sm:text-lg'
@@ -54,10 +54,10 @@ export default function SignupForm({ source = 'footer', compact = false, autoFoc
 
   const button = compact
     ? 'py-2 pl-5 pr-1.5 text-base sm:h-12 sm:py-0 sm:pl-6 sm:pr-1.5'
-    : 'py-2 pl-6 pr-1.5 text-base sm:h-[max(3rem,5.6vw)] sm:py-0 sm:pl-[max(1.5rem,2.2vw)] sm:pr-[max(0.375rem,0.5vw)] sm:text-[max(0.95rem,1.3vw)]'
+    : 'py-2 pl-6 pr-1.5 text-base sm:h-[max(3rem,4.7vw)] sm:py-0 sm:pl-[max(1.5rem,2.2vw)] sm:pr-[max(0.5rem,0.7vw)] sm:text-[max(0.95rem,1.25vw)]'
 
-  const badge = compact ? 'size-9' : 'size-9 sm:size-[max(2.25rem,4.2vw)]'
-  const arrow = compact ? 'size-5' : 'size-5 sm:size-[max(1.25rem,2.2vw)]'
+  const badge = compact ? 'size-9' : 'size-9 sm:size-[max(2.125rem,3.3vw)]'
+  const arrow = compact ? 'size-5' : 'size-5 sm:size-[max(1.25rem,1.8vw)]'
 
   return (
     <div className={className}>
