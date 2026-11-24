@@ -26,7 +26,7 @@ const BRANDS = [
     id: 'relevance-studio',
     title: 'Relevance Studio',
     kind: 'Website & brand guidelines',
-    alt: 'The Relevance Studio homepage: a navy hero reading "The recruiting platform that runs your hiring process"',
+    alt: 'The Relevance Studio homepage: "Revolutionizing Recruitment: A Story of Evolution" beside a woman on the phone',
     tags: ['website', 'graphic'],
     href: 'https://www.relevance.studio/en',
     lead: true,

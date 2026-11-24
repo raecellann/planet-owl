@@ -136,11 +136,18 @@
   ],
   "relevance-studio": [
     {
+      "name": "cover",
+      "w": 1440,
+      "h": 600,
+      "tw": 960,
+      "th": 400
+    },
+    {
       "name": "01-website",
-      "w": 1600,
-      "h": 667,
+      "w": 1440,
+      "h": 1663,
       "tw": 720,
-      "th": 300
+      "th": 832
     },
     {
       "name": "02-guidelines-p01",
