@@ -34,6 +34,29 @@ const ENDPOINT = import.meta.env.VITE_FORM_ENDPOINT?.trim() || DEFAULT_ENDPOINT
 const ACCESS_KEY = import.meta.env.VITE_FORM_ACCESS_KEY?.trim()
 export const CONTACT_EMAIL = import.meta.env.VITE_CONTACT_EMAIL?.trim() || 'hello@planetowl.studio'
 
+/**
+ * Make.com webhook ("Planet Owl website forms" scenario) that emails the
+ * visitor an automatic reply: a "we got your call request" email when the
+ * contact form has a date, a "thanks for starting a project" email otherwise.
+ * Formspree still notifies the studio; this only drives the auto-reply.
+ * Sent as form-encoded (a CORS "simple" request, so no preflight) and never
+ * allowed to fail the visitor's submission. `VITE_MAKE_WEBHOOK` overrides it;
+ * set it to `off` to disable.
+ */
+const DEFAULT_MAKE_WEBHOOK = 'https://hook.us2.make.com/bcxw8cpn0glfqlnfdzlwfmq7a8cq7k9s'
+const MAKE_WEBHOOK = import.meta.env.VITE_MAKE_WEBHOOK?.trim() || DEFAULT_MAKE_WEBHOOK
+
+function notifyMake(fields) {
+  if (!MAKE_WEBHOOK || MAKE_WEBHOOK === 'off') return
+  try {
+    const body = new URLSearchParams()
+    for (const [k, v] of Object.entries(fields)) if (v != null && !k.startsWith('_') && k !== 'access_key') body.append(k, String(v))
+    fetch(MAKE_WEBHOOK, { method: 'POST', body, keepalive: true }).catch(() => {})
+  } catch {
+    /* auto-reply is best effort */
+  }
+}
+
 /** True when submissions go to a real endpoint rather than a mailto. */
 export const hasEndpoint = Boolean(ENDPOINT)
 
@@ -91,6 +114,7 @@ export async function submitSignup({ email, source = 'site' }) {
     throw new Error(message)
   }
 
+  notifyMake({ kind: payload.date ? 'meeting' : 'project', ...payload })
   return { via: 'endpoint' }
 }
 
@@ -157,5 +181,6 @@ export async function submitContact(fields) {
     throw new Error(message)
   }
 
+  notifyMake({ kind: payload.date ? 'meeting' : 'project', ...payload })
   return { via: 'endpoint' }
 }
