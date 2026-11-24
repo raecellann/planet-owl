@@ -167,7 +167,7 @@ function HowItWorks() {
   }, [])
 
   return (
-    <div ref={track} className={reduce ? '' : 'h-[220svh]'}>
+    <div ref={track} className={reduce ? '' : '-mt-6 h-[220svh] lg:-mt-[17svh]'}>
       <div className={`flex flex-col pb-2 pt-[calc(max(5.25rem,2.92vw+max(3.25rem,4.4vw))+0.75rem)] lg:pb-[16svh] lg:pt-[calc(max(5.25rem,2.92vw+max(3.25rem,4.4vw))+1.75rem)] ${reduce ? '' : 'sticky top-0 h-[100svh]'}`}>
         <div className="grid min-h-0 flex-1 grid-rows-[auto_minmax(0,1fr)] gap-1 lg:grid-cols-2 lg:grid-rows-1 lg:gap-16">
           {/* The title sits directly on top of the first stop. */}
@@ -423,7 +423,7 @@ export default function Pricing() {
           its text arrive as the line reaches them. Across from `lg` up,
           down the left edge below it. Once only — it does not replay on
           every pass. */}
-      <section className="bg-white px-5 sm:px-8">
+      <section className="px-5 sm:px-8">
         <div className="mx-auto max-w-[1320px]">
           <HowItWorks />
         </div>
@@ -433,7 +433,7 @@ export default function Pricing() {
       {/* White with clouds off the edges, by request — it sat on a pale
           yellow band. The clouds stop short of the 1320px column, so they
           frame the questions rather than sitting under them. */}
-      <section className="relative overflow-hidden bg-white px-5 py-14 sm:px-8 sm:py-20">
+      <section className="relative overflow-hidden bg-white px-5 pb-14 pt-8 sm:px-8 sm:pb-20 lg:-mt-[11svh] lg:pt-4">
         <img src={cloudImg} alt="" aria-hidden loading="lazy" style={{ left: 'min(-15vw, calc(50vw - 660px - 27vw))' }} className="pointer-events-none absolute top-[-4%] w-[max(13rem,29vw)] max-w-none -scale-x-100 opacity-55" />
         <img src={cloudImg} alt="" aria-hidden loading="lazy" style={{ right: 'min(-10vw, calc(50vw - 660px - 20vw))' }} className="pointer-events-none absolute top-[47%] w-[max(7rem,10vw)] max-w-none opacity-35" />
         <img src={cloudImg} alt="" aria-hidden loading="lazy" style={{ right: 'min(-14vw, calc(50vw - 660px - 30vw))' }} className="pointer-events-none absolute bottom-[-6%] w-[max(13rem,28vw)] max-w-none opacity-45" />

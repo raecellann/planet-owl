@@ -233,7 +233,7 @@ export default function About() {
           <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-gold-500">
             Four Crafts, One Nest
           </h2>
-          <p className="mt-3 font-ui text-gold-200">Pick a craft to see what is inside it.</p>
+          <p className="mt-3 font-ui text-gold-500">Pick a craft to see what is inside it.</p>
 
           <div role="tablist" aria-label="Crafts" className="mt-8 flex flex-wrap gap-3">
             {CRAFTS.map((c, n) => (
