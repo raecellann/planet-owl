@@ -139,7 +139,7 @@ export default function BlogIndex() {
       )}
 
       {/* --------------------------------------------------- all articles -- */}
-      <section className={`min-h-[100svh] px-5 pb-10 [overflow-anchor:none] sm:px-8 ${filtering ? 'relative z-10 -mt-[clamp(3rem,7vw,6rem)]' : 'pt-[clamp(4rem,8vw,7rem)]'}`}>
+      <section className={`px-5 pb-6 [overflow-anchor:none] sm:px-8 ${filtering ? 'relative z-10 -mt-[clamp(3rem,7vw,6rem)]' : 'pt-[clamp(4rem,8vw,7rem)]'}`}>
         <div className="mx-auto max-w-[1180px]">
           <h2 ref={headingRef} className="text-center font-['Momo_Trust_Display'] text-[clamp(1.9rem,4.2vw,3.2rem)] font-normal leading-none text-plum-700">
             All Articles

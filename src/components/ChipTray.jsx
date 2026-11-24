@@ -4,7 +4,7 @@ import { motion } from 'motion/react'
 export const TRAY = 'inline-flex max-w-full flex-wrap items-center justify-center gap-2.5'
 
 /** A round white button that sits in the tray, for icons. */
-export const TRAY_ICON = 'btn-type grid size-10 place-items-center rounded-full bg-white text-plum-700 ring-1 ring-plum-900/10 shadow-[0_6px_0_-2px_var(--color-plum-900),0_10px_16px_-10px_rgba(54,14,57,0.35)] transition-colors hover:bg-teal-500 hover:text-white'
+export const TRAY_ICON = 'btn-type grid size-10 place-items-center rounded-full bg-gold-500 text-plum-700 shadow-[0_6px_0_-2px_var(--color-plum-900),0_10px_16px_-10px_rgba(54,14,57,0.35)] transition-colors hover:bg-teal-500 hover:text-white'
 
 /**
  * The same filter on every page: white chips, with one teal marker sliding to

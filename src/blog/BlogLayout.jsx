@@ -202,7 +202,7 @@ export default function BlogLayout({ children, onBlog = true, newsletter = true,
           needs", but the plane only stands 2.2vw clear of the footer's
           scalloped strip — the rest of it is INSIDE the footer — so most of
           that padding was simply empty white under the form. */
-      <section className="bg-white px-5 pb-[7vw] pt-[clamp(4rem,8vw,7rem)] sm:px-8">
+      <section className="bg-white px-5 pb-[7vw] pt-[clamp(2.5rem,4vw,4rem)] sm:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="font-['Momo_Trust_Display'] text-[clamp(1.8rem,4vw,3rem)] font-normal leading-[1.1] text-plum-700">
             Fresh Notes From the Nest
