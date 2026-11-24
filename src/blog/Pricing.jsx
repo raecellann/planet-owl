@@ -65,9 +65,12 @@ const PLANS = [
 ]
 
 const STEPS = [
-  { n: '01', title: 'Tell us what you need', items: ['Send the details or book a call', 'One place for every request', 'Plain words are all we need'] },
-  { n: '02', title: 'Start your free 2 weeks', items: ['Free for your first 2 weeks', 'Design, digital, development and AI', 'Refined in the nest before it reaches you', 'Built around your brand, not a template'] },
-  { n: '03', title: 'Keep the flock on it', items: ['One flat monthly price', 'Billed month by month', 'Move up when you need another craft'] },
+  { n: '01', title: 'Tell us what you need', items: ['Send the details or book a call', 'Plain words are all we need'] },
+  { n: '02', title: 'Pick your plan', items: ['Four monthly plans', 'Each one adds a craft to the one before it'] },
+  { n: '03', title: 'Start your free 2 weeks', items: ['Free for your first 2 weeks', 'See how the nest handles your brand'] },
+  { n: '04', title: 'We get to work', items: ['Design, digital, development and AI', 'Built around your brand, not a template'] },
+  { n: '05', title: 'Refined in the nest', items: ['Shaped, built and polished in one place', 'One place for every request'] },
+  { n: '06', title: 'Keep the flock on it', items: ['One flat monthly price, billed month by month', 'Move up when you need another craft'] },
 ]
 
 /**
@@ -116,7 +119,7 @@ function PlaneSteps() {
   )
 }
 
-const STEP_ART = [A.owl.digital, A.owl.develop, A.owl.ai]
+const STEP_ART = [A.owl.digital, A.owl.crown, A.owl.vr, A.owl.develop, A.owl.astronaut, A.owl.ai]
 
 /**
  * The roadmap, as a pinned stage. The title, the three stops and the owl hold
@@ -147,7 +150,7 @@ function HowItWorks() {
   }, [])
 
   return (
-    <div ref={track} className={reduce ? '' : '-mt-6 h-[220svh] lg:-mt-[17svh]'}>
+    <div ref={track} className={reduce ? '' : '-mt-6 h-[420svh] lg:-mt-[17svh]'}>
       <div className={`flex flex-col pb-2 pt-[calc(max(5.25rem,2.92vw+max(3.25rem,4.4vw))+0.75rem)] lg:pb-[16svh] lg:pt-[calc(max(5.25rem,2.92vw+max(3.25rem,4.4vw))+1.75rem)] ${reduce ? '' : 'sticky top-0 h-[100svh]'}`}>
         <div className="grid min-h-0 flex-1 grid-rows-[auto_minmax(0,1fr)] gap-1 lg:grid-cols-2 lg:grid-rows-1 lg:gap-16">
           {/* The title sits directly on top of the first stop. */}
@@ -157,19 +160,19 @@ function HowItWorks() {
           </h2>
           <ol className="mt-3 flex flex-col lg:mt-6">
             {STEPS.map((st, i) => (
-              <li key={st.n} className="relative min-h-14 pl-16 last:min-h-12 lg:min-h-16">
+              <li key={st.n} className="relative min-h-12 pl-14 last:min-h-10 lg:min-h-14 lg:pl-16">
                 {i < STEPS.length - 1 && (
-                  <span aria-hidden className={`absolute bottom-0 left-[1.4375rem] top-12 w-0.5 transition-colors duration-500 ${i < active ? 'bg-gold-500' : 'bg-plum-100'}`} />
+                  <span aria-hidden className={`absolute bottom-0 left-[1.1875rem] top-10 w-0.5 lg:left-[1.4375rem] lg:top-12 transition-colors duration-500 ${i < active ? 'bg-gold-500' : 'bg-plum-100'}`} />
                 )}
                 <span
                   aria-hidden
-                  className={`absolute left-0 top-0 grid size-12 place-items-center rounded-full font-ui text-base font-bold transition-colors duration-300 ${
+                  className={`absolute left-0 top-0 grid size-10 place-items-center rounded-full font-ui text-sm font-bold lg:size-12 lg:text-base transition-colors duration-300 ${
                     i <= active ? 'bg-plum-800 text-gold-500' : 'bg-plum-100 text-plum-700'
                   }`}
                 >
                   {st.n}
                 </span>
-                <h3 className={`flex min-h-12 items-center font-ui text-xl font-bold transition-colors duration-300 lg:text-2xl ${i === active ? 'text-plum-700' : 'text-plum-700/45'}`}>
+                <h3 className={`flex min-h-10 items-center font-ui text-lg font-bold lg:min-h-12 transition-colors duration-300 lg:text-xl ${i === active ? 'text-plum-700' : 'text-plum-700/45'}`}>
                   {st.title}
                 </h3>
                 <div className={`grid transition-[grid-template-rows,opacity] duration-500 ease-out ${i === active || reduce ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
