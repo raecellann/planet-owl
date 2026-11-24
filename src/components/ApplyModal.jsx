@@ -293,10 +293,6 @@ export default function ApplyModal() {
                 Portfolio or LinkedIn <span className="font-semibold text-plum-700/70">(optional)</span>
                 <input name="link" type="url" inputMode="url" placeholder="https://" className={field} />
               </label>
-              <label className={label}>
-                Anything else? <span className="font-semibold text-plum-700/70">(optional)</span>
-                <textarea name="note" rows={2} className={`${field} resize-y`} />
-              </label>
               <p className="font-ui text-xs leading-relaxed text-plum-700">
                 We keep your resume privately and only use it to review your application. See our{' '}
                 <a href="#/privacy" className="font-bold text-plum-700 underline">privacy page</a>.

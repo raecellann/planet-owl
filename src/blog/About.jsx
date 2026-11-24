@@ -149,6 +149,14 @@ const PROMISES = [
     title: 'Make technology work smarter',
     copy: 'We use AI, automation, analytics and intelligent systems to simplify complex work, improve customer experiences and help your business move faster.',
   },
+  {
+    title: 'Keep every craft under one roof',
+    copy: 'Design, development, digital and AI sit together in one nest, so your idea is shaped, built and refined in one place before it reaches you.',
+  },
+  {
+    title: 'Let you try the nest first',
+    copy: 'Every plan starts with a free 2-week trial, so you can see how the flock handles your brand before you decide.',
+  },
 ]
 
 const VALUE_TONES = ['bg-gold-200', 'bg-[#e7b248]', 'bg-plum-100', 'bg-gold-500', 'bg-white', 'bg-teal-400']
@@ -291,8 +299,10 @@ const PROMISE_CTAS = [
   { label: 'Start a Project', href: '#/contact' },
   { label: 'See Pricing', href: '#/pricing' },
   { label: 'Book a Call', href: '#/contact' },
+  { label: 'See Pricing', href: '#/pricing' },
+  { label: 'Start Free Trial', href: '#/contact' },
 ]
-const PROMISE_TONES = ['bg-gold-200', 'bg-[#e7b248]', 'bg-plum-800']
+const PROMISE_TONES = ['bg-gold-200', 'bg-[#e7b248]', 'bg-plum-800', 'bg-teal-400', 'bg-plum-100']
 
 /**
  * One promise on the curved track. `k` is its place on the arc as the page
@@ -301,12 +311,17 @@ const PROMISE_TONES = ['bg-gold-200', 'bg-[#e7b248]', 'bg-plum-800']
  */
 function PromiseCard({ p, i, progress, spread, drop }) {
   const n = PROMISES.length
-  const k = useTransform(progress, [0, 1], [-i, n - 1 - i])
+  // One full turn of the track over the scroll. Each card's place wraps round,
+  // so both sides of the arc stay full; it jumps ends only while faded out.
+  const k = useTransform(progress, (t) => {
+    const raw = t * n - i
+    return ((((raw + n / 2) % n) + n) % n) - n / 2
+  })
   const x = useTransform(k, (v) => `calc(-50% + ${v * spread}%)`)
   const y = useTransform(k, (v) => Math.abs(v) * drop)
-  const rotate = useTransform(k, (v) => v * 11)
-  const scale = useTransform(k, (v) => 1 - Math.min(Math.abs(v), 1.5) * 0.12)
-  const opacity = useTransform(k, (v) => Math.max(0, Math.min(1, 1.7 - Math.abs(v))))
+  const rotate = useTransform(k, (v) => v * 9)
+  const scale = useTransform(k, (v) => 1 - Math.min(Math.abs(v), 2) * 0.08)
+  const opacity = useTransform(k, (v) => Math.max(0, Math.min(1, (2.45 - Math.abs(v)) * 3)))
   const zIndex = useTransform(k, (v) => Math.round(10 - Math.abs(v) * 3))
   const dark = PROMISE_TONES[i] === 'bg-plum-800'
   return (
@@ -347,7 +362,7 @@ function PromiseArc() {
     return (
       <div className="mx-auto max-w-[1180px] py-14">
         {heading}
-        <ul className="mt-10 grid gap-5 lg:grid-cols-3">
+        <ul className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {PROMISES.map((p, i) => (
             <li key={p.title} className={`flex flex-col rounded-[1.75rem] p-7 ${PROMISE_TONES[i]} ${PROMISE_TONES[i] === 'bg-plum-800' ? 'text-gold-200' : 'text-plum-700'}`}>
               <h3 className="font-['Momo_Trust_Display'] text-2xl font-normal">{p.title}</h3>
@@ -363,12 +378,12 @@ function PromiseArc() {
   }
 
   return (
-    <div ref={track} className="relative h-[280svh]">
-      <div className="sticky top-0 flex h-[100svh] flex-col justify-center overflow-hidden pt-20">
+    <div ref={track} className="relative h-[420svh]">
+      <div className="sticky top-0 -mx-5 flex h-[100svh] flex-col justify-center overflow-hidden pt-20 sm:-mx-8">
         {heading}
-        <ul className="relative mx-auto mt-10 h-[29rem] w-full max-w-[1180px] sm:h-[25rem]">
+        <ul className="relative mx-auto mt-10 h-[29rem] w-full sm:h-[25rem]">
           {PROMISES.map((p, i) => (
-            <PromiseCard key={p.title} p={p} i={i} progress={scrollYProgress} spread={phone ? 86 : 64} drop={phone ? 28 : 56} />
+            <PromiseCard key={p.title} p={p} i={i} progress={scrollYProgress} spread={phone ? 104 : 98} drop={phone ? 30 : 44} />
           ))}
         </ul>
       </div>

@@ -377,19 +377,10 @@
   overflow: hidden;
 }
 
-/* The application popup's own scrollbar: a thin plum thumb, no track. */
+/* The application popup scrolls on a short screen but shows no scrollbar. */
 .apply-scroll {
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-plum-800) transparent;
+  scrollbar-width: none;
 }
 .apply-scroll::-webkit-scrollbar {
-  width: 6px;
-}
-.apply-scroll::-webkit-scrollbar-track {
-  background: transparent;
-  margin-block: 1.5rem;
-}
-.apply-scroll::-webkit-scrollbar-thumb {
-  border-radius: 999px;
-  background: var(--color-plum-800);
+  display: none;
 }
