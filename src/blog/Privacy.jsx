@@ -23,6 +23,7 @@ const SECTIONS = [
     body: [
       'This website only learns what you choose to type into one of our forms. The sign-up bar at the foot of the page, the “Start a Project” window and the newsletter form on the blog ask for your email address.',
       'The contact page asks for more, so that we can reply properly or book a call: your name and email address and, if you choose to give them, your company, website, phone number, a preferred date and time for a call (with your time zone), and your message.',
+      'If you apply to join the flock, we also receive your name, email address, resume and, if you choose to give them, a portfolio or LinkedIn link and a note.',
       'When you send any of these forms we also receive the address of the page you sent it from and which form you used, so we know what you were asking about.',
       'We do not ask you to create an account, and this website does not use advertising trackers or analytics cookies.',
     ],
@@ -30,20 +31,20 @@ const SECTIONS = [
   {
     title: 'How we use it',
     body: [
-      'We use what you send us to reply to you about the project, call, trial or newsletter you asked about. We do not sell it, and we do not share it with anyone for their own marketing.',
+      'We use what you send us to reply to you about the project, call, trial or newsletter you asked about, and to review your application if you applied to join the flock. We do not sell it, and we do not share it with anyone for their own marketing.',
     ],
   },
   {
     title: 'Who handles it for us',
     body: [
-      'Form submissions are delivered to our inbox by Formspree, a form-handling service. The website itself is hosted on Vercel, which, like any web host, keeps standard server logs such as IP addresses and browser type in order to deliver the site and keep it secure. Our typefaces are loaded from Google Fonts, so your browser contacts Google’s servers to fetch them.',
+      'Form submissions are delivered to our inbox by Formspree, a form-handling service. Resumes are stored privately with Vercel Blob, Vercel’s file storage, where only our team can open them. The website itself is hosted on Vercel, which, like any web host, keeps standard server logs such as IP addresses and browser type in order to deliver the site and keep it secure. Our typefaces are loaded from Google Fonts, so your browser contacts Google’s servers to fetch them.',
       'Each of these providers handles that information under its own privacy policy.',
     ],
   },
   {
     title: 'How long we keep it',
     body: [
-      'We keep what you send us for as long as we are in conversation with you or sending you the updates you asked for. Tell us to stop and we will remove it.',
+      'We keep what you send us for as long as we are in conversation with you or sending you the updates you asked for. Tell us to stop and we will remove it. That includes your resume if you applied to join the flock.',
     ],
   },
   {

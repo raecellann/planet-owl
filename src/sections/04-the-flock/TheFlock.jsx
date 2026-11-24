@@ -3,6 +3,7 @@ import { A } from '../../lib/assets'
 import Reveal from '../../components/ui/Reveal'
 import { GoldButton, TealButton } from '../../components/ui/Button'
 import CardCarousel from './CardCarousel'
+import ApplyModal, { openApply } from '../../components/ApplyModal'
 import DrawnDoodle from '../../components/ui/DrawnDoodle'
 import { PHONE, useMediaQuery } from '../../lib/useMediaQuery'
 /** The two marker hearts the design draws over the card's top edge. */
@@ -255,6 +256,7 @@ export default function TheFlock() {
           viewport itself and they simply carry on off-screen. */}
       <Reveal y={48} className="relative -mt-3 w-full sm:mt-8">
         <CardCarousel items={CARDS} label="Open roles at Planet Owl" renderItem={renderCard} />
+        <ApplyModal />
       </Reveal>
 
       {/* The puff that reaches up into the ribbon, and every figure on it is
@@ -496,7 +498,11 @@ function renderCard(card) {
             of a carousel makes four of them shout at once, and none of them
             is the page's main action. */}
         <TealButton
-          href="#start"
+          href="#the-flock"
+          onClick={(e) => {
+            e.preventDefault()
+            openApply(card.role)
+          }}
           draggable={false}
           className="shrink-0 whitespace-nowrap max-sm:px-3.5 max-sm:py-2 max-sm:text-xs"
         >

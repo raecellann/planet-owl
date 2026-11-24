@@ -10,6 +10,7 @@
     "assets": "node scripts/optimize-assets.mjs"
   },
   "dependencies": {
+    "@vercel/blob": "^2.9.0",
     "motion": "^13.1.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
