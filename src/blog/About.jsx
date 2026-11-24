@@ -311,6 +311,19 @@ const PROMISE_CTAS = [
   { label: 'Start Free Trial', href: '#/contact' },
 ]
 const PROMISE_TONES = ['bg-gold-200', 'bg-[#e7b248]', 'bg-plum-800', 'bg-teal-400', 'bg-plum-100']
+/** One icon per promise, in place of its number. */
+const PROMISE_ICONS = [
+  // a megaphone: a brand people notice
+  'M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1ZM15 8.5a4 4 0 0 1 0 7M18 6a7.5 7.5 0 0 1 0 12',
+  // a screen with code: products that work
+  'M3 5h18v12H3zM8 21h8M12 17v4M9.5 9 7.5 11l2 2M14.5 9l2 2-2 2',
+  // a chip: smarter technology
+  'M7 7h10v10H7zM10 10h4v4h-4zM9 3v4M15 3v4M9 17v4M15 17v4M3 9h4M3 15h4M17 9h4M17 15h4',
+  // a house: every craft under one roof
+  'M3 11 12 4l9 7M5 10v10h14V10M10 20v-5h4v5',
+  // a paper plane: try the nest first
+  'M21 3 3 10.5l7 2.5 2.5 7L21 3ZM10 13l4.5-4.5',
+]
 
 /**
  * One promise on the curved track. `k` is its place on the arc as the page
@@ -343,8 +356,10 @@ function PromiseCard({ p, i, progress, spread, drop }) {
       style={{ x, y, rotate, scale, opacity, zIndex }}
       className={`absolute left-1/2 top-0 flex min-h-[19rem] w-[min(30rem,84%)] origin-bottom flex-col rounded-[1.75rem] p-6 pb-7 shadow-[0_30px_60px_-30px_rgba(20,4,22,0.55)] sm:h-[23rem] sm:p-10 ${PROMISE_TONES[i]}`}
     >
-      <p className={`font-ui text-sm font-bold ${dark ? 'text-gold-400' : 'text-plum-700'}`}>{String(i + 1).padStart(2, '0')}</p>
-      <h3 className={`mt-1 font-['Momo_Trust_Display'] text-[clamp(1.4rem,2.4vw,1.9rem)] font-normal leading-[1.12] ${dark ? 'text-gold-200' : 'text-plum-700'}`}>{p.title}</h3>
+      <span aria-hidden className={`grid size-11 place-items-center rounded-2xl ${dark ? 'bg-gold-500 text-plum-800' : 'bg-plum-800 text-gold-400'}`}>
+        <svg viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d={PROMISE_ICONS[i]} /></svg>
+      </span>
+      <h3 className={`mt-3 font-['Momo_Trust_Display'] text-[clamp(1.4rem,2.4vw,1.9rem)] font-normal leading-[1.12] ${dark ? 'text-gold-200' : 'text-plum-700'}`}>{p.title}</h3>
       <p className={`mb-8 mt-3 font-ui text-sm leading-relaxed sm:mt-4 sm:text-base ${dark ? 'text-gold-200' : 'text-plum-700'}`}>{p.copy}</p>
       <a
         href={PROMISE_CTAS[i].href}
