@@ -121,12 +121,14 @@ export default function BlogIndex() {
                 ratio="aspect-[16/10] md:aspect-auto"
                 className="w-full md:absolute md:inset-0 md:h-full"
               />
-              <CategoryChip className="absolute left-4 top-4">{featured.category}</CategoryChip>
             </div>
             <div className="flex flex-col justify-center p-7 sm:p-10">
-              <span className="w-fit rounded-full bg-teal-500 px-3.5 py-1.5 font-ui text-xs font-bold leading-none text-white">
-                Featured
-              </span>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="w-fit rounded-full bg-teal-500 px-3.5 py-1.5 font-ui text-xs font-bold leading-none text-white">
+                  Featured
+                </span>
+                <CategoryChip className="ring-1 ring-plum-900/15">{featured.category}</CategoryChip>
+              </div>
               <h2 className="mt-5 font-ui text-[clamp(1.4rem,2.3vw,2rem)] font-bold leading-[1.18] text-plum-700">
                 {featured.title}
               </h2>
@@ -167,9 +169,10 @@ export default function BlogIndex() {
                   <a href={postHref(p.slug)} className="group block no-underline">
                     <div className="relative overflow-hidden rounded-2xl ring-1 ring-plum-900/5 transition-transform duration-300 group-hover:-translate-y-1">
                       <BlogCover cover={p.cover} title={p.title} />
-                      <CategoryChip className="absolute left-3 top-3">{p.category}</CategoryChip>
                     </div>
-                    <h3 className="mt-5 font-ui text-xl font-bold leading-snug text-plum-700 transition-colors group-hover:text-plum-700">
+                    {/* Under the thumbnail and above the title, by request, so it never covers the art. */}
+                    <CategoryChip className="mt-5 ring-1 ring-plum-900/15">{p.category}</CategoryChip>
+                    <h3 className="mt-3 font-ui text-xl font-bold leading-snug text-plum-700 transition-colors group-hover:text-plum-700">
                       {p.title}
                     </h3>
                   </a>

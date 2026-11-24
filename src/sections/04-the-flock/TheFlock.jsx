@@ -74,7 +74,10 @@ export default function TheFlock() {
   const reduce = useReducedMotion()
   // Phones only, and not under reduced motion — there the pilots keep their
   // parked positions rather than looping across the screen for ever.
-  const flyAcross = useMediaQuery(PHONE) && !reduce
+  // On phones the two pilots always fly across, by request, even for
+  // visitors who asked for reduced motion; for them it is slower and the
+  // bobbing is left out.
+  const flyAcross = useMediaQuery(PHONE)
   const pilotInA = usePaceInView({ opacity: 1, x: 0, y: 0, rotate: 0 }, { duration: 1.1, delay: 0.1 })
   const pilotInB = usePaceInView({ opacity: 1, x: 0, y: 0, rotate: 0 }, { duration: 1.1, delay: 0.15 })
   return (
@@ -198,7 +201,7 @@ export default function TheFlock() {
           aria-hidden
           initial={{ x: '102vw' }}
           animate={{ x: ['102vw', '-46vw'] }}
-          transition={{ duration: 9, ease: 'linear', repeat: Infinity, repeatDelay: 1.5 }}
+          transition={{ duration: reduce ? 15 : 9, ease: 'linear', repeat: Infinity, repeatDelay: 1.5 }}
           className="pointer-events-none absolute -top-[5.5rem] left-0 z-10 w-[42%] select-none"
         >
           <motion.img
@@ -207,7 +210,7 @@ export default function TheFlock() {
             loading="lazy"
             draggable={false}
             style={{ scaleX: -1 }}
-            animate={{ y: ['0%', '-6%', '0%', '5%', '0%'], rotate: [0, -2, 0, 1.5, 0] }}
+            animate={reduce ? undefined : { y: ['0%', '-6%', '0%', '5%', '0%'], rotate: [0, -2, 0, 1.5, 0] }}
             transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
             className="owl-shadow block w-full"
           />
@@ -319,7 +322,7 @@ export default function TheFlock() {
           aria-hidden
           initial={{ x: '-48vw' }}
           animate={{ x: ['-48vw', '102vw'] }}
-          transition={{ duration: 11, ease: 'linear', repeat: Infinity, repeatDelay: 2.5, delay: 3 }}
+          transition={{ duration: reduce ? 18 : 11, ease: 'linear', repeat: Infinity, repeatDelay: 2.5, delay: 3 }}
           className="pointer-events-none absolute -bottom-10 left-0 z-10 w-[44%] select-none"
         >
           <motion.img
@@ -327,7 +330,7 @@ export default function TheFlock() {
             alt=""
             loading="lazy"
             draggable={false}
-            animate={{ y: ['0%', '5%', '0%', '-6%', '0%'], rotate: [0, 1.5, 0, -2, 0] }}
+            animate={reduce ? undefined : { y: ['0%', '5%', '0%', '-6%', '0%'], rotate: [0, 1.5, 0, -2, 0] }}
             transition={{ duration: 3.6, repeat: Infinity, ease: 'easeInOut' }}
             className="owl-shadow block w-full"
           />

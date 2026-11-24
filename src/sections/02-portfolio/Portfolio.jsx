@@ -355,7 +355,7 @@ export default function Portfolio() {
           {/* The second pilot, off the row's other side, flying the other way. */}
           <motion.div
             style={{ x: leadFlight }}
-            className="pointer-events-none absolute -right-[12%] top-[2%] z-30 w-[36%] sm:-right-[15%] sm:-top-[8%] sm:w-[20%]"
+            className="pointer-events-none absolute -right-[12%] top-[2%] z-30 w-[36%] sm:-right-[15%] sm:top-[14%] sm:w-[20%]"
           >
             <motion.img
               src={A.owl.plane}
