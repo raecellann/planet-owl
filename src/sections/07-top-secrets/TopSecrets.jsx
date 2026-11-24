@@ -197,7 +197,11 @@ function NestHotspot({ review, open, onToggle, play }) {
             exit={{ opacity: 0, scale: 0.35 }}
             transition={{ duration: 0.34, ease: [0.16, 1, 0.3, 1] }}
             style={{
-              transformOrigin: 'top left',
+              // A dot in the lower half opens its card upward, so the card
+              // is not cut off by the bottom of the artwork on a phone.
+              ...(parseFloat(y) > 55
+                ? { transformOrigin: 'bottom left', bottom: `calc(100% - ${y} + 0.75rem)` }
+                : { transformOrigin: 'top left', top: `calc(${y} + 0.75rem)` }),
               // Capped so the card's right edge stays inside the plate. The
               // second term is the furthest left the card can start and
               // still fit — the plate's width less the card's own (the same
@@ -207,7 +211,6 @@ function NestHotspot({ review, open, onToggle, play }) {
               // section's `overflow-hidden` cut it; Nike's did the same at
               // every width.
               left: `min(calc(${x} + 0.5rem), calc(100% - max(15rem, 32%) - 0.75rem))`,
-              top: `calc(${y} + 0.75rem)`,
             }}
             {...(plate ? play.handlers : {})}
             // A share of the PLATE with a floor, not a percentage under a

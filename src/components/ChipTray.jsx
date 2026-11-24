@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import { motion } from 'motion/react'
 
 /** Just the buttons, with no container round them. */
@@ -10,10 +11,24 @@ export const TRAY_ICON = 'btn-type grid size-10 place-items-center rounded-full 
  * The same filter on every page: white chips, with one teal marker sliding to
  * whichever is chosen.
  */
-export default function ChipTray({ items, value, onChange, layoutId, label, role = 'group', itemProps, className = '' }) {
-  return (
-    <div role={role} aria-label={label} className={`${TRAY} ${className}`}>
-      {items.map((item) => {
+export default function ChipTray({ items, value, onChange, layoutId, label, role = 'group', itemProps, className = '', scroll = false }) {
+  const rowRef = useRef(null)
+  const [more, setMore] = useState(false)
+  useEffect(() => {
+    const row = rowRef.current
+    if (!scroll || !row) return undefined
+    const read = () => setMore(row.scrollLeft + row.clientWidth < row.scrollWidth - 4)
+    read()
+    row.addEventListener('scroll', read, { passive: true })
+    window.addEventListener('resize', read)
+    return () => {
+      row.removeEventListener('scroll', read)
+      window.removeEventListener('resize', read)
+    }
+  }, [scroll, items.length])
+
+  const chips = (
+    items.map((item) => {
         const on = item.id === value
         return (
           <motion.button
@@ -37,7 +52,38 @@ export default function ChipTray({ items, value, onChange, layoutId, label, role
             <span className="relative">{item.label}</span>
           </motion.button>
         )
-      })}
+      })
+  )
+
+  // One row that swipes sideways, with an arrow while more chips are hidden.
+  if (scroll) {
+    return (
+      <div className={`relative w-full ${className}`}>
+        <div
+          ref={rowRef}
+          role={role}
+          aria-label={label}
+          className="flex snap-x gap-2.5 overflow-x-auto px-1 pb-3 pt-1 pr-14 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [&>*]:shrink-0 [&>*]:snap-start"
+        >
+          {chips}
+        </div>
+        {more && (
+          <button
+            type="button"
+            aria-label="Show more options"
+            onClick={() => rowRef.current?.scrollBy({ left: rowRef.current.clientWidth * 0.6, behavior: 'smooth' })}
+            className="absolute right-0 top-1 grid size-9 place-items-center rounded-full bg-gold-500 text-plum-700 shadow-[0_4px_0_-1px_var(--color-plum-900)]"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden className="size-4" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+          </button>
+        )}
+      </div>
+    )
+  }
+
+  return (
+    <div role={role} aria-label={label} className={`${TRAY} ${className}`}>
+      {chips}
     </div>
   )
 }

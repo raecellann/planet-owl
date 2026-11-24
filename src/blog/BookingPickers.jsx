@@ -134,7 +134,8 @@ export function TimePicker({ value, options, required, onChange }) {
         </svg>
       </button>
       {open && (
-        <ul role="listbox" aria-label="Choose a time" className={`${PANEL} right-0 max-h-60 overflow-y-auto`}>
+        // A grid of every slot, so the whole day fits and nothing has to scroll.
+        <ul role="listbox" aria-label="Choose a time" className={`${PANEL} right-0 grid grid-cols-3 gap-1.5`}>
           {options.map((s) => (
             <li key={s}>
               <button
@@ -145,7 +146,7 @@ export function TimePicker({ value, options, required, onChange }) {
                   onChange(s)
                   setOpen(false)
                 }}
-                className={`w-full rounded-lg px-3 py-2 text-left font-ui text-sm transition-colors ${s === value ? 'bg-plum-800 font-bold text-gold-400' : 'text-plum-700 hover:bg-gold-200'}`}
+                className={`w-full whitespace-nowrap rounded-lg px-1 py-2 text-center font-ui text-sm transition-colors ${s === value ? 'bg-plum-800 font-bold text-gold-400' : 'text-plum-700 hover:bg-gold-200'}`}
               >
                 {s}
               </button>

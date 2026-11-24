@@ -98,6 +98,7 @@ export function CompareTable() {
       <div className="mt-8 md:hidden">
         <ChipTray
           label="Compare Planet Owl with"
+          scroll
           layoutId="compare-chip-active"
           items={RIVALS.map((r) => ({ id: r.id, label: r.label }))}
           value={rival}
