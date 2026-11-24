@@ -373,7 +373,7 @@ export default function Pricing() {
                 <motion.span
                   aria-hidden
                   variants={{ off: { scaleY: 0 }, on: { scaleY: 1, transition: { duration: 1.3, delay: 0.35, ease: 'easeInOut' } } }}
-                  className="absolute bottom-[0.6rem] left-[0.375rem] top-[0.6rem] w-0.5 origin-top bg-plum-800"
+                  className="absolute bottom-[0.6rem] left-[0.375rem] top-[0.6rem] !m-0 w-0.5 origin-top bg-plum-800"
                 />
                 {['Month 1', 'Month 2', 'Month 3', 'Month 4'].map((m, i) => (
                   <li key={m} className="relative font-ui font-semibold">
