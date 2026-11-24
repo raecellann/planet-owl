@@ -123,6 +123,88 @@ function PlaneSteps() {
 
 const STEP_ART = [A.owl.digital, A.owl.vr, A.owl.develop, A.owl.ai]
 
+/** The labels that pop up around each step's owl, worded from the step itself. */
+const STEP_CHIPS = [
+  [
+    { label: 'Send the details', x: 6, y: 20, tone: 'teal' },
+    { label: 'Book a call', x: 66, y: 12, tone: 'gold' },
+    { label: 'Plain words', x: 64, y: 64, tone: 'white' },
+  ],
+  [
+    { label: 'Pick your plan', x: 5, y: 24, tone: 'white' },
+    { label: 'Free for 2 weeks', x: 62, y: 14, tone: 'gold' },
+    { label: 'Trial started', x: 8, y: 70, tone: 'teal' },
+  ],
+  [
+    { label: 'Design', x: 8, y: 18, tone: 'teal' },
+    { label: 'Digital', x: 70, y: 14, tone: 'gold' },
+    { label: 'Development', x: 4, y: 66, tone: 'white' },
+    { label: 'AI', x: 74, y: 62, tone: 'teal' },
+  ],
+  [
+    { label: 'One flat monthly price', x: 4, y: 16, tone: 'gold' },
+    { label: 'Billed month by month', x: 52, y: 70, tone: 'white' },
+    { label: 'Move up a plan', x: 62, y: 30, tone: 'teal' },
+  ],
+]
+const CHIP_TONES = { teal: 'bg-teal-500 text-white', gold: 'bg-gold-500 text-plum-700', white: 'bg-white text-plum-700' }
+const CHIP_DOTS = { teal: 'bg-white/90', gold: 'bg-plum-800', white: 'bg-teal-500' }
+
+/**
+ * Each step's owl on a card, in the same style as the blog covers: a plum
+ * ground, a caption card behind the owl, and labels that pop up one after
+ * another whenever the step changes.
+ */
+function HatchCard({ step, art, active, reduce }) {
+  return (
+    <div className="@container relative aspect-[4/3] max-h-full w-full max-w-[36rem] overflow-hidden rounded-[1.75rem] bg-[radial-gradient(ellipse_at_50%_30%,#6b3f69_0%,#451647_58%,#24051f_100%)] shadow-[0_30px_60px_-30px_rgba(36,5,31,0.6)]">
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.div
+          key={active}
+          className="absolute inset-0"
+          initial={reduce ? false : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={reduce ? undefined : { opacity: 0 }}
+          transition={{ duration: 0.25 }}
+        >
+          <motion.div
+            initial={reduce ? false : { y: 18, scale: 0.94 }}
+            animate={{ y: 0, scale: 1 }}
+            transition={{ type: 'spring', stiffness: 260, damping: 22 }}
+            className="absolute left-1/2 top-[11%] w-[46%] -translate-x-1/2 rounded-[2.4cqw] bg-white/95 p-[1.8cqw] pb-[2.4cqw] shadow-[0_3cqw_5cqw_-3cqw_rgba(36,5,31,0.6)]"
+          >
+            <div className="aspect-[16/11] rounded-[1.6cqw] bg-[linear-gradient(160deg,#f4cb6b,#e7b248)]" />
+            <p className="mt-[1.6cqw] font-ui text-[2cqw] leading-none text-plum-500">How It Hatches · {step.n}</p>
+            <p className="mt-[0.9cqw] font-ui text-[3cqw] font-bold leading-[1.1] text-plum-700">{step.title}</p>
+          </motion.div>
+          <motion.img
+            src={art}
+            alt=""
+            aria-hidden
+            initial={reduce ? false : { y: 30, opacity: 0, rotate: -6 }}
+            animate={{ y: 0, opacity: 1, rotate: 0 }}
+            transition={{ type: 'spring', stiffness: 220, damping: 18, delay: 0.05 }}
+            className="pointer-events-none absolute left-1/2 top-[8%] h-[56%] w-auto -translate-x-1/2 select-none drop-shadow-[0_2cqw_2.5cqw_rgba(36,5,31,0.4)]"
+          />
+          {STEP_CHIPS[active].map((chip, n) => (
+            <motion.span
+              key={chip.label}
+              initial={reduce ? false : { scale: 0, opacity: 0, y: 10 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              transition={{ type: 'spring', stiffness: 420, damping: 18, delay: reduce ? 0 : 0.18 + n * 0.12 }}
+              style={{ left: `${chip.x}%`, top: `${chip.y}%` }}
+              className={`absolute inline-flex items-center gap-[1.2cqw] whitespace-nowrap rounded-full px-[2.4cqw] py-[1.3cqw] font-ui text-[2.4cqw] font-semibold leading-none shadow-[0_1.4cqw_2.4cqw_-1.2cqw_rgba(36,5,31,0.55)] ${CHIP_TONES[chip.tone]}`}
+            >
+              <span className={`size-[1.6cqw] rounded-full ${CHIP_DOTS[chip.tone]}`} />
+              {chip.label}
+            </motion.span>
+          ))}
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  )
+}
+
 /**
  * The roadmap, as a pinned stage. The title, the three stops and the owl hold
  * still under the navbar while the scroll moves through the steps, so nothing
@@ -205,19 +287,7 @@ function HowItWorks() {
           </ol>
           </div>
           <div className="relative flex min-h-0 items-center justify-center">
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.img
-                key={active}
-                src={STEP_ART[active]}
-                alt=""
-                aria-hidden
-                initial={reduce ? false : { opacity: 0, y: 22, scale: 0.94 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={reduce ? undefined : { opacity: 0, y: -18, scale: 0.97 }}
-                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                className="h-full max-h-full w-auto max-w-full object-contain lg:h-auto lg:max-h-[26rem]"
-              />
-            </AnimatePresence>
+            <HatchCard step={STEPS[active]} art={STEP_ART[active]} active={active} reduce={reduce} />
           </div>
         </div>
       </div>
