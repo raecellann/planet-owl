@@ -51,7 +51,7 @@ export function CompareTable() {
   return (
     <div className="mt-24">
       <h2 className="text-center font-['Momo_Trust_Display'] text-[clamp(1.9rem,4vw,3.2rem)] font-normal leading-[1.1] text-gold-500">
-        More Creativity
+        Why Brands Nest With Us
       </h2>
 
       <motion.div
@@ -79,7 +79,7 @@ export function CompareTable() {
                 <Mark on owl reduce={reduce} delay={0.1 + i * 0.06} />
               </span>
               {RIVALS.map((r) => (
-                <span key={r.id} role="cell" onMouseEnter={() => setHot(r.id)} className={`${rival(r.id)} py-3`}>
+                <span key={r.id} role="cell" onMouseEnter={() => setHot(r.id)} className={`${rival(r.id)} py-3 ${i === ROWS.length - 1 ? 'rounded-b-2xl' : ''}`}>
                   <span className="sr-only">{row[r.id] ? 'Usually' : 'Usually not'}</span>
                   <Mark on={row[r.id]} reduce={reduce} delay={0.16 + i * 0.06} />
                 </span>
