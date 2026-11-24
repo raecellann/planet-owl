@@ -158,7 +158,7 @@ export default function BlogPost({ post }) {
           <aside className="lg:block">
             <div className="sticky top-[calc(2.92vw+max(3.25rem,4.4vw)+2rem)]">
               <p className="font-ui text-xs font-bold uppercase tracking-wider text-plum-700">Share this article</p>
-              <div className={`${TRAY} mt-4 !flex-nowrap !gap-1.5 !p-2`}>
+              <div className={`${TRAY} mt-4 !flex-nowrap !justify-start`}>
                 <ShareLink
                   href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`}
                   label="Share on Facebook"

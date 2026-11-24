@@ -89,11 +89,10 @@ export default function Portfolio() {
   // The brand whose album is open, or null.
   const [album, setAlbum] = useState(null)
   const shown = filter === 'all' ? WORK : WORK.filter((w) => w.tags.includes(filter))
-  // Three across at most, everywhere. Under "All" the featured three make the
-  // first row and the wall waits behind the button; a chosen craft is one wall.
-  const featured = (w) => w.lead || w.wide
-  const row = filter === 'all' ? shown.filter(featured) : []
-  const rest = filter === 'all' ? shown.filter((w) => !featured(w)) : shown
+  // Three across at most, everywhere. Under "All" the first two rows show and
+  // the wall waits behind the button; a chosen craft is one wall.
+  const row = filter === 'all' ? shown.slice(0, 6) : []
+  const rest = filter === 'all' ? shown.slice(6) : shown
   // Under "All", the wall waits behind the button. Choosing a craft is asking
   // to see it, so any other chip opens the wall without a second click.
   const wallOpen = expanded || filter !== 'all'
@@ -318,7 +317,7 @@ export default function Portfolio() {
               x: cloudDrift,
               opacity: driftOpacity,
             }}
-            className="pointer-events-none absolute z-30 max-w-none select-none"
+            className="pointer-events-none absolute z-0 max-w-none select-none"
           />
 
           {/* The row's own pilot, over the first tile's left half — in the
@@ -336,7 +335,7 @@ export default function Portfolio() {
               plays its one-time arrival. */}
           <motion.div
             style={{ x: rowFlight }}
-            className="pointer-events-none absolute -left-[12%] top-[71%] z-30 w-[36%] sm:-left-[15%] sm:top-[34%] sm:w-[20%]"
+            className="pointer-events-none absolute -left-[9%] top-[29%] z-30 w-[30%] sm:-left-[15%] sm:top-[17%] sm:w-[20%]"
           >
             <motion.img
               src={A.owl.plane}
@@ -354,7 +353,7 @@ export default function Portfolio() {
           {/* The second pilot, off the row's other side, flying the other way. */}
           <motion.div
             style={{ x: leadFlight }}
-            className="pointer-events-none absolute -right-[15%] -top-[8%] z-30 hidden w-[20%] sm:block"
+            className="pointer-events-none absolute -right-[19%] top-[52%] z-30 hidden w-[20%] sm:block"
           >
             <motion.img
               src={A.owl.plane}
@@ -375,14 +374,14 @@ export default function Portfolio() {
             alt=""
             aria-hidden
             loading="lazy"
-            className="pointer-events-none absolute -left-[11%] -top-[16%] z-0 hidden w-[28%] -scale-x-100 animate-cloud select-none motion-reduce:animate-none sm:block"
+            className="pointer-events-none absolute -left-[11%] -top-[8%] z-0 hidden w-[28%] -scale-x-100 animate-cloud select-none motion-reduce:animate-none sm:block"
           />
           </>
         )}
 
           <motion.div
             layout
-            className="relative z-10 grid gap-5 sm:grid-cols-3 lg:gap-[2.625rem]"
+            className="relative z-10 grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 lg:gap-[2.625rem]"
           >
             <AnimatePresence mode="popLayout">
               {row.map((w) => (
@@ -405,7 +404,7 @@ export default function Portfolio() {
                       src={w.cover.src}
                       alt={w.alt}
                       loading="lazy"
-                      className="aspect-[787/466] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                      className={`aspect-[787/466] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03] ${w.cover.h > w.cover.w ? 'object-[center_38%]' : ''}`}
                     />
                     {w.film && <PlayMark />}
                   </button>

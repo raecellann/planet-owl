@@ -240,7 +240,7 @@ export default function About() {
             role="tablist"
             label="Crafts"
             layoutId="craft-chip-active"
-            className="mt-8"
+            className="mt-8 !justify-start"
             items={CRAFTS.map((c, n) => ({ id: n, label: c.title }))}
             value={craft}
             onChange={setCraft}
