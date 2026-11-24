@@ -65,7 +65,7 @@ export default function BlogLayout({ children, onBlog = true, newsletter = true,
                 the CTA in the same 351px, and at the landing page's `h-8`
                 the row was 25px wider than the pill — the CTA hung off the
                 right-hand end. */}
-            <img src={A.logo} alt="Planet Owl" className="h-8 w-auto sm:h-[max(1.5rem,2vw)]" />
+            <img src={A.logo} alt="Planet Owl" className="h-7 w-auto sm:h-[max(1.3rem,1.7vw)]" />
           </a>
 
           <ul className="ml-auto hidden shrink-0 items-center gap-[max(1rem,2vw)] pl-6 lg:flex">

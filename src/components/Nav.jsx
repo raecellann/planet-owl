@@ -112,7 +112,7 @@ export default function Nav({ entered = true }) {
         // the collapsed padding either side, plus 2px of slack.
         style={{
           maxWidth: collapsed
-            ? 'calc(max(1.5rem, 2vw) * 6.166 + 2 * max(1.2rem, 1.4vw) + 2px)'
+            ? 'calc(max(1.3rem, 1.7vw) * 6.166 + 2 * max(1.2rem, 1.4vw) + 2px)'
             : 'min(1758px, 100%)',
           transition: 'max-width 0.9s cubic-bezier(0.4, 0, 0.2, 1)',
         }}
@@ -202,7 +202,7 @@ export default function Nav({ entered = true }) {
           <img
             src={A.logo}
             alt="Planet Owl"
-            className="h-8 w-auto sm:h-[max(1.5rem,2vw)]"
+            className="h-7 w-auto sm:h-[max(1.3rem,1.7vw)]"
           />
         </a>
 

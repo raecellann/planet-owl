@@ -204,6 +204,10 @@ export default function WhatWeDo() {
   // its bottom leaving there: they are in place while the craft is being
   // read, and pull away as the visitor scrolls on past it.
   const sectionRef = useRef(null)
+  const ribbonRef = useRef(null)
+  const { scrollYProgress: ribbonPassed } = useScroll({ target: ribbonRef, offset: ['start end', 'end start'] })
+  const ribbonCloudLeft = useTransform(ribbonPassed, [0, 0.5, 1], ['-14vw', '3vw', '-14vw'])
+  const ribbonCloudRight = useTransform(ribbonPassed, [0, 0.5, 1], ['14vw', '-3vw', '14vw'])
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start start', 'end start'] })
 
   const go = useCallback(
@@ -698,10 +702,22 @@ export default function WhatWeDo() {
 
       {/* The clouds drift across the two ends of the ribbon, in front of it,
           so the words scroll in and out of them. */}
-      <div className="relative">
+      <div ref={ribbonRef} className="relative">
         <PromiseRibbon reduce={reduce} />
-        <img src={cloudImg} alt="" aria-hidden loading="lazy" className="pointer-events-none absolute -left-[26vw] top-1/2 z-10 w-[48vw] sm:-left-[16vw] sm:w-[36vw] max-w-none -translate-y-1/2 -scale-x-100 animate-cloud select-none motion-reduce:animate-none" />
-        <img src={cloudImg} alt="" aria-hidden loading="lazy" className="pointer-events-none absolute -right-[27vw] top-1/2 z-10 w-[48vw] sm:-right-[17vw] sm:w-[36vw] max-w-none -translate-y-1/2 animate-cloud-slow select-none motion-reduce:animate-none" />
+        {/* Two motions on two elements: the scroll carries each cloud in over
+            the ribbon and back out, and the image inside keeps drifting. */}
+        <motion.div
+          style={reduce ? undefined : { x: ribbonCloudLeft }}
+          className="pointer-events-none absolute -left-[26vw] top-1/2 z-10 w-[48vw] -translate-y-1/2 sm:-left-[16vw] sm:w-[36vw]"
+        >
+          <img src={cloudImg} alt="" aria-hidden loading="lazy" className="w-full -scale-x-100 animate-cloud select-none motion-reduce:animate-none" />
+        </motion.div>
+        <motion.div
+          style={reduce ? undefined : { x: ribbonCloudRight }}
+          className="pointer-events-none absolute -right-[27vw] top-1/2 z-10 w-[48vw] -translate-y-1/2 sm:-right-[17vw] sm:w-[36vw]"
+        >
+          <img src={cloudImg} alt="" aria-hidden loading="lazy" className="w-full animate-cloud-slow select-none motion-reduce:animate-none" />
+        </motion.div>
       </div>
     </section>
   )
