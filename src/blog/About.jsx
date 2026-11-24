@@ -326,7 +326,7 @@ function PromiseCard({ p, i, progress, spread, drop }) {
   const opacity = useTransform(k, (v) => {
     const a = Math.abs(v)
     const fade = Math.max(0, Math.min(1, (2.45 - a) * 3))
-    return fade * (a < 1 ? 1 - a * 0.55 : 0.45)
+    return fade * (a < 1 ? 1 - a * 0.78 : 0.22)
   })
   const zIndex = useTransform(k, (v) => Math.round(10 - Math.abs(v) * 3))
   const dark = PROMISE_TONES[i] === 'bg-plum-800'
