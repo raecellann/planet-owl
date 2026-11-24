@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { usePaceInView } from '../../lib/scrollPace'
-import { animate, motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'motion/react'
+import { AnimatePresence, animate, motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'motion/react'
 import { A } from '../../lib/assets'
 import Reveal from '../../components/ui/Reveal'
 import { GoldButton } from '../../components/ui/Button'
@@ -166,6 +166,10 @@ const FEATHERS_PHONE = [
 /** The one feather being dragged. Only one can be carried at a time. */
 let heldFeather = null
 
+/** Set once any feather has been dragged: the "drag me" hint is then retired. */
+let featherHintDone = false
+const HINT_EVENT = 'planetowl:feather-dragged'
+
 /**
  * One feather. It turns on its own clock and can be picked up and dragged
  * anywhere in the section, by request: press on it and it follows the cursor
@@ -179,7 +183,7 @@ let heldFeather = null
  * The drag sits outside the turning box so it stays on the screen's axes
  * rather than the feather's rotated ones.
  */
-function Feather({ left, top, vw, cap, secs, dir }) {
+function Feather({ left, top, vw, cap, secs, dir, hint }) {
   const home = useRef(null)
   const limits = useRef({ minX: 0, maxX: 0, minY: 0, maxY: 0 })
   const x = useMotionValue(0)
@@ -196,6 +200,30 @@ function Feather({ left, top, vw, cap, secs, dir }) {
   const grab = useRef(null)
   const flight = useRef([])
   const [held, setHeld] = useState(false)
+  const [showHint, setShowHint] = useState(hint && !featherHintDone)
+
+  // The hint, by request, so visitors know the feathers can be carried: a
+  // "Drag me" tag with a hand sliding across it, and every few seconds the
+  // feather itself is tugged a little way and springs back. Both stop for
+  // good the first time any feather is dragged.
+  useEffect(() => {
+    if (!showHint) return undefined
+    const off = () => setShowHint(false)
+    window.addEventListener(HINT_EVENT, off)
+    const tug = setInterval(() => {
+      if (grab.current || flight.current.length) return
+      const nudge = { duration: 1.1, ease: 'easeInOut', times: [0, 0.4, 1] }
+      flight.current = [
+        animate(x, [0, 26 * dir, 0], { ...nudge, onComplete: () => (flight.current = []) }),
+        animate(r, [0, 10 * dir, 0], nudge),
+      ]
+    }, 3200)
+    return () => {
+      window.removeEventListener(HINT_EVENT, off)
+      clearInterval(tug)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showHint])
 
   const stopFlight = () => {
     flight.current.forEach((c) => c.stop())
@@ -244,6 +272,10 @@ function Feather({ left, top, vw, cap, secs, dir }) {
     stopFlight()
     measure()
     heldFeather = home
+    if (!featherHintDone) {
+      featherHintDone = true
+      window.dispatchEvent(new Event(HINT_EVENT))
+    }
     grab.current = { dx: e.clientX - x.get(), dy: e.clientY - y.get(), lastX: e.clientX, id: e.pointerId }
     try {
       e.currentTarget.setPointerCapture(e.pointerId)
@@ -298,6 +330,32 @@ function Feather({ left, top, vw, cap, secs, dir }) {
           />
         </motion.div>
       </motion.div>
+      <AnimatePresence>
+        {showHint && (
+          <motion.span
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.3 }}
+            className="pointer-events-none absolute left-1/2 top-1/2 z-10 flex -translate-x-1/2 -translate-y-1/2 items-center gap-1.5 whitespace-nowrap rounded-full bg-white/95 px-3.5 py-2 font-ui text-sm font-bold text-plum-700 shadow-[0_8px_20px_-8px_rgba(54,14,57,0.55)] ring-1 ring-plum-900/10"
+          >
+            <motion.svg
+              viewBox="0 0 24 24"
+              className="size-4 text-plum-700"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              animate={{ x: [0, 6, 0] }}
+              transition={{ duration: 1.1, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              <path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V10m0-1.5a1.5 1.5 0 0 1 3 0V11m0-1a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1-6 6h-.6a6 6 0 0 1-4.7-2.3L4.4 15a1.6 1.6 0 0 1 2.5-2L9 15V11" />
+            </motion.svg>
+            Drag me
+          </motion.span>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
@@ -405,6 +463,7 @@ export default function NestTeaser() {
             return (
               <Feather
                 key={i}
+                hint={i === 0}
                 left={left}
                 top={top}
                 vw={vw}
