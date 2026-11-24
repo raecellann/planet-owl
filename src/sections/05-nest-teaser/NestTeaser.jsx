@@ -343,12 +343,14 @@ function Feather({ left, top, vw, cap, secs, dir, hint }) {
             className="pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2"
           >
             <motion.span
-              className="grid size-12 place-items-center rounded-full bg-white/95 text-plum-700 shadow-[0_8px_20px_-8px_rgba(54,14,57,0.55)] ring-1 ring-plum-900/10"
+              // No circle behind it, by request: just the hand, with a soft
+              // shadow so it still reads against the feather.
+              className="block drop-shadow-[0_4px_6px_rgba(36,5,31,0.45)]"
               animate={{ x: [0, 0, 16, 16, 0], y: [0, 0, -6, -6, 0] }}
               transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut', times: [0, 0.25, 0.6, 0.8, 1] }}
             >
               <motion.span
-                className="text-2xl leading-none"
+                className="block text-4xl leading-none"
                 animate={{ scale: [1, 0.82, 0.82, 0.82, 1] }}
                 transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut', times: [0, 0.25, 0.6, 0.8, 1] }}
               >

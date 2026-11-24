@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { AnimatePresence, animate, motion, useMotionValue, useReducedMotion, useScroll, useTransform } from 'motion/react'
-import { scrollPace } from '../../lib/scrollPace'
+import { AnimatePresence, motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from 'motion/react'
 import { A, nestSrcSet } from '../../lib/assets'
 import Reveal from '../../components/ui/Reveal'
 import { PHONE, useMediaQuery } from '../../lib/useMediaQuery'
@@ -691,33 +690,19 @@ function Quote({ copyRef }) {
     // Lifts sooner on a phone, where the copy fills more of the screen.
     offset: phone ? ['start 0.98', 'start 0.7'] : ['start 0.9', 'start 0.45'],
   })
-  // A fast scroll used to carry the copy up and away while the branch was
-  // still part-way over it, so it was never readable (by request). Now a
-  // quick flick, or the copy getting past the half-way mark, finishes the
-  // reveal at once and it stays uncovered until the copy drops back below
-  // the window. Slow scrolling still peels the branch off by hand.
-  useEffect(() => {
-    let done = false
-    let anim = null
-    return copyProgress.on('change', (v) => {
-      if (!measured) return
-      if (reduce) return revealMV.set(1)
-      if (v <= 0) {
-        done = false
-        anim?.stop()
-        return revealMV.set(0)
-      }
-      if (done) return
-      // A big jump between two scroll events is a flick too.
-      const jump = v - revealMV.get() > 0.2
-      if (v >= 0.5 || jump || scrollPace() > 0.3) {
-        done = true
-        anim = animate(revealMV, 1, { duration: 0.45, ease: [0.16, 1, 0.3, 1] })
-        return
-      }
-      revealMV.set(v)
-    })
-  }, [copyProgress, measured, reduce, revealMV])
+  // Smooth again, by request: the branch follows the scroll on a spring,
+  // so it always glides. A quick flick no longer snaps it off (that read as
+  // a sudden jump); the spring catches up within a moment instead, so the
+  // copy is still uncovered while it is on screen.
+  const easedProgress = useSpring(copyProgress, { stiffness: 140, damping: 26, mass: 0.5, restDelta: 0.0005 })
+  useEffect(
+    () =>
+      easedProgress.on('change', (v) => {
+        if (!measured) return
+        revealMV.set(reduce ? 1 : v)
+      }),
+    [easedProgress, measured, reduce, revealMV],
+  )
 
   useEffect(() => {
     if (reduce) return undefined
