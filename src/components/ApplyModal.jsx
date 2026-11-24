@@ -68,7 +68,6 @@ export default function ApplyModal() {
   }
 
   const done = [name.trim(), /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()), file].filter(Boolean).length
-  const progress = done / 3
   const owl = ROLES.find((r) => r.id === role)?.owl ?? A.owl.crown
 
   const onSubmit = async (e) => {
@@ -105,7 +104,7 @@ export default function ApplyModal() {
       onClick={(e) => {
         if (e.target === ref.current) ref.current.close()
       }}
-      className="m-auto max-h-[94dvh] w-[min(36rem,calc(100vw-1.5rem))] overflow-y-auto overflow-x-hidden rounded-[2rem] bg-gold-500 p-0 backdrop:bg-plum-950/70 backdrop:backdrop-blur-sm"
+      className="m-auto max-h-[94dvh] w-[min(36rem,calc(100vw-1.5rem))] apply-scroll overflow-y-auto overflow-x-hidden rounded-[2rem] bg-gold-500 p-0 backdrop:bg-plum-950/70 backdrop:backdrop-blur-sm"
     >
       <div className="relative p-6 sm:p-9">
         <button
@@ -198,22 +197,6 @@ export default function ApplyModal() {
                     <span className="relative">{r.id}</span>
                   </button>
                 ))}
-              </div>
-
-              {/* Fills as name, email and resume are done. */}
-              <div>
-                <div className="flex justify-between font-ui text-xs font-bold text-plum-700">
-                  <span>Nest ready</span>
-                  <span>{done}/3</span>
-                </div>
-                <div className="relative mt-1.5 h-3 rounded-full bg-white/60">
-                  <motion.div
-                    className="h-full rounded-full bg-teal-500"
-                    initial={false}
-                    animate={{ width: `${progress * 100}%` }}
-                    transition={{ type: 'spring', stiffness: 140, damping: 20 }}
-                  />
-                </div>
               </div>
 
               <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden className="hidden" />

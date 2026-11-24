@@ -295,73 +295,82 @@ const PROMISE_CTAS = [
 const PROMISE_TONES = ['bg-gold-200', 'bg-[#e7b248]', 'bg-plum-800']
 
 /**
- * The three promises on a curved track. The middle card stands up straight;
- * the ones either side tip down along the arc. Every few seconds the track
- * turns one step to the right, and the arrows turn it by hand.
+ * One promise on the curved track. `k` is its place on the arc as the page
+ * scrolls: 0 is the centre, where it stands up straight; either side it tips
+ * down along the curve and fades as it leaves.
+ */
+function PromiseCard({ p, i, progress, spread, drop }) {
+  const n = PROMISES.length
+  const k = useTransform(progress, [0, 1], [-i, n - 1 - i])
+  const x = useTransform(k, (v) => `calc(-50% + ${v * spread}%)`)
+  const y = useTransform(k, (v) => Math.abs(v) * drop)
+  const rotate = useTransform(k, (v) => v * 11)
+  const scale = useTransform(k, (v) => 1 - Math.min(Math.abs(v), 1.5) * 0.12)
+  const opacity = useTransform(k, (v) => Math.max(0, Math.min(1, 1.7 - Math.abs(v))))
+  const zIndex = useTransform(k, (v) => Math.round(10 - Math.abs(v) * 3))
+  const dark = PROMISE_TONES[i] === 'bg-plum-800'
+  return (
+    <motion.li
+      style={{ x, y, rotate, scale, opacity, zIndex }}
+      className={`absolute left-1/2 top-0 flex h-[24rem] w-[min(30rem,84%)] origin-bottom flex-col rounded-[1.75rem] p-7 shadow-[0_30px_60px_-30px_rgba(20,4,22,0.55)] sm:h-[20rem] sm:p-9 ${PROMISE_TONES[i]}`}
+    >
+      <p className={`font-ui text-sm font-bold ${dark ? 'text-gold-400' : 'text-plum-700'}`}>{String(i + 1).padStart(2, '0')}</p>
+      <h3 className={`mt-1 font-['Momo_Trust_Display'] text-[clamp(1.4rem,2.4vw,1.9rem)] font-normal leading-[1.12] ${dark ? 'text-gold-200' : 'text-plum-700'}`}>{p.title}</h3>
+      <p className={`mt-3 font-ui leading-relaxed ${dark ? 'text-gold-200' : 'text-plum-700'}`}>{p.copy}</p>
+      <a
+        href={PROMISE_CTAS[i].href}
+        className={`btn-type mt-auto inline-flex h-12 w-fit items-center rounded-full px-6 font-ui font-semibold no-underline shadow-[0_6px_0_-2px_var(--color-plum-950)] transition-colors ${dark ? 'bg-gold-500 text-plum-700 hover:bg-gold-400' : 'bg-plum-800 text-white hover:bg-plum-700'}`}
+      >
+        {PROMISE_CTAS[i].label}
+      </a>
+    </motion.li>
+  )
+}
+
+/**
+ * The three promises on a curved track, driven by the scroll, not a timer.
+ * The section holds still while the cards travel right along the arc, each
+ * standing up as it passes the centre.
  */
 function PromiseArc() {
   const reduce = useReducedMotion()
   const phone = useMediaQuery(PHONE)
-  const n = PROMISES.length
-  const [step, setStep] = useState(0)
-  const [paused, setPaused] = useState(false)
+  const track = useRef(null)
+  const { scrollYProgress } = useScroll({ target: track, offset: ['start start', 'end end'] })
+  const heading = (
+    <h2 className="text-center font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-plum-700">
+      What We Are Here to Do
+    </h2>
+  )
 
-  useEffect(() => {
-    if (reduce || paused) return
-    const id = setInterval(() => setStep((s) => s + 1), 4200)
-    return () => clearInterval(id)
-  }, [reduce, paused])
-
-  const spread = phone ? 86 : 64
-  return (
-    <div
-      onPointerEnter={() => setPaused(true)}
-      onPointerLeave={() => setPaused(false)}
-      onFocus={() => setPaused(true)}
-      onBlur={() => setPaused(false)}
-    >
-      <ul className="relative mx-auto mt-10 h-[29rem] max-w-[1180px] sm:h-[25rem]">
-        {PROMISES.map((p, i) => {
-          // -1 left, 0 centre, 1 right. Each step moves every card one place right.
-          const k = ((((i + step) % n) + n) % n) - 1
-          const dark = PROMISE_TONES[i] === 'bg-plum-800'
-          return (
-            <motion.li
-              key={p.title}
-              aria-hidden={k !== 0}
-              initial={false}
-              animate={{
-                x: `calc(-50% + ${k * spread}%)`,
-                y: Math.abs(k) * (phone ? 28 : 56),
-                rotate: k * 11,
-                scale: 1 - Math.abs(k) * 0.12,
-                opacity: Math.abs(k) > 1 ? 0 : 1,
-              }}
-              transition={reduce ? { duration: 0 } : { type: 'spring', stiffness: 90, damping: 18 }}
-              style={{ zIndex: 3 - Math.abs(k) }}
-              className={`absolute left-1/2 top-0 flex h-[24rem] w-[min(30rem,84%)] origin-bottom flex-col rounded-[1.75rem] p-7 shadow-[0_30px_60px_-30px_rgba(20,4,22,0.55)] sm:h-[20rem] sm:p-9 ${PROMISE_TONES[i]} ${k === 0 ? '' : 'pointer-events-none'}`}
-            >
-              <p className={`font-ui text-sm font-bold ${dark ? 'text-gold-400' : 'text-plum-700'}`}>{String(i + 1).padStart(2, '0')}</p>
-              <h3 className={`mt-1 font-['Momo_Trust_Display'] text-[clamp(1.4rem,2.4vw,1.9rem)] font-normal leading-[1.12] ${dark ? 'text-gold-200' : 'text-plum-700'}`}>{p.title}</h3>
-              <p className={`mt-3 font-ui leading-relaxed ${dark ? 'text-gold-200' : 'text-plum-700'}`}>{p.copy}</p>
-              <a
-                href={PROMISE_CTAS[i].href}
-                tabIndex={k === 0 ? 0 : -1}
-                className={`btn-type mt-auto inline-flex h-12 w-fit items-center rounded-full px-6 font-ui font-semibold no-underline shadow-[0_6px_0_-2px_var(--color-plum-950)] transition-colors ${dark ? 'bg-gold-500 text-plum-700 hover:bg-gold-400' : 'bg-plum-800 text-white hover:bg-plum-700'}`}
-              >
+  if (reduce) {
+    return (
+      <div className="mx-auto max-w-[1180px] py-14">
+        {heading}
+        <ul className="mt-10 grid gap-5 lg:grid-cols-3">
+          {PROMISES.map((p, i) => (
+            <li key={p.title} className={`flex flex-col rounded-[1.75rem] p-7 ${PROMISE_TONES[i]} ${PROMISE_TONES[i] === 'bg-plum-800' ? 'text-gold-200' : 'text-plum-700'}`}>
+              <h3 className="font-['Momo_Trust_Display'] text-2xl font-normal">{p.title}</h3>
+              <p className="mt-3 font-ui leading-relaxed">{p.copy}</p>
+              <a href={PROMISE_CTAS[i].href} className="btn-type mt-6 inline-flex h-12 w-fit items-center rounded-full bg-gold-500 px-6 font-ui font-semibold text-plum-700 no-underline">
                 {PROMISE_CTAS[i].label}
               </a>
-            </motion.li>
-          )
-        })}
-      </ul>
-      <div className="mt-6 flex justify-center gap-3">
-        <button type="button" onClick={() => setStep((s) => s - 1)} aria-label="Previous promise" className="grid size-12 place-items-center rounded-full bg-gold-500 text-plum-700 shadow-[0_5px_0_-1px_var(--color-plum-900)] transition-transform hover:-translate-y-0.5">
-          <span aria-hidden>←</span>
-        </button>
-        <button type="button" onClick={() => setStep((s) => s + 1)} aria-label="Next promise" className="grid size-12 place-items-center rounded-full bg-gold-500 text-plum-700 shadow-[0_5px_0_-1px_var(--color-plum-900)] transition-transform hover:-translate-y-0.5">
-          <span aria-hidden>→</span>
-        </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )
+  }
+
+  return (
+    <div ref={track} className="relative h-[280svh]">
+      <div className="sticky top-0 flex h-[100svh] flex-col justify-center overflow-hidden pt-20">
+        {heading}
+        <ul className="relative mx-auto mt-10 h-[29rem] w-full max-w-[1180px] sm:h-[25rem]">
+          {PROMISES.map((p, i) => (
+            <PromiseCard key={p.title} p={p} i={i} progress={scrollYProgress} spread={phone ? 86 : 64} drop={phone ? 28 : 56} />
+          ))}
+        </ul>
       </div>
     </div>
   )
@@ -440,10 +449,7 @@ export default function About() {
       <SectionBreak edge="bottom" />
 
       {/* -------------------------------------------------- how we work -- */}
-      <section className="overflow-x-clip bg-white px-5 py-14 sm:px-8 sm:py-20">
-        <h2 className="text-center font-['Momo_Trust_Display'] text-[clamp(1.7rem,3.4vw,2.7rem)] font-normal leading-[1.1] text-plum-700">
-          What We Are Here to Do
-        </h2>
+      <section className="overflow-x-clip bg-white px-5 sm:px-8">
         <PromiseArc />
       </section>
 

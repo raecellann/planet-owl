@@ -376,3 +376,20 @@
 .is-modal body {
   overflow: hidden;
 }
+
+/* The application popup's own scrollbar: a thin plum thumb, no track. */
+.apply-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-plum-800) transparent;
+}
+.apply-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.apply-scroll::-webkit-scrollbar-track {
+  background: transparent;
+  margin-block: 1.5rem;
+}
+.apply-scroll::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: var(--color-plum-800);
+}
