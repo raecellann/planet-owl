@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useReducedMotion } from 'motion/react'
+import { useReducedMotion } from '../lib/motionPref'
 import BlogLayout from './BlogLayout'
 import { CONTACT_EMAIL, submitContact } from '../lib/signup'
 import { A } from '../lib/assets'

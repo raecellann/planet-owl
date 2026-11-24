@@ -1,13 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import {
-  animate,
-  motion,
-  useInView,
-  useMotionTemplate,
-  useMotionValue,
-  useReducedMotion,
-  useTransform,
-} from 'motion/react'
+import { animate, motion, useInView, useMotionTemplate, useMotionValue, useTransform } from 'motion/react'
+import { useReducedMotion } from '../../lib/motionPref'
 
 /**
  * One of the hand-drawn marker doodles from `assets/container` — the hearts

@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { motion, useMotionValue, useReducedMotion, useSpring } from 'motion/react'
+import { motion, useMotionValue, useSpring } from 'motion/react'
+import { useReducedMotion } from '../../lib/motionPref'
 import { A } from '../../lib/assets'
 
 /**

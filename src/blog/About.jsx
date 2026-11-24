@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { motion, useReducedMotion, useScroll, useSpring, useTransform, useVelocity } from 'motion/react'
+import { motion, useScroll, useSpring, useTransform, useVelocity } from 'motion/react'
+import { useReducedMotion, useSoftMotion } from '../lib/motionPref'
 import BlogLayout from './BlogLayout'
 import { A } from '../lib/assets'
 import { WORK } from '../sections/02-portfolio/work'
@@ -181,7 +182,8 @@ function useScrollKick() {
   const { scrollY } = useScroll()
   const speed = useVelocity(scrollY)
   const smooth = useSpring(speed, { stiffness: 160, damping: 30, mass: 0.6 })
-  return useTransform(smooth, [-3000, 0, 3000], [-3.5, 0, 3.5], { clamp: true })
+  const tilt = useSoftMotion() ? 0 : 3.5
+  return useTransform(smooth, [-3000, 0, 3000], [-tilt, 0, tilt], { clamp: true })
 }
 
 function CardFace({ v }) {
@@ -203,9 +205,11 @@ function CardFace({ v }) {
  */
 function ValueCard({ v, i, n, progress, kick }) {
   const spot = SCATTER[i % SCATTER.length]
+  // Reduced motion asked for: a short slide in rather than a throw across the screen.
+  const travel = useSoftMotion() ? 24 : 110
   const from = i % 2 ? 1 : -1
   const range = [i / (n + 0.5), (i + 0.85) / (n + 0.5)]
-  const x = useTransform(progress, range, [`${from * 110}vw`, '0vw'])
+  const x = useTransform(progress, range, [`${from * travel}vw`, '0vw'])
   const y = useTransform(progress, range, ['-18svh', '0svh'])
   const land = useTransform(progress, range, [spot.rot + from * 28, spot.rot])
   const rotate = useTransform(() => land.get() + kick.get() * (i % 2 ? -1 : 1))
@@ -226,6 +230,7 @@ function ValueCard({ v, i, n, progress, kick }) {
  * it is never "in view", so the cards never appeared.)
  */
 function PhoneValueCard({ v, i, kick }) {
+  const travel = useSoftMotion() ? 24 : 110
   const from = i % 2 ? 1 : -1
   const rot = SCATTER[i % SCATTER.length].rot
   // Half the desktop tilt, so a turned card's corners stay on screen.
@@ -233,7 +238,7 @@ function PhoneValueCard({ v, i, kick }) {
   return (
     <motion.li initial="off" whileInView="on" viewport={{ once: true, amount: 0.3 }} className={`w-[84%] ${i % 2 ? 'ml-auto mr-1' : 'ml-1'}`}>
       <motion.div
-        variants={{ off: { x: `${from * 110}vw`, opacity: 0 }, on: { x: 0, opacity: 1 } }}
+        variants={{ off: { x: `${from * travel}vw`, opacity: 0 }, on: { x: 0, opacity: 1 } }}
         transition={{ type: 'spring', stiffness: 120, damping: 16 }}
         style={{ rotate }}
         className={`rounded-[1.5rem] p-5 shadow-[0_24px_50px_-24px_rgba(20,4,22,0.75)] ${VALUE_TONES[i % VALUE_TONES.length]}`}
@@ -356,7 +361,7 @@ function PromiseCard({ p, i, progress, spread, drop }) {
       style={{ x, y, rotate, scale, opacity, zIndex }}
       className={`absolute left-1/2 top-0 flex min-h-[19rem] w-[min(30rem,84%)] origin-bottom flex-col rounded-[1.75rem] p-6 pb-7 shadow-[0_30px_60px_-30px_rgba(20,4,22,0.55)] sm:h-[23rem] sm:p-10 ${PROMISE_TONES[i]}`}
     >
-      <span aria-hidden className={`grid size-11 place-items-center rounded-2xl ${dark ? 'bg-gold-500 text-plum-800' : 'bg-plum-800 text-gold-400'}`}>
+      <span aria-hidden className={`grid size-12 shrink-0 place-items-center rounded-xl bg-plum-800 text-gold-400 ${dark ? 'ring-2 ring-gold-400/60' : ''}`}>
         <svg viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d={PROMISE_ICONS[i]} /></svg>
       </span>
       <h3 className={`mt-3 font-['Momo_Trust_Display'] text-[clamp(1.4rem,2.4vw,1.9rem)] font-normal leading-[1.12] ${dark ? 'text-gold-200' : 'text-plum-700'}`}>{p.title}</h3>

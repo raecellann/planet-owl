@@ -1,4 +1,5 @@
-import { motion, useAnimationControls, useReducedMotion } from 'motion/react'
+import { motion, useAnimationControls } from 'motion/react'
+import { useReducedMotion, useSoftMotion } from '../../lib/motionPref'
 import { scrollPace } from '../../lib/scrollPace'
 
 const EASE = [0.16, 1, 0.3, 1]
@@ -26,6 +27,12 @@ export default function Reveal({
 }) {
   const reduce = useReducedMotion()
   const controls = useAnimationControls()
+  // Asked for reduced motion: the same fade, travelling a third as far.
+  if (useSoftMotion()) {
+    y *= 0.35
+    x *= 0.35
+    scale = 1
+  }
   const MotionTag = motion[Tag] ?? motion.div
 
   if (reduce) return <Tag className={className}>{children}</Tag>

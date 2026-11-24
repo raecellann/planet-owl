@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
-import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
+import { AnimatePresence, animate, motion, useInView, useMotionValue, useTransform } from 'motion/react'
+import { useReducedMotion } from '../lib/motionPref'
 import BlogLayout from './BlogLayout'
 import { A } from '../lib/assets'
 import Faq from '../components/Faq'
 import SectionBreak from '../components/SectionBreak'
 import { CompareTable } from './PricingExtras'
-import { useCatchUp } from '../lib/scrollPace'
 import cloudImg from '../../assets/section 2/image 35 copy.png'
 import owlWizard from '../../assets/about-owls/wizard.webp'
 import owlHelmet from '../../assets/about-owls/helmet.webp'
@@ -82,8 +82,16 @@ const STEPS = [
 function PlaneSteps() {
   const reduce = useReducedMotion()
   const ref = useRef(null)
-  const { scrollYProgress: raw } = useScroll({ target: ref, offset: ['start 92%', 'end 28%'] })
-  const s = useCatchUp(raw)
+  // Played on a clock once the tile is properly in view, not scrubbed by the
+  // scroll: tied to the scroll it only finished on screens tall enough to
+  // carry the tile most of the way up, and stalled half way on short ones.
+  const s = useMotionValue(reduce ? 1 : 0)
+  const seen = useInView(ref, { once: true, amount: 0.6 })
+  useEffect(() => {
+    if (!seen || reduce) return undefined
+    const run = animate(s, 1, { duration: 3.4, ease: 'linear', delay: 0.2 })
+    return () => run.stop()
+  }, [seen, reduce, s])
   const left = useTransform(s, [0, 0.14, 0.4, 0.68, 1], ['16.6%', '16.6%', '50%', '83.4%', '135%'])
   const tryOn = useTransform(s, [0.16, 0.28], [0, 1])
   const decideOn = useTransform(s, [0.42, 0.54], [0, 1])
@@ -147,17 +155,17 @@ const STEP_CHIPS = [
     { label: 'Move up a plan', x: 62, y: 30, tone: 'teal' },
   ],
 ]
-const CHIP_TONES = { teal: 'bg-teal-500 text-white', gold: 'bg-gold-500 text-plum-700', white: 'bg-white text-plum-700' }
+const CHIP_TONES = { teal: 'bg-teal-500 text-white', gold: 'bg-gold-500 text-plum-700', white: 'bg-white text-plum-700 ring-1 ring-plum-900/15' }
 const CHIP_DOTS = { teal: 'bg-white/90', gold: 'bg-plum-800', white: 'bg-teal-500' }
 
 /**
- * Each step's owl on a card, in the same style as the blog covers: a plum
- * ground, a caption card behind the owl, and labels that pop up one after
- * another whenever the step changes.
+ * Each step's owl, standing on the page with no card behind it (by request),
+ * and the labels that pop up around it one after another whenever the step
+ * changes.
  */
-function HatchCard({ step, art, active, reduce }) {
+function HatchCard({ active, art, reduce }) {
   return (
-    <div className="@container relative aspect-[4/3] max-h-full w-full max-w-[36rem] overflow-hidden rounded-[1.75rem] bg-[radial-gradient(ellipse_at_50%_30%,#6b3f69_0%,#451647_58%,#24051f_100%)] shadow-[0_30px_60px_-30px_rgba(36,5,31,0.6)]">
+    <div className="@container relative aspect-[4/3] max-h-full w-full max-w-[36rem]">
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={active}
@@ -167,24 +175,14 @@ function HatchCard({ step, art, active, reduce }) {
           exit={reduce ? undefined : { opacity: 0 }}
           transition={{ duration: 0.25 }}
         >
-          <motion.div
-            initial={reduce ? false : { y: 18, scale: 0.94 }}
-            animate={{ y: 0, scale: 1 }}
-            transition={{ type: 'spring', stiffness: 260, damping: 22 }}
-            className="absolute left-1/2 top-[11%] w-[46%] -translate-x-1/2 rounded-[2.4cqw] bg-white/95 p-[1.8cqw] pb-[2.4cqw] shadow-[0_3cqw_5cqw_-3cqw_rgba(36,5,31,0.6)]"
-          >
-            <div className="aspect-[16/11] rounded-[1.6cqw] bg-[linear-gradient(160deg,#f4cb6b,#e7b248)]" />
-            <p className="mt-[1.6cqw] font-ui text-[2cqw] leading-none text-plum-500">How It Hatches · {step.n}</p>
-            <p className="mt-[0.9cqw] font-ui text-[3cqw] font-bold leading-[1.1] text-plum-700">{step.title}</p>
-          </motion.div>
           <motion.img
             src={art}
             alt=""
             aria-hidden
-            initial={reduce ? false : { y: 30, opacity: 0, rotate: -6 }}
-            animate={{ y: 0, opacity: 1, rotate: 0 }}
-            transition={{ type: 'spring', stiffness: 220, damping: 18, delay: 0.05 }}
-            className="pointer-events-none absolute left-1/2 top-[8%] h-[56%] w-auto -translate-x-1/2 select-none drop-shadow-[0_2cqw_2.5cqw_rgba(36,5,31,0.4)]"
+            initial={reduce ? false : { y: 22, opacity: 0, scale: 0.94 }}
+            animate={{ y: 0, opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="pointer-events-none absolute left-1/2 top-1/2 h-[88%] w-auto max-w-[80%] -translate-x-1/2 -translate-y-1/2 select-none object-contain"
           />
           {STEP_CHIPS[active].map((chip, n) => (
             <motion.span
@@ -193,7 +191,7 @@ function HatchCard({ step, art, active, reduce }) {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               transition={{ type: 'spring', stiffness: 420, damping: 18, delay: reduce ? 0 : 0.18 + n * 0.12 }}
               style={{ left: `${chip.x}%`, top: `${chip.y}%` }}
-              className={`absolute inline-flex items-center gap-[1.2cqw] whitespace-nowrap rounded-full px-[2.4cqw] py-[1.3cqw] font-ui text-[2.4cqw] font-semibold leading-none shadow-[0_1.4cqw_2.4cqw_-1.2cqw_rgba(36,5,31,0.55)] ${CHIP_TONES[chip.tone]}`}
+              className={`absolute inline-flex items-center gap-[1.2cqw] whitespace-nowrap rounded-full px-[2.4cqw] py-[1.3cqw] font-ui text-[2.6cqw] font-semibold leading-none shadow-[0_1.4cqw_2.4cqw_-1.2cqw_rgba(36,5,31,0.45)] ${CHIP_TONES[chip.tone]}`}
             >
               <span className={`size-[1.6cqw] rounded-full ${CHIP_DOTS[chip.tone]}`} />
               {chip.label}
@@ -287,7 +285,7 @@ function HowItWorks() {
           </ol>
           </div>
           <div className="relative flex min-h-0 items-center justify-center">
-            <HatchCard step={STEPS[active]} art={STEP_ART[active]} active={active} reduce={reduce} />
+            <HatchCard art={STEP_ART[active]} active={active} reduce={reduce} />
           </div>
         </div>
       </div>

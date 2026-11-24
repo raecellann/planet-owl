@@ -359,12 +359,12 @@
     scroll-behavior: auto;
   }
 
+  /* Gentle, not none: transitions and hovers still play, and endless
+     ambient loops (drifting clouds, the ribbon) run once and settle. */
   *,
   *::before,
   *::after {
-    animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
   }
 }
 

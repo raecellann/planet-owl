@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+import { AnimatePresence, motion } from 'motion/react'
+import { useReducedMotion } from '../lib/motionPref'
 import { A } from '../lib/assets'
 import owlMoon from '../../assets/about-owls/moon.webp'
 
