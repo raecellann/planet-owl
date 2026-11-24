@@ -227,9 +227,10 @@ function ValueCard({ v, i, n, progress, kick }) {
 function PhoneValueCard({ v, i, kick }) {
   const from = i % 2 ? 1 : -1
   const rot = SCATTER[i % SCATTER.length].rot
-  const rotate = useTransform(kick, (k) => rot + k * (i % 2 ? -1 : 1))
+  // Half the desktop tilt, so a turned card's corners stay on screen.
+  const rotate = useTransform(kick, (k) => rot * 0.5 + k * (i % 2 ? -1 : 1))
   return (
-    <motion.li initial="off" whileInView="on" viewport={{ once: true, amount: 0.3 }} className={`w-[88%] ${i % 2 ? 'ml-auto' : ''}`}>
+    <motion.li initial="off" whileInView="on" viewport={{ once: true, amount: 0.3 }} className={`w-[84%] ${i % 2 ? 'ml-auto mr-1' : 'ml-1'}`}>
       <motion.div
         variants={{ off: { x: `${from * 110}vw`, opacity: 0 }, on: { x: 0, opacity: 1 } }}
         transition={{ type: 'spring', stiffness: 120, damping: 16 }}
@@ -338,7 +339,7 @@ function PromiseCard({ p, i, progress, spread, drop }) {
   return (
     <motion.li
       style={{ x, y, rotate, scale, opacity, zIndex }}
-      className={`absolute left-1/2 top-0 flex h-[22rem] w-[min(30rem,84%)] origin-bottom flex-col rounded-[1.75rem] p-6 shadow-[0_30px_60px_-30px_rgba(20,4,22,0.55)] sm:h-[23rem] sm:p-10 ${PROMISE_TONES[i]}`}
+      className={`absolute left-1/2 top-0 flex min-h-[19rem] w-[min(30rem,84%)] origin-bottom flex-col rounded-[1.75rem] p-6 pb-7 shadow-[0_30px_60px_-30px_rgba(20,4,22,0.55)] sm:h-[23rem] sm:p-10 ${PROMISE_TONES[i]}`}
     >
       <p className={`font-ui text-sm font-bold ${dark ? 'text-gold-400' : 'text-plum-700'}`}>{String(i + 1).padStart(2, '0')}</p>
       <h3 className={`mt-1 font-['Momo_Trust_Display'] text-[clamp(1.4rem,2.4vw,1.9rem)] font-normal leading-[1.12] ${dark ? 'text-gold-200' : 'text-plum-700'}`}>{p.title}</h3>
@@ -390,7 +391,7 @@ function PromiseArc() {
 
   return (
     <div ref={track} className="relative h-[340svh] sm:h-[420svh]">
-      <div className="sticky top-0 -mx-5 flex h-[100svh] flex-col justify-start overflow-hidden pt-24 sm:-mx-8 sm:justify-center sm:pt-20">
+      <div className="sticky top-0 -mx-5 flex h-[100svh] flex-col justify-center overflow-hidden pt-20 sm:-mx-8">
         {heading}
         <ul className="relative mx-auto mt-6 h-[25rem] w-full sm:mt-10 sm:h-[28rem]">
           {PROMISES.map((p, i) => (
