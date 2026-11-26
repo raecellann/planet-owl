@@ -117,7 +117,7 @@ const SECRETS = [
  * would mean a placeholder photograph of a person who does not exist.
  */
 function NestHotspot({ review, open, onToggle, play }) {
-  const { id, x, y, quote, brand, label, plate, crop } = review
+  const { id, x, y, headline, quote, name, role, brand, label, plate, crop } = review
 
   return (
     <>
@@ -249,10 +249,9 @@ function NestHotspot({ review, open, onToggle, play }) {
             ) : (
               // The same card as Maserati's, by request: picture, quote,
               // stars, then a name block. The picture is the brand's own
-              // corner of the nest artwork, the badge is the brand's
-              // initial, and the name and role are visible placeholders
-              // until a real client gives theirs. No real person's face or
-              // name is put to a quote they did not give.
+              // corner of the nest artwork and the badge is the brand's
+              // initial. Headline, quote, name and role are the ones the
+              // studio supplied (Jasper, 26 Nov 2026).
               // Every size here is a share of the card's width (cqw), read
               // off the Maserati export (649px wide): the same type, the
               // same proportions, at whatever size the card is drawn.
@@ -266,7 +265,10 @@ function NestHotspot({ review, open, onToggle, play }) {
                     backgroundPosition: `${(crop.x / (1400 - crop.w)) * 100}% ${(crop.y / (1866 - crop.w * (224 / 580))) * 100}%`,
                   }}
                 />
-                <blockquote className="mt-[4.6cqw] font-ui text-[2.65cqw] font-medium leading-[1.4] text-[#111]">
+                {headline && (
+                  <p className="mt-[4.6cqw] font-display text-[3.4cqw] font-bold leading-[1.25] text-[#111]">“{headline}”</p>
+                )}
+                <blockquote className={`${headline ? 'mt-[2.4cqw]' : 'mt-[4.6cqw]'} font-ui text-[2.65cqw] font-medium leading-[1.4] text-[#111]`}>
                   “{quote}”
                 </blockquote>
                 <div aria-hidden className="mt-[3.6cqw] flex gap-[1.1cqw] text-gold-500">
@@ -282,8 +284,8 @@ function NestHotspot({ review, open, onToggle, play }) {
                   </span>
                   <span className="min-w-0 leading-[1.2]">
                     <span className="block font-display text-[3.6cqw] font-bold text-[#111]">{brand}</span>
-                    <span className="block font-ui text-[2.6cqw] font-medium text-[#111]">Client Name</span>
-                    <span className="block font-ui text-[2cqw] text-[#111]">Position</span>
+                    <span className="block font-ui text-[2.6cqw] font-medium text-[#111]">{name}</span>
+                    <span className="block font-ui text-[2cqw] text-[#111]">{role}</span>
                   </span>
                 </figcaption>
               </div>
@@ -310,11 +312,11 @@ function NestHotspot({ review, open, onToggle, play }) {
  * three per cent, and at this size that is enough to draw our dot BESIDE the
  * painted one rather than on it: two circles per brand, neither aligned.
  *
- * Every quote here is PLACEHOLDER copy — invented, and deliberately
- * unattributed: a brand, a rating and a comment, with no name or face put to
- * it. The Maserati card is the exception and renders as an image instead,
- * because it is a real composed export with a real interview still and a real
- * named speaker in it.
+ * The quotes, names and roles are the studio's own, as supplied by Jasper on
+ * 26 Nov 2026 (they replaced the placeholder copy). The Maserati card renders
+ * as an image instead, because it is a real composed export with a real
+ * interview still and a real named speaker in it; Jasper's Maserati text was
+ * not put over it.
  */
 const NEST_REVIEWS = [
   {
@@ -333,7 +335,10 @@ const NEST_REVIEWS = [
     label: 'the Jollibee testimonial',
     // Where this brand sits in the nest-brands plate (1400x1866 px).
     crop: { x: 70, y: 880, w: 520 },
-    quote: 'They understood the brand before we finished explaining it, and then showed us a version of it we had not thought of.',
+    headline: "They know how to make creative work connect with people.",
+    quote: "Our campaigns need to be energetic, recognizable, and relevant to different audiences. Planet Owl brought fresh ideas to the table and helped us explore new ways to present our marketing materials. What I appreciated most was their ability to balance creativity with the actual objectives of the campaign.",
+    name: "Camille Santos",
+    role: "Marketing Communications Specialist",
   },
   {
     id: 'cartier',
@@ -343,7 +348,10 @@ const NEST_REVIEWS = [
     label: 'the Cartier testimonial',
     // Where this brand sits in the nest-brands plate (1400x1866 px).
     crop: { x: 435, y: 860, w: 520 },
-    quote: 'Restraint is the hardest thing to ask for. They gave us work that knows exactly when to stop.',
+    headline: "Every detail matters, and they understood that.",
+    quote: "We needed a creative partner who understood that great design isn't always about adding more. It's about knowing what to emphasize, what to simplify, and how to create a cohesive visual experience. Planet Owl approached the project with thoughtfulness and attention to detail. The results felt polished and purposeful.",
+    name: "Charlotte Bennett",
+    role: "Digital Marketing Manager",
   },
   {
     id: 'makita',
@@ -353,7 +361,10 @@ const NEST_REVIEWS = [
     label: 'the Makita testimonial',
     // Where this brand sits in the nest-brands plate (1400x1866 px).
     crop: { x: 710, y: 830, w: 480 },
-    quote: 'We build tools that have to work every single time. They approached the site the same way.',
+    headline: "They understood exactly what our brand needed.",
+    quote: "We needed creative materials that could communicate product quality without overwhelming our audience. Planet Owl brought a fresh perspective to our campaign visuals and marketing assets. The team was easy to work with, open to feedback, and delivered designs that aligned with our brand standards.",
+    name: "Adrian Miller",
+    role: "Regional Marketing Manager",
   },
   {
     id: 'nike',
@@ -363,7 +374,10 @@ const NEST_REVIEWS = [
     label: 'the Nike testimonial',
     // Where this brand sits in the nest-brands plate (1400x1866 px).
     crop: { x: 860, y: 950, w: 520 },
-    quote: 'Fast, sharp, and never precious about an idea. The work moved as quickly as we needed it to.',
+    headline: "Fresh ideas, strong execution, and a team that gets it.",
+    quote: "We work in an environment where creativity moves fast and every campaign needs a clear identity. Planet Owl brought a different perspective to our creative process. Their ability to turn ideas into compelling visual concepts made collaboration enjoyable, and they were always willing to push the work further.",
+    name: "Jordan Blake",
+    role: "Creative Marketing Manager",
   },
 ]
 

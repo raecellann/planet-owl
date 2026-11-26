@@ -155,15 +155,7 @@ export default function StartProjectModal({ open, onClose }) {
                   <br /> Brilliantly Strange!
                 </h2>
 
-                <SignupForm
-                  source="start-a-project popup"
-                  compact
-                  autoFocus
-                  // Straight on to the booking page, email already filled in
-                  // for Calendly (by request), after a beat to show "Sent!".
-                  onSent={(email) => setTimeout(() => window.location.assign(`/book?email=${encodeURIComponent(email)}`), 700)}
-                  className="mt-5 sm:mt-7"
-                />
+                <SignupForm source="start-a-project popup" compact autoFocus className="mt-5 sm:mt-7" />
               </div>
             </div>
           </motion.div>
