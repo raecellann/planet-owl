@@ -33,7 +33,7 @@ export default function Book() {
   const [height, setHeight] = useState(700)
 
   useEffect(() => {
-    document.title = 'Book a Call | Planet Owl'
+    document.title = 'Planet Owl'
     const onMessage = (e) => {
       if (e.origin !== 'https://calendly.com') return
       const kind = e.data?.event

@@ -1,0 +1,29 @@
+# Planet Owl Studio
+
+> Planet Owl is a creative studio building identities, websites, apps, AI solutions and immersive experiences for brands that rise above the ordinary. Based in Padre Garcia, Batangas, Philippines, working with clients remotely.
+
+## What we do
+- Design: logos and brand identity, packaging, video editing, 3D motion, websites and UI/UX.
+- Develop: web and mobile apps, custom software, e-commerce, databases, cloud, CMS and APIs.
+- Digital: content, social media ads, social listening, digital films and SEO.
+- AI Tech: assistants, chatbots, automation, generative AI, analytics and integration.
+
+## Plans (one flat monthly price, billed month by month)
+- Hatchling, $895 a month: a design team for the brand you are getting off the ground.
+- Flock, $1,695 a month: design, plus the content and campaigns that put it to work.
+- Nest, $2,995 a month: add the builders: websites, apps and stores, designed and shipped.
+- Parliament, from $4,495 a month: the whole nest, with AI and custom software, scoped to you.
+- New clients can start with a free 2-week trial.
+
+## Pages
+- [Home](https://planetowl.studio/): the studio, its work and its crafts
+- [Pricing](https://planetowl.studio/pricing): plans and the free 2-week trial
+- [About](https://planetowl.studio/about): the team behind the work
+- [Contact](https://planetowl.studio/contact): send a message or request a call
+- [Book a call](https://planetowl.studio/book): pick a 30-minute slot on the calendar
+- [Blog](https://planetowl.studio/blog): creative operations and always-on marketing
+
+## Contact
+- Email: hello@planetowl.studio
+- WhatsApp: +63 967 981 2402
+- Address: Purok Sampaguita 131B, Tangob, Padre Garcia, Batangas, Philippines
