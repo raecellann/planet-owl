@@ -1,13 +1,15 @@
-import { StrictMode, useEffect, useRef, useState } from 'react'
+import { StrictMode, Suspense, lazy, useEffect, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
-import BlogIndex from './blog/BlogIndex.jsx'
-import BlogPost from './blog/BlogPost.jsx'
-import Privacy from './blog/Privacy.jsx'
-import Contact from './blog/Contact.jsx'
-import Book from './blog/Book.jsx'
-import About from './blog/About.jsx'
-import Pricing from './blog/Pricing.jsx'
+// The other pages load only when visited, so the home page downloads less on
+// a phone (SEO: "fast mobile pages").
+const BlogIndex = lazy(() => import('./blog/BlogIndex.jsx'))
+const BlogPost = lazy(() => import('./blog/BlogPost.jsx'))
+const Privacy = lazy(() => import('./blog/Privacy.jsx'))
+const Contact = lazy(() => import('./blog/Contact.jsx'))
+const Book = lazy(() => import('./blog/Book.jsx'))
+const About = lazy(() => import('./blog/About.jsx'))
+const Pricing = lazy(() => import('./blog/Pricing.jsx'))
 import { findPost } from './blog/posts.js'
 import { watchOrphans } from './lib/noOrphans'
 import './index.css'
@@ -174,6 +176,8 @@ watchOrphans()
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <Root />
+    <Suspense fallback={<div className="min-h-svh bg-white" />}>
+      <Root />
+    </Suspense>
   </StrictMode>,
 )

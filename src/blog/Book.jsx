@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
-import { AnimatePresence, motion } from 'motion/react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { motion } from 'motion/react'
 import BlogLayout from './BlogLayout'
 import { A } from '../lib/assets'
 
@@ -137,12 +137,10 @@ const INTRO_STEPS = [
 
 /* ------------------------------------------------------------ our flow -- */
 
-const STEP_LABELS = ['Day', 'Time', 'Details']
 const FIELD =
   'mt-1.5 w-full rounded-xl border-2 border-plum-900/15 bg-white px-4 py-3 font-ui text-base text-plum-700 placeholder:text-plum-700/40 focus:border-plum-700 focus:outline-none'
 
 function Flow({ slots, timezone, email: presetEmail, link }) {
-  const [step, setStep] = useState(0)
   const [day, setDay] = useState('')
   const [slot, setSlot] = useState('')
   // One part of the day at a time, so a full day is never one long list.
@@ -163,17 +161,20 @@ function Flow({ slots, timezone, email: presetEmail, link }) {
     return Array.from({ length: DAYS_AHEAD }, (_, i) => new Date(t.getFullYear(), t.getMonth(), t.getDate() + i))
   }, [])
 
+  // The first day with open times is picked for you, so times show at once.
+  const activeDay = day || days.map(isoDay).find((d) => (byDay[d] || []).length) || ''
   const timeLabel = (iso) => new Date(iso).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: timezone })
+  const detailsRef = useRef(null)
   const groups = useMemo(() => {
     const hourOf = (iso) => Number(new Date(iso).toLocaleString('en-US', { hour: 'numeric', hour12: false, timeZone: timezone })) % 24
-    const list = byDay[day] || []
+    const list = byDay[activeDay] || []
     return [
       ['Morning', list.filter((s) => hourOf(s) >= 6 && hourOf(s) < 12)],
       ['Afternoon', list.filter((s) => hourOf(s) >= 12 && hourOf(s) < 17)],
       ['Evening', list.filter((s) => hourOf(s) >= 17 && hourOf(s) < 22)],
       ['Night', list.filter((s) => hourOf(s) >= 22 || hourOf(s) < 6)],
     ].filter(([, l]) => l.length)
-  }, [byDay, day, timezone])
+  }, [byDay, activeDay, timezone])
 
   const longDay = (ymd) => {
     const [y, m, d] = ymd.split('-').map(Number)
@@ -240,178 +241,146 @@ function Flow({ slots, timezone, email: presetEmail, link }) {
     }
   }
 
-  if (state === 'done') return <Booked when={`${longDay(day)} at ${timeLabel(slot)}`} />
+  if (state === 'done') return <Booked when={`${longDay(activeDay)} at ${timeLabel(slot)}`} />
   if (state === 'confirm')
     return (
       <Confirm
         slot={slot}
         name={`${form.firstName} ${form.lastName}`.trim()}
         email={form.email.trim()}
-        when={`${longDay(day)} · ${timeLabel(slot)} · 30 min`}
+        when={`${longDay(activeDay)} · ${timeLabel(slot)} · 30 min`}
         onBack={() => setState('idle')}
       />
     )
 
   const anyOpen = Object.keys(byDay).length > 0
+  if (!anyOpen)
+    return (
+      <p className="px-6 py-12 text-center font-ui text-plum-700">
+        No open spots in the next four weeks. Email{' '}
+        <a href="mailto:hello@planetowl.studio" className="font-semibold text-teal-600">hello@planetowl.studio</a> and we’ll
+        sort a time.
+      </p>
+    )
 
+  const shown = groups.find(([n]) => n === period) || groups[0]
+  const pickSlot = (s) => {
+    setSlot(s)
+    setTimeout(() => detailsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 60)
+  }
+
+  /*
+   * Everything on one screen, by request ("hirap padin neto igets"): the
+   * week, then that day's times right under it, then the details once a time
+   * is picked. Numbered headings say what to do next.
+   */
   return (
-    <div className="px-5 py-6 sm:px-8 sm:py-8">
-      {/* Where you are: three steps, each one tappable once reached. */}
-      <ol className="flex items-center justify-center gap-2 font-ui text-sm">
-        {STEP_LABELS.map((label, i) => (
-          <li key={label} className="flex items-center gap-2">
-            <button
-              type="button"
-              disabled={i > step}
-              onClick={() => setStep(i)}
-              className={`flex items-center gap-2 rounded-full px-3 py-1.5 font-semibold transition-colors ${
-                i === step ? 'bg-plum-800 text-gold-400' : i < step ? 'bg-gold-200 text-plum-700 hover:bg-gold-400/60' : 'bg-plum-900/5 text-plum-700/50'
-              }`}
-            >
-              <span className="grid size-5 place-items-center rounded-full bg-white/20 text-xs">{i + 1}</span>
-              {label}
-            </button>
-            {i < STEP_LABELS.length - 1 && <span aria-hidden className="h-px w-5 bg-plum-900/15 sm:w-8" />}
-          </li>
-        ))}
-      </ol>
+    <div className="space-y-7 px-5 py-6 sm:px-8 sm:py-7">
+      <Part n={1} title="Pick a day">
+        <div className="flex items-center justify-between">
+          <button
+            type="button"
+            aria-label="Previous week"
+            disabled={week === 0}
+            onClick={() => setWeek((w) => w - 1)}
+            className="grid size-9 place-items-center rounded-full bg-gold-200 font-ui text-lg font-bold text-plum-700 transition-colors hover:bg-gold-400/60 disabled:cursor-not-allowed disabled:opacity-30"
+          >
+            ‹
+          </button>
+          <p className="font-ui text-sm font-semibold text-plum-700">
+            {days[week * 7].toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} –{' '}
+            {days[week * 7 + 6].toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+          </p>
+          <button
+            type="button"
+            aria-label="Next week"
+            disabled={week >= DAYS_AHEAD / 7 - 1}
+            onClick={() => setWeek((w) => w + 1)}
+            className="grid size-9 place-items-center rounded-full bg-gold-200 font-ui text-lg font-bold text-plum-700 transition-colors hover:bg-gold-400/60 disabled:cursor-not-allowed disabled:opacity-30"
+          >
+            ›
+          </button>
+        </div>
+        <div className="mt-3 grid grid-cols-7 gap-1.5 sm:gap-2">
+          {days.slice(week * 7, week * 7 + 7).map((d) => {
+            const ymd = isoDay(d)
+            const open = (byDay[ymd] || []).length
+            return (
+              <button
+                key={ymd}
+                type="button"
+                disabled={!open}
+                aria-pressed={ymd === activeDay}
+                onClick={() => {
+                  setDay(ymd)
+                  setSlot('')
+                  setPeriod('')
+                }}
+                className={`flex flex-col items-center rounded-2xl border-2 px-0.5 py-2.5 font-ui transition-colors ${
+                  open
+                    ? ymd === activeDay
+                      ? 'border-plum-800 bg-plum-800 text-gold-400'
+                      : 'border-teal-500/40 bg-white text-plum-700 hover:border-teal-500 hover:bg-teal-500/10'
+                    : 'cursor-not-allowed border-transparent bg-plum-900/[0.03] text-plum-700/30'
+                }`}
+              >
+                <span className="text-[0.65rem] font-semibold uppercase sm:text-[0.7rem]">{d.toLocaleDateString('en-US', { weekday: 'short' })}</span>
+                <span className="text-lg font-bold leading-tight">{d.getDate()}</span>
+              </button>
+            )
+          })}
+        </div>
+      </Part>
 
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.div
-          key={step}
-          initial={{ opacity: 0, x: 24 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -24 }}
-          transition={{ duration: 0.22 }}
-          className="mt-7"
-        >
-          {step === 0 && (
-            <div>
-              <h2 className="text-center font-ui text-xl font-bold text-plum-700">Pick a day</h2>
-              {!anyOpen ? (
-                <p className="mt-4 text-center font-ui text-plum-700">
-                  No open spots in the next four weeks. Email{' '}
-                  <a href="mailto:hello@planetowl.studio" className="font-semibold text-teal-600">hello@planetowl.studio</a> and
-                  we’ll sort a time.
-                </p>
-              ) : (
-                // One week at a time (a four-week grid was too much, by
-                // request), with arrows to step through the next four weeks.
-                <div className="mt-4">
-                  <div className="flex items-center justify-between">
-                    <button
-                      type="button"
-                      aria-label="Previous week"
-                      disabled={week === 0}
-                      onClick={() => setWeek((w) => w - 1)}
-                      className="grid size-9 place-items-center rounded-full bg-gold-200 font-ui text-lg font-bold text-plum-700 transition-colors hover:bg-gold-400/60 disabled:cursor-not-allowed disabled:opacity-30"
-                    >
-                      ‹
-                    </button>
-                    <p className="font-ui text-sm font-semibold text-plum-700">
-                      {days[week * 7].toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} –{' '}
-                      {days[week * 7 + 6].toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                    </p>
-                    <button
-                      type="button"
-                      aria-label="Next week"
-                      disabled={week >= DAYS_AHEAD / 7 - 1}
-                      onClick={() => setWeek((w) => w + 1)}
-                      className="grid size-9 place-items-center rounded-full bg-gold-200 font-ui text-lg font-bold text-plum-700 transition-colors hover:bg-gold-400/60 disabled:cursor-not-allowed disabled:opacity-30"
-                    >
-                      ›
-                    </button>
-                  </div>
-                  <div className="mt-3 grid grid-cols-7 gap-1.5 sm:gap-2">
-                  {days.slice(week * 7, week * 7 + 7).map((d) => {
-                    const ymd = isoDay(d)
-                    const open = (byDay[ymd] || []).length
-                    return (
-                      <button
-                        key={ymd}
-                        type="button"
-                        disabled={!open}
-                        onClick={() => {
-                          setDay(ymd)
-                          setSlot('')
-                          setPeriod('')
-                          setStep(1)
-                        }}
-                        className={`flex flex-col items-center rounded-2xl border-2 px-0.5 py-2.5 font-ui transition-colors ${
-                          open
-                            ? ymd === day
-                              ? 'border-plum-800 bg-plum-800 text-gold-400'
-                              : 'border-teal-500/40 bg-white text-plum-700 hover:border-teal-500 hover:bg-teal-500/10'
-                            : 'cursor-not-allowed border-transparent bg-plum-900/[0.03] text-plum-700/30'
-                        }`}
-                      >
-                        <span className="text-[0.65rem] font-semibold uppercase sm:text-[0.7rem]">{d.toLocaleDateString('en-US', { weekday: 'short' })}</span>
-                        <span className="text-lg font-bold leading-tight">{d.getDate()}</span>
-                      </button>
-                    )
-                  })}
-                  </div>
-                </div>
-              )}
-              <p className="mt-4 text-center font-ui text-xs text-plum-700/70">Times shown in your time zone: {timezone.replace(/_/g, ' ')}</p>
+      <Part n={2} title="Pick a time" note={activeDay ? longDay(activeDay) : ''}>
+        {shown && (
+          <>
+            <div role="tablist" className="flex flex-wrap gap-2">
+              {groups.map(([name, list]) => (
+                <button
+                  key={name}
+                  type="button"
+                  role="tab"
+                  aria-selected={name === shown[0]}
+                  onClick={() => setPeriod(name)}
+                  className={`rounded-full px-4 py-1.5 font-ui text-sm font-semibold transition-colors ${
+                    name === shown[0] ? 'bg-plum-800 text-gold-400' : 'bg-gold-200 text-plum-700 hover:bg-gold-400/60'
+                  }`}
+                >
+                  {name} <span className="font-normal opacity-70">· {list.length}</span>
+                </button>
+              ))}
             </div>
-          )}
-
-          {step === 1 && (
-            <div>
-              <h2 className="text-center font-ui text-xl font-bold text-plum-700">Pick a time</h2>
-              <p className="mt-1 text-center font-ui text-plum-700">{longDay(day)}</p>
-              {(() => {
-                const shown = groups.find(([n]) => n === period) || groups[0]
-                if (!shown) return null
-                return (
-                  <>
-                    <div role="tablist" className="mt-5 flex flex-wrap justify-center gap-2">
-                      {groups.map(([name, list]) => (
-                        <button
-                          key={name}
-                          type="button"
-                          role="tab"
-                          aria-selected={name === shown[0]}
-                          onClick={() => setPeriod(name)}
-                          className={`rounded-full px-4 py-1.5 font-ui text-sm font-semibold transition-colors ${
-                            name === shown[0] ? 'bg-plum-800 text-gold-400' : 'bg-gold-200 text-plum-700 hover:bg-gold-400/60'
-                          }`}
-                        >
-                          {name} <span className="font-normal opacity-70">· {list.length}</span>
-                        </button>
-                      ))}
-                    </div>
-                    <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-4">
-                      {shown[1].map((s) => (
-                        <button
-                          key={s}
-                          type="button"
-                          onClick={() => {
-                            setSlot(s)
-                            setStep(2)
-                          }}
-                          className={`rounded-xl border-2 py-2.5 font-ui text-sm font-semibold transition-colors ${
-                            s === slot ? 'border-plum-800 bg-plum-800 text-gold-400' : 'border-teal-500/40 text-plum-700 hover:border-teal-500 hover:bg-teal-500/10'
-                          }`}
-                        >
-                          {timeLabel(s)}
-                        </button>
-                      ))}
-                    </div>
-                  </>
-                )
-              })()}
+            <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4">
+              {shown[1].map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  aria-pressed={s === slot}
+                  onClick={() => pickSlot(s)}
+                  className={`rounded-xl border-2 py-2.5 font-ui text-sm font-semibold transition-colors ${
+                    s === slot ? 'border-plum-800 bg-plum-800 text-gold-400' : 'border-teal-500/40 text-plum-700 hover:border-teal-500 hover:bg-teal-500/10'
+                  }`}
+                >
+                  {timeLabel(s)}
+                </button>
+              ))}
             </div>
-          )}
+          </>
+        )}
+        <p className="mt-3 font-ui text-xs text-plum-700/70">Times shown in your time zone: {timezone.replace(/_/g, ' ')}</p>
+      </Part>
 
-          {step === 2 && (
+      <div ref={detailsRef} className="scroll-mt-32">
+        <Part n={3} title="Your details" muted={!slot}>
+          {!slot ? (
+            <p className="font-ui text-sm text-plum-700/70">Pick a time above and this part opens up.</p>
+          ) : (
             <form onSubmit={book}>
-              <h2 className="text-center font-ui text-xl font-bold text-plum-700">Almost there</h2>
-              <p className="mx-auto mt-3 w-fit rounded-full bg-gold-200 px-4 py-1.5 text-center font-ui text-sm font-semibold text-plum-700">
-                {longDay(day)} · {timeLabel(slot)} · 30 min
+              <p className="w-fit rounded-full bg-gold-200 px-4 py-1.5 font-ui text-sm font-semibold text-plum-700">
+                {longDay(activeDay)} · {timeLabel(slot)} · 30 min
               </p>
-              <div className="mt-6 grid gap-4 sm:grid-cols-2">
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
                 <label className="block font-ui text-sm font-semibold text-plum-700">
                   First name
                   <input required autoComplete="given-name" value={form.firstName} onChange={(e) => setForm({ ...form, firstName: e.target.value })} className={FIELD} />
@@ -430,23 +399,32 @@ function Flow({ slots, timezone, email: presetEmail, link }) {
                   {error}
                 </p>
               )}
-              <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-                <button
-                  type="submit"
-                  disabled={state === 'sending'}
-                  className="btn-type rounded-full bg-gold-500 px-8 py-3.5 font-ui text-base font-semibold text-plum-700 shadow-[0_6px_0_-2px_var(--color-plum-900)] transition-colors hover:bg-gold-400 disabled:cursor-wait disabled:opacity-70"
-                >
-                  {state === 'sending' ? 'Booking…' : link ? 'Continue' : 'Book My Call'}
-                </button>
-                <button type="button" onClick={() => setStep(1)} className="font-ui text-sm font-semibold text-teal-600 underline">
-                  Change time
-                </button>
-              </div>
+              <button
+                type="submit"
+                disabled={state === 'sending'}
+                className="btn-type mt-5 w-full rounded-full bg-gold-500 px-8 py-3.5 font-ui text-base font-semibold text-plum-700 shadow-[0_6px_0_-2px_var(--color-plum-900)] transition-colors hover:bg-gold-400 disabled:cursor-wait disabled:opacity-70 sm:w-auto"
+              >
+                {state === 'sending' ? 'Booking…' : link ? 'Continue' : 'Book My Call'}
+              </button>
             </form>
           )}
-        </motion.div>
-      </AnimatePresence>
+        </Part>
+      </div>
     </div>
+  )
+}
+
+/** A numbered part of the booking card. */
+function Part({ n, title, note, muted = false, children }) {
+  return (
+    <section className={muted ? 'opacity-60' : ''}>
+      <h2 className="flex items-baseline gap-2.5 font-ui text-lg font-bold text-plum-700">
+        <span className="grid size-7 shrink-0 translate-y-0.5 place-items-center rounded-full bg-plum-800 text-sm text-gold-400">{n}</span>
+        {title}
+        {note && <span className="text-sm font-normal text-plum-700/70">· {note}</span>}
+      </h2>
+      <div className="mt-3">{children}</div>
+    </section>
   )
 }
 
