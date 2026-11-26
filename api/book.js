@@ -16,6 +16,8 @@
  */
 const API = 'https://api.calendly.com'
 const SLUG = process.env.CALENDLY_EVENT_SLUG?.trim() || '30min'
+/** Make.com "Planet Owl website forms" webhook (the auto-reply emails). */
+const MAKE_WEBHOOK = process.env.MAKE_WEBHOOK?.trim() || 'https://hook.us2.make.com/bcxw8cpn0glfqlnfdzlwfmq7a8cq7k9s'
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 const json = (status, body) =>
@@ -133,6 +135,27 @@ export async function POST(request) {
     const loc = et.locations?.[0]
     if (loc?.kind) payload.location = { kind: loc.kind, ...(loc.location ? { location: loc.location } : {}) }
     const made = await calendly('/invitees', { method: 'POST', body: JSON.stringify(payload) })
+    // Our own "you're on the calendar" welcome, on top of Calendly's invite,
+    // by request. Best effort: the booking already stands.
+    const at = new Date(payload.start_time)
+    const label = (o) => at.toLocaleString('en-US', { timeZone: timezone, ...o })
+    if (MAKE_WEBHOOK !== 'off') try {
+      await fetch(MAKE_WEBHOOK, {
+        method: 'POST',
+        body: new URLSearchParams({
+          kind: 'booked',
+          email,
+          firstName,
+          lastName,
+          date: label({ weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }),
+          time: label({ hour: 'numeric', minute: '2-digit' }),
+          timezone,
+          source: String(body.source || 'booking page').slice(0, 60),
+        }),
+      })
+    } catch (err) {
+      console.error('book: welcome email hook failed', err)
+    }
     return json(200, { ok: true, event: made.resource?.event || null })
   } catch (err) {
     console.error('book: booking failed', err.status, err.body || err.message)

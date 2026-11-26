@@ -8,8 +8,8 @@ import { A } from '../lib/assets'
  * Calendly calendar. Visitors land here from the link in the "Start a
  * Project" auto-reply email (`?email=` is filled in for them).
  *
- * Centred, one column, by request ("put it in the middle"). The booking is
- * our own three-step flow (day, time, details) by request too: Calendly's
+ * Two columns, as first built (restored by request), with the content inside
+ * the card centred and sized to fit. The booking is our own three-step flow (day, time, details) by request too: Calendly's
  * embed lists every slot in one long column. The flow reads Calendly's real
  * open times and books through `api/book.js`, so Calendly still holds the
  * slot and emails the invite, call link and reminder.
@@ -61,33 +61,59 @@ export default function Book() {
   return (
     <BlogLayout onBlog={false} newsletter={false} page={{ label: 'Book a Call', href: '/book' }}>
       <div className="relative overflow-hidden bg-white px-5 pb-20 pt-[clamp(9rem,14vw,12rem)] sm:px-8">
-        <div className="relative z-10 mx-auto max-w-[760px] text-center">
-          <p className="font-ui text-sm font-bold uppercase tracking-[0.18em] text-teal-600">30-minute call</p>
-          <h1 className="mt-2 font-['Momo_Trust_Display'] text-[clamp(2rem,4.6vw,3.4rem)] font-normal leading-[1.1] text-plum-700">
-            Hoot hoot! Let’s Chop It Up
-          </h1>
-          <p className="mx-auto mt-4 max-w-xl font-ui text-lg leading-relaxed text-plum-700">
-            Sooo, what’s eating up your team’s time? Grab a spot and we’ll find the best place to start. We do the
-            legwork, y’all just show up. 🦉
-          </p>
-        </div>
-
-        <div className="relative z-10 mx-auto mt-10 max-w-[760px] overflow-hidden rounded-[1.75rem] bg-white text-left shadow-[0_30px_60px_-30px_rgba(54,14,57,0.5)] ring-1 ring-plum-900/5">
-          <div className="flex items-center gap-3 bg-plum-800 px-6 py-4">
-            <img src={A.owl.digital} alt="" aria-hidden className="h-10 w-auto" />
-            <div className="font-ui text-white">
-              <p className="text-xs font-bold uppercase tracking-wide text-gold-400">Planet Owl Studio</p>
-              <p className="font-semibold">30 min call with the flock</p>
-            </div>
+        {/* The earlier two-column layout, by request ("okay na ung design ng
+            before"): what the call is on the left, the calendar on the right,
+            the two lined up at the top and the card sized to its contents. */}
+        <div className="relative z-10 mx-auto grid max-w-[1120px] items-start gap-10 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] lg:gap-14">
+          <div className="lg:sticky lg:top-32">
+            <p className="font-ui text-sm font-bold uppercase tracking-[0.18em] text-teal-600">30-minute call</p>
+            <h1 className="mt-2 font-['Momo_Trust_Display'] text-[clamp(2rem,3.3vw,2.9rem)] font-normal leading-[1.1] text-plum-700">
+              Hoot hoot! Let’s Chop It Up
+            </h1>
+            <p className="mt-4 max-w-md font-ui text-lg leading-relaxed text-plum-700">
+              Sooo, what’s eating up your team’s time? Grab a spot and we’ll find the best place to start. We do the
+              legwork, y’all just show up. 🦉
+            </p>
+            <ol className="mt-6 max-w-md space-y-3">
+              {INTRO_STEPS.map((t, i) => (
+                <li key={t} className="flex items-center gap-3 font-ui text-base text-plum-700">
+                  <span className="grid size-8 shrink-0 place-items-center rounded-full bg-plum-800 font-bold text-gold-400">{i + 1}</span>
+                  {t}
+                </li>
+              ))}
+            </ol>
+            <img
+              src={A.owl.develop}
+              alt=""
+              aria-hidden
+              loading="lazy"
+              className="mt-8 hidden w-[min(80%,20rem)] select-none [mask-image:linear-gradient(180deg,#000_95%,transparent_100%)] lg:block"
+            />
           </div>
-          {mode === null && <p className="px-6 py-16 text-center font-ui text-plum-700">Checking the calendar…</p>}
-          {mode === 'native' && <Flow slots={slots} timezone={timezone} email={email} />}
-          {mode === 'embed' && <Embed email={email} />}
+
+          <div className="overflow-hidden rounded-[1.75rem] bg-white shadow-[0_30px_60px_-30px_rgba(54,14,57,0.5)] ring-1 ring-plum-900/5">
+            <div className="flex items-center gap-3 bg-plum-800 px-6 py-4">
+              <img src={A.owl.digital} alt="" aria-hidden className="h-10 w-auto" />
+              <div className="font-ui text-white">
+                <p className="text-xs font-bold uppercase tracking-wide text-gold-400">Planet Owl Studio</p>
+                <p className="font-semibold">30 min call with the flock</p>
+              </div>
+            </div>
+            {mode === null && <p className="px-6 py-16 text-center font-ui text-plum-700">Checking the calendar…</p>}
+            {mode === 'native' && <Flow slots={slots} timezone={timezone} email={email} />}
+            {mode === 'embed' && <Embed email={email} />}
+          </div>
         </div>
       </div>
     </BlogLayout>
   )
 }
+
+const INTRO_STEPS = [
+  'Grab a day and time that works for y’all',
+  'The invite and call link land in your inbox',
+  'We chop it up, and your free 2-week trial can start',
+]
 
 /* ------------------------------------------------------------ our flow -- */
 
@@ -99,6 +125,8 @@ function Flow({ slots, timezone, email: presetEmail }) {
   const [step, setStep] = useState(0)
   const [day, setDay] = useState('')
   const [slot, setSlot] = useState('')
+  // One part of the day at a time, so a full day is never one long list.
+  const [period, setPeriod] = useState('')
   const [form, setForm] = useState({ firstName: '', lastName: '', email: presetEmail })
   const [state, setState] = useState('idle') // idle | sending | done | error
   const [error, setError] = useState('')
@@ -119,9 +147,10 @@ function Flow({ slots, timezone, email: presetEmail }) {
     const hourOf = (iso) => Number(new Date(iso).toLocaleString('en-US', { hour: 'numeric', hour12: false, timeZone: timezone })) % 24
     const list = byDay[day] || []
     return [
-      ['Morning', list.filter((s) => hourOf(s) < 12)],
+      ['Morning', list.filter((s) => hourOf(s) >= 6 && hourOf(s) < 12)],
       ['Afternoon', list.filter((s) => hourOf(s) >= 12 && hourOf(s) < 17)],
-      ['Evening', list.filter((s) => hourOf(s) >= 17)],
+      ['Evening', list.filter((s) => hourOf(s) >= 17 && hourOf(s) < 22)],
+      ['Night', list.filter((s) => hourOf(s) >= 22 || hourOf(s) < 6)],
     ].filter(([, l]) => l.length)
   }, [byDay, day, timezone])
 
@@ -207,6 +236,7 @@ function Flow({ slots, timezone, email: presetEmail }) {
                         onClick={() => {
                           setDay(ymd)
                           setSlot('')
+                          setPeriod('')
                           setStep(1)
                         }}
                         className={`flex flex-col items-center rounded-2xl border-2 px-1 py-2.5 font-ui transition-colors ${
@@ -233,12 +263,29 @@ function Flow({ slots, timezone, email: presetEmail }) {
             <div>
               <h2 className="text-center font-ui text-xl font-bold text-plum-700">Pick a time</h2>
               <p className="mt-1 text-center font-ui text-plum-700">{longDay(day)}</p>
-              <div className="mt-5 space-y-5">
-                {groups.map(([name, list]) => (
-                  <div key={name}>
-                    <p className="font-ui text-xs font-bold uppercase tracking-wide text-plum-700/70">{name}</p>
-                    <div className="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-5">
-                      {list.map((s) => (
+              {(() => {
+                const shown = groups.find(([n]) => n === period) || groups[0]
+                if (!shown) return null
+                return (
+                  <>
+                    <div role="tablist" className="mt-5 flex flex-wrap justify-center gap-2">
+                      {groups.map(([name, list]) => (
+                        <button
+                          key={name}
+                          type="button"
+                          role="tab"
+                          aria-selected={name === shown[0]}
+                          onClick={() => setPeriod(name)}
+                          className={`rounded-full px-4 py-1.5 font-ui text-sm font-semibold transition-colors ${
+                            name === shown[0] ? 'bg-plum-800 text-gold-400' : 'bg-gold-200 text-plum-700 hover:bg-gold-400/60'
+                          }`}
+                        >
+                          {name} <span className="font-normal opacity-70">· {list.length}</span>
+                        </button>
+                      ))}
+                    </div>
+                    <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-4">
+                      {shown[1].map((s) => (
                         <button
                           key={s}
                           type="button"
@@ -254,9 +301,9 @@ function Flow({ slots, timezone, email: presetEmail }) {
                         </button>
                       ))}
                     </div>
-                  </div>
-                ))}
-              </div>
+                  </>
+                )
+              })()}
             </div>
           )}
 
