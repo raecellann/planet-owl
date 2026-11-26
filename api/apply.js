@@ -14,7 +14,9 @@ import { put } from '@vercel/blob'
  */
 const MAX_BYTES = 4 * 1024 * 1024
 const FORMSPREE = 'https://formspree.io/f/mgaaqbpv'
-const ROLES = ['SEO Specialist', 'Motion Designer', 'Full-stack Engineer', 'AI Solutions Lead', 'Other']
+/** Make.com "Planet Owl website forms" webhook; `MAKE_WEBHOOK=off` disables it. */
+const MAKE_WEBHOOK = process.env.MAKE_WEBHOOK?.trim() || 'https://hook.us2.make.com/bcxw8cpn0glfqlnfdzlwfmq7a8cq7k9s'
+const ROLES =['SEO Specialist', 'Motion Designer', 'Full-stack Engineer', 'AI Solutions Lead', 'Other']
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 const json = (status, body) =>
@@ -107,6 +109,20 @@ export async function POST(request) {
     })
   } catch (err) {
     console.error('apply: inbox notice failed', err)
+  }
+
+  // The applicant's auto-reply: the same Make scenario that answers the
+  // contact form, with `kind=application` so it sends the "we got your
+  // application" email. Best effort, like the inbox notice.
+  if (MAKE_WEBHOOK !== 'off') {
+    try {
+      await fetch(MAKE_WEBHOOK, {
+        method: 'POST',
+        body: new URLSearchParams({ kind: 'application', email, firstName: name.split(/\s+/)[0], name, role, link, note, source: 'join-the-flock' }),
+      })
+    } catch (err) {
+      console.error('apply: auto-reply hook failed', err)
+    }
   }
 
   return json(200, { ok: true })
