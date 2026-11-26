@@ -8,7 +8,8 @@ import sharp from 'sharp'
 const root = process.argv[2], out = process.argv[3]
 const W = 600, H = 260, N = 30
 const bg = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9eafa"/><stop offset="0.7" stop-color="#ffffff"/><stop offset="1" stop-color="#ffffff"/></linearGradient></defs><rect width="${W}" height="${H}" fill="url(#g)"/></svg>`)
-const owl = await sharp(`${root}/public/assets/owl-digital.webp`).resize({ height: 180 }).png().toBuffer()
+// The flying owl (in its plane), by request.
+const owl = await sharp(`${root}/public/assets/owl-plane-fly.webp`).resize({ width: 360 }).png().toBuffer()
 const owlMeta = await sharp(owl).metadata()
 const cl = async (f, w, op) => { const b = await sharp(`${root}/public/assets/${f}`).resize({ width: w }).modulate({ brightness: 1.18 }).ensureAlpha().png().toBuffer(); const m = await sharp(b).metadata(); const mask = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${m.width}" height="${m.height}"><defs><linearGradient id="f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="${op}"/><stop offset="0.45" stop-color="#fff" stop-opacity="${op}"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><rect width="100%" height="100%" fill="url(#f)"/></svg>`); const faded = await sharp(b).composite([{ input: mask, blend: 'dest-in' }]).png().toBuffer(); return { b: faded, w: m.width, h: m.height } }
 const clouds = [
@@ -20,7 +21,7 @@ const clouds = [
 for (let i = 0; i < N; i++) {
   const t = i / N, s = Math.sin(t * Math.PI * 2)
   const layers = clouds.map((c) => ({ input: c.b, left: Math.round(c.x0 + c.dx * s), top: c.y }))
-  const ox = Math.round((W - owlMeta.width) / 2), oy = Math.round(44 + 7 * s)
+  const ox = Math.round((W - owlMeta.width) / 2 + 14 * Math.cos(t * Math.PI * 2)), oy = Math.round(30 + 9 * s)
   layers.splice(2, 0, { input: owl, left: ox, top: oy })
   await sharp(bg).composite(layers.map(l=>({...l, left: Math.max(-2000,l.left)}))).png().toFile(`${out}/f${String(i).padStart(2,'0')}.png`)
 }
