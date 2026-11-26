@@ -87,13 +87,11 @@ export default function Book() {
             the two lined up at the top and the card sized to its contents. */}
         <div className="relative z-10 mx-auto grid max-w-[1120px] gap-10 lg:grid-cols-[minmax(0,0.6fr)_minmax(0,1.4fr)] lg:items-stretch lg:gap-14">
           <div>
-            <p className="font-ui text-sm font-bold uppercase tracking-[0.18em] text-teal-600">30-minute call</p>
-            <h1 className="mt-2 font-['Momo_Trust_Display'] text-[clamp(1.9rem,2.7vw,2.5rem)] font-normal leading-[1.1] text-plum-700">
+            <h1 className="font-['Momo_Trust_Display'] text-[clamp(1.9rem,2.7vw,2.5rem)] font-normal leading-[1.1] text-plum-700">
               Hoot hoot! Let’s Chop It Up
             </h1>
             <p className="mt-4 max-w-md font-ui text-lg leading-relaxed text-plum-700">
-              Sooo, what’s eating up your team’s time? Grab a spot and we’ll find the best place to start. We do the
-              legwork, y’all just show up. 🦉
+              Sooo, what’s eating up your team’s time? Grab a spot and we’ll do the legwork. 🦉
             </p>
             <ol className="mt-6 max-w-md space-y-3">
               {INTRO_STEPS.map((t, i) => (
@@ -112,9 +110,16 @@ export default function Book() {
             />
           </div>
 
-          {/* No header bar, and as tall as the column beside it so its bottom
-              lines up with the owl, both by request. */}
+          {/* As tall as the column beside it so its bottom lines up with the
+              owl, by request; the header bar is back, by request too. */}
           <div className="flex flex-col overflow-hidden rounded-[1.75rem] bg-white shadow-[0_30px_60px_-30px_rgba(54,14,57,0.5)] ring-1 ring-plum-900/5">
+            <div className="flex items-center gap-3 bg-plum-800 px-6 py-4">
+              <img src={A.owl.digital} alt="" aria-hidden className="h-10 w-auto" />
+              <div className="font-ui text-white">
+                <p className="text-xs font-bold uppercase tracking-wide text-gold-400">Planet Owl Studio</p>
+                <p className="font-semibold">30 min call with the flock</p>
+              </div>
+            </div>
             {mode === null && <p className="px-6 py-16 text-center font-ui text-plum-700">Checking the calendar…</p>}
             {mode && <div className="flex flex-1 flex-col">{<Flow slots={slots} timezone={timezone} email={email} link={mode === 'link'} />}</div>}
           </div>
@@ -223,7 +228,19 @@ function Flow({ slots, timezone, email: presetEmail, link }) {
     }
   }
 
-  if (state === 'done') return <Booked when={`${longDay(activeDay)} at ${timeLabel(slot)}`} />
+  if (state === 'done')
+    return (
+      <Booked
+        name={form.firstName.trim()}
+        day={longDay(activeDay)}
+        time={timeLabel(slot)}
+        onAgain={() => {
+          setSlot('')
+          setDay('')
+          setState('idle')
+        }}
+      />
+    )
   if (state === 'confirm')
     return (
       <Confirm
@@ -253,7 +270,8 @@ function Flow({ slots, timezone, email: presetEmail, link }) {
           <span aria-hidden className="grid size-9 place-items-center rounded-full bg-teal-500/10 font-ui text-xl font-bold text-teal-700">‹</span>
           Back
         </button>
-        <div className="my-auto pt-5">
+        <div className="my-auto grid items-center gap-6 pt-5 md:grid-cols-[minmax(0,1fr)_minmax(0,0.7fr)]">
+        <div>
         <p className="font-ui text-xl font-bold text-plum-700">Enter your details</p>
         <p className="mt-2 w-fit rounded-full bg-gold-200 px-4 py-1.5 font-ui text-sm font-semibold text-plum-700">
           {longDay(activeDay)} · {timeLabel(slot)} · 30 min
@@ -284,6 +302,9 @@ function Flow({ slots, timezone, email: presetEmail, link }) {
         >
           {state === 'sending' ? 'Booking…' : link ? 'Continue' : 'Schedule My Call'}
         </button>
+        </div>
+        {/* Swoop keeps the empty side company, by request ("add image"). */}
+        <img src={A.owl.broom} alt="" aria-hidden className="mx-auto hidden w-full max-w-[15rem] select-none drop-shadow-[0_18px_26px_rgba(36,5,31,0.25)] md:block" />
         </div>
       </form>
     )
@@ -426,12 +447,25 @@ function Confirm({ slot, name, email, when, onBack }) {
 
 /* ------------------------------------------------------------ booked -- */
 
-function Booked({ when }) {
+function Booked({ name, day, time, onAgain }) {
   const pop = { initial: { opacity: 0, y: 16, scale: 0.96 }, animate: { opacity: 1, y: 0, scale: 1 } }
+  const steps = ['The invite and call link are in your inbox', 'We chop it up on the call', 'Your free 2-week trial can start']
+  // The same card as the contact page's, confetti and all, by request.
   return (
-    <div role="status" className="my-auto px-6 py-12 text-center">
+    <div role="status" className="relative my-auto overflow-hidden px-6 py-10 text-center">
+      {[{ x: '12%', y: '10%', c: 'bg-gold-500' }, { x: '86%', y: '8%', c: 'bg-teal-500' }, { x: '8%', y: '44%', c: 'bg-plum-300' }, { x: '91%', y: '40%', c: 'bg-gold-400' }, { x: '20%', y: '24%', c: 'bg-teal-400' }, { x: '78%', y: '24%', c: 'bg-plum-500' }].map((d, i) => (
+        <motion.span
+          key={i}
+          aria-hidden
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: [0, 1, 1], scale: [0, 1.2, 1], y: [0, -8, 0] }}
+          transition={{ duration: 0.7, delay: 0.25 + i * 0.06 }}
+          style={{ left: d.x, top: d.y }}
+          className={`absolute size-2.5 rounded-full ${d.c}`}
+        />
+      ))}
       <motion.div {...pop} transition={{ type: 'spring', stiffness: 220, damping: 16 }} className="relative mx-auto w-fit">
-        <img src={A.owl.digital} alt="" aria-hidden className="mx-auto h-40 w-auto drop-shadow-[0_16px_24px_rgba(36,5,31,0.3)]" />
+        <img src={A.owl.digital} alt="" aria-hidden className="mx-auto h-36 w-auto drop-shadow-[0_16px_24px_rgba(36,5,31,0.3)] sm:h-40" />
         <motion.span
           aria-hidden
           initial={{ scale: 0, rotate: -40 }}
@@ -445,22 +479,34 @@ function Booked({ when }) {
       <motion.h2 {...pop} transition={{ duration: 0.5, delay: 0.15 }} className="mt-4 font-['Momo_Trust_Display'] text-3xl font-normal text-plum-700">
         You’re on the calendar!
       </motion.h2>
-      {when && (
-        <motion.p {...pop} transition={{ duration: 0.5, delay: 0.2 }} className="mx-auto mt-3 w-fit rounded-full bg-gold-200 px-4 py-1.5 font-ui text-sm font-semibold text-plum-700">
-          {when}
-        </motion.p>
-      )}
-      <motion.p {...pop} transition={{ duration: 0.5, delay: 0.25 }} className="mx-auto mt-3 max-w-sm font-ui leading-relaxed text-plum-700">
-        Your call is booked. The invite with the call link is on its way to your inbox, and we’ll send a reminder the day
-        before. See you in the nest! 🦉
+      <motion.p {...pop} transition={{ duration: 0.5, delay: 0.22 }} className="mx-auto mt-2 max-w-sm font-ui leading-relaxed text-plum-700">
+        Hoot hoot{name ? `, ${name}` : ''}! Your call is booked.
       </motion.p>
-      <motion.div {...pop} transition={{ duration: 0.5, delay: 0.3 }} className="mt-7 flex flex-wrap justify-center gap-3">
+      <motion.div {...pop} transition={{ duration: 0.5, delay: 0.3 }} className="mx-auto mt-5 flex max-w-xs items-stretch overflow-hidden rounded-2xl bg-gold-200 text-left ring-1 ring-plum-900/10">
+        <span className="grid w-14 shrink-0 place-items-center bg-plum-800 text-gold-400">
+          <svg viewBox="0 0 24 24" aria-hidden className="size-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2.5" /><path d="M3.5 9.5h17M8 3v4M16 3v4" /></svg>
+        </span>
+        <span className="px-4 py-3 font-ui text-plum-700">
+          <span className="block text-xs font-bold uppercase tracking-wide">Booked slot</span>
+          <span className="block font-semibold">{day}</span>
+          <span className="block text-sm">{time} · 30 min</span>
+        </span>
+      </motion.div>
+      <motion.ol {...pop} transition={{ duration: 0.5, delay: 0.38 }} className="mx-auto mt-6 max-w-xs space-y-2 text-left">
+        {steps.map((t, i) => (
+          <li key={t} className="flex items-center gap-3 font-ui text-sm text-plum-700">
+            <span className="grid size-7 shrink-0 place-items-center rounded-full bg-plum-800 font-bold text-gold-400">{i + 1}</span>
+            {t}
+          </li>
+        ))}
+      </motion.ol>
+      <motion.div {...pop} transition={{ duration: 0.5, delay: 0.45 }} className="mt-7 flex flex-wrap justify-center gap-3">
         <a href="/pricing" className="btn-type inline-flex h-11 items-center rounded-full bg-gold-500 px-5 font-ui font-semibold text-plum-700 no-underline shadow-[0_5px_0_-1px_var(--color-plum-900)]">
           See Pricing
         </a>
-        <a href="/" className="btn-type inline-flex h-11 items-center rounded-full bg-plum-800 px-5 font-ui font-semibold text-white no-underline shadow-[0_5px_0_-1px_var(--color-plum-950)]">
-          Back to Home
-        </a>
+        <button type="button" onClick={onAgain} className="btn-type inline-flex h-11 items-center rounded-full bg-plum-800 px-5 font-ui font-semibold text-white shadow-[0_5px_0_-1px_var(--color-plum-950)]">
+          Book another
+        </button>
       </motion.div>
     </div>
   )

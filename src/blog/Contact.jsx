@@ -494,13 +494,10 @@ function SentCard({ booked, confirmed, form, onAgain }) {
         <a href="/pricing" className="btn-type inline-flex h-11 items-center rounded-full bg-gold-500 px-5 font-ui font-semibold text-plum-700 no-underline shadow-[0_5px_0_-1px_var(--color-plum-900)]">
           See Pricing
         </a>
-        <a href="/" className="btn-type inline-flex h-11 items-center rounded-full bg-plum-800 px-5 font-ui font-semibold text-white no-underline shadow-[0_5px_0_-1px_var(--color-plum-950)]">
-          Back to Home
-        </a>
+        <button type="button" onClick={onAgain} className="btn-type inline-flex h-11 items-center rounded-full bg-plum-800 px-5 font-ui font-semibold text-white shadow-[0_5px_0_-1px_var(--color-plum-950)]">
+          Send another
+        </button>
       </motion.div>
-      <button type="button" onClick={onAgain} className="mt-4 font-ui text-sm font-semibold text-teal-600 underline">
-        Send another
-      </button>
     </div>
   )
 }
