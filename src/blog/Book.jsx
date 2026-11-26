@@ -429,7 +429,7 @@ function Confirm({ slot, name, email, when, onBack }) {
 function Booked({ when }) {
   const pop = { initial: { opacity: 0, y: 16, scale: 0.96 }, animate: { opacity: 1, y: 0, scale: 1 } }
   return (
-    <div role="status" className="px-6 py-12 text-center">
+    <div role="status" className="my-auto px-6 py-12 text-center">
       <motion.div {...pop} transition={{ type: 'spring', stiffness: 220, damping: 16 }} className="relative mx-auto w-fit">
         <img src={A.owl.digital} alt="" aria-hidden className="mx-auto h-40 w-auto drop-shadow-[0_16px_24px_rgba(36,5,31,0.3)]" />
         <motion.span
