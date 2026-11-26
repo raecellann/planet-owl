@@ -1,8 +1,8 @@
 /**
  * Books the contact form's call straight into the studio's Calendly.
  *
- *   GET  /api/book?date=YYYY-MM-DD&tz=Area/City
- *        The open 30-minute slots on that day, from Calendly itself, so the
+ *   GET  /api/book?date=YYYY-MM-DD&tz=Area/City[&days=1-7]
+ *        The open 30-minute slots from that day on (one day by default), from Calendly itself, so the
  *        time picker only offers times that can really be booked.
  *   POST /api/book  { start_time, firstName, lastName, email, timezone }
  *        Creates the booking (Calendly's Scheduling API, POST /invitees).
@@ -68,6 +68,9 @@ export async function GET(request) {
   if (!token()) return json(503, { error: 'not-configured' })
   const url = new URL(request.url)
   const date = url.searchParams.get('date') || ''
+  // `days` (1-7) returns a whole stretch at once, for the booking page's
+  // week view. Calendly answers at most 7 days per request.
+  const days = Math.min(7, Math.max(1, parseInt(url.searchParams.get('days') || '1', 10) || 1))
   let tz = url.searchParams.get('tz') || 'UTC'
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return json(400, { error: 'Pick a date first.' })
   try {
@@ -76,7 +79,8 @@ export async function GET(request) {
     tz = 'UTC'
   }
 
-  let { start, end } = dayBounds(date, tz)
+  let { start } = dayBounds(date, tz)
+  const end = new Date(start.getTime() + days * 24 * 3600 * 1000)
   // Calendly only answers for the future.
   const soon = new Date(Date.now() + 60 * 1000)
   if (end <= soon) return json(200, { slots: [] })
