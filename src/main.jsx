@@ -5,6 +5,7 @@ import BlogIndex from './blog/BlogIndex.jsx'
 import BlogPost from './blog/BlogPost.jsx'
 import Privacy from './blog/Privacy.jsx'
 import Contact from './blog/Contact.jsx'
+import Book from './blog/Book.jsx'
 import About from './blog/About.jsx'
 import Pricing from './blog/Pricing.jsx'
 import { findPost } from './blog/posts.js'
@@ -65,6 +66,7 @@ const parseRoute = () => {
   const path = window.location.pathname.replace(/\/+$/, '') || '/'
   if (path === '/privacy') return { blog: true, slug: null, privacy: true }
   if (path === '/contact') return { blog: true, slug: null, contact: true }
+  if (path === '/book') return { blog: true, slug: null, book: true }
   if (path === '/about') return { blog: true, slug: null, about: true }
   if (path === '/pricing') return { blog: true, slug: null, pricing: true }
   const m = path.match(/^\/blog(?:\/([^/?#]+))?$/)
@@ -152,11 +154,12 @@ function Root() {
     if (!route.blog) return
     seenBlog.current = true
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
-    if (!route.slug && !route.privacy && !route.contact && !route.about && !route.pricing) document.title = 'Planet Owl'
-  }, [route.blog, route.slug, route.privacy, route.contact, route.about, route.pricing])
+    if (!route.slug && !route.privacy && !route.contact && !route.book && !route.about && !route.pricing) document.title = 'Planet Owl'
+  }, [route.blog, route.slug, route.privacy, route.contact, route.book, route.about, route.pricing])
 
   if (route.privacy) return <Privacy />
   if (route.contact) return <Contact />
+  if (route.book) return <Book />
   if (route.about) return <About />
   if (route.pricing) return <Pricing />
   if (route.blog) {

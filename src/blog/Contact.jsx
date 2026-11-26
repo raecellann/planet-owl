@@ -1,10 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { motion } from 'motion/react'
-import { useReducedMotion } from '../lib/motionPref'
 import BlogLayout from './BlogLayout'
 import { CONTACT_EMAIL, submitContact } from '../lib/signup'
 import { A } from '../lib/assets'
-import { DatePicker, TimePicker } from './BookingPickers'
 import cloudImg from '../../assets/section 2/image 35 copy.png'
 
 /**
@@ -14,22 +12,11 @@ import cloudImg from '../../assets/section 2/image 35 copy.png'
  * down the left, the form in a white card on the right, stacked on a phone.
  * The copy, colours and owl are Planet Owl's own.
  *
- * "Book directly" is the second half of the form: a date and a time. They are
- * a REQUEST — see `submitContact` — and the page says the studio confirms by
- * email, because nothing behind this form can hold a slot. If a calendar tool
- * is connected later, that block is the one to swap for its embed.
+ * Calls are not booked here any more: the gold card in the form, and "Book a
+ * call" on the left, go to `/book`, which embeds the studio's Calendly.
  *
  * Borrowing `BlogLayout` for the frame, like the privacy page does.
  */
-
-/** Half-hour call slots across the working day. */
-const SLOTS = Array.from({ length: 17 }, (_, i) => {
-  const mins = 9 * 60 + i * 30
-  const h = Math.floor(mins / 60)
-  const m = mins % 60
-  const label = `${((h + 11) % 12) + 1}:${String(m).padStart(2, '0')} ${h < 12 ? 'AM' : 'PM'}`
-  return label
-})
 
 /**
  * The weather behind the page: the studio's own puff, five times over at five
@@ -82,11 +69,6 @@ export default function Contact() {
     document.title = 'Planet Owl'
   }, [])
 
-  // Today, in the visitor's own calendar, as the earliest bookable day.
-  const today = useMemo(() => {
-    const d = new Date()
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-  }, [])
   // Sent with the request so "2:00 PM" means something to whoever reads it.
   const timezone = useMemo(() => {
     try {
@@ -113,38 +95,6 @@ export default function Contact() {
   }
 
   const booked = Boolean(form.date)
-
-  // "Book a call" on the left: glide to the block, bring up a soft gold halo
-  // so the eye lands there, and put the cursor in the date field.
-  const bookingRef = useRef(null)
-  const reduceMotion = useReducedMotion()
-  const goToBooking = (e) => {
-    e.preventDefault()
-    const box = bookingRef.current
-    if (!box) return
-    box.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' })
-    setTimeout(() => {
-      box.querySelector('button')?.focus({ preventScroll: true })
-      if (reduceMotion) return
-      // A soft gold halo that rises and settles once, while the fields lift
-      // into place one after another.
-      const ease = 'cubic-bezier(0.22, 1, 0.36, 1)'
-      box.animate(
-        [
-          { boxShadow: '0 0 0 0 rgba(240,185,57,0), 0 0 0 0 rgba(54,14,57,0)' },
-          { boxShadow: '0 0 0 2px rgba(240,185,57,0.9), 0 22px 46px -20px rgba(54,14,57,0.4)', offset: 0.35 },
-          { boxShadow: '0 0 0 0 rgba(240,185,57,0), 0 0 0 0 rgba(54,14,57,0)' },
-        ],
-        { duration: 1900, easing: ease },
-      )
-      box.querySelectorAll('p, label').forEach((el, i) => {
-        el.animate(
-          [{ opacity: 0.35, transform: 'translateY(8px)' }, { opacity: 1, transform: 'translateY(0)' }],
-          { duration: 700, delay: i * 90, easing: ease, fill: 'backwards' },
-        )
-      })
-    }, reduceMotion ? 0 : 520)
-  }
 
   return (
     <BlogLayout onBlog={false} newsletter={false} page={{ label: 'Contact', href: '/contact' }}>
@@ -182,7 +132,7 @@ export default function Contact() {
                     <rect x="3.5" y="5" width="17" height="15" rx="2.5" />
                     <path d="M3.5 9.5h17M8 3v4M16 3v4" />
                   </Icon>
-                  <a href="#book" onClick={goToBooking} className="font-semibold text-plum-700 no-underline hover:text-plum-700">
+                  <a href="/book" className="font-semibold text-plum-700 no-underline hover:text-plum-700">
                     Book a call
                   </a>
                 </li>
@@ -258,20 +208,22 @@ export default function Contact() {
                     </Field>
                   </div>
 
-                  {/* The booking. Optional: leave the date empty and this is
-                      a plain message. */}
-                  <fieldset ref={bookingRef} id="book-a-call" className="mt-7 scroll-mt-32 rounded-2xl bg-gold-200 p-4 sm:p-5">
-                    <legend className="sr-only">Book a call</legend>
-                    <p className="font-ui text-base font-bold text-plum-700">Book a call</p>
-                    <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                      <Field label="Preferred Date">
-                        <DatePicker min={today} value={form.date} onChange={(date) => setForm((f) => ({ ...f, date }))} />
-                      </Field>
-                      <Field label="Preferred Time">
-                        <TimePicker value={form.time} options={SLOTS} required={booked} onChange={(time) => setForm((f) => ({ ...f, time }))} />
-                      </Field>
-                    </div>
-                  </fieldset>
+                  {/* Calls are booked on /book now, through the studio's
+                      Calendly, so the slot is really held and the invite
+                      with the call link goes out by itself. */}
+                  <a
+                    href="/book"
+                    className="group mt-7 flex items-center gap-4 rounded-2xl bg-gold-200 p-4 no-underline transition-colors hover:bg-gold-400/60 sm:p-5"
+                  >
+                    <span className="grid size-11 shrink-0 place-items-center rounded-full bg-plum-800 text-gold-400">
+                      <svg viewBox="0 0 24 24" aria-hidden className="size-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2.5" /><path d="M3.5 9.5h17M8 3v4M16 3v4" /></svg>
+                    </span>
+                    <span className="font-ui text-plum-700">
+                      <span className="block text-base font-bold">Rather talk it through?</span>
+                      <span className="block text-sm">Book a 30-minute call on our calendar</span>
+                    </span>
+                    <span aria-hidden className="ml-auto font-ui text-xl font-bold text-plum-700 transition-transform group-hover:translate-x-1">&rarr;</span>
+                  </a>
 
                   <Field label="Message (optional)" className="mt-6">
                     <textarea rows={5} value={form.message} onChange={set('message')} placeholder="Tell us about your project" className={`${FIELD} resize-none`} />
