@@ -14,6 +14,8 @@
  * routes answer 503 and the contact form falls back to sending a call
  * REQUEST, as it did before.
  */
+import { personalize } from '../src/lib/industry.js'
+
 const API = 'https://api.calendly.com'
 const SLUG = process.env.CALENDLY_EVENT_SLUG?.trim() || '30min'
 /** Make.com "Planet Owl website forms" webhook (the auto-reply emails). */
@@ -157,6 +159,7 @@ export async function POST(request) {
           phone: String(body.phone || '').slice(0, 60),
           website: String(body.website || '').slice(0, 200),
           message: String(body.message || '').slice(0, 2000),
+          ...personalize({ email, company: body.company, website: body.website }),
         }),
       })
     } catch (err) {

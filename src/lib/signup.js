@@ -15,6 +15,8 @@
  * `VITE_MAKE_WEBHOOK` overrides the webhook (e.g. for a test scenario);
  * `VITE_FORM_ENDPOINT=mailto` opens the visitor's mail client instead.
  */
+import { personalize } from './industry.js'
+
 const DEFAULT_MAKE_WEBHOOK = 'https://hook.us2.make.com/bcxw8cpn0glfqlnfdzlwfmq7a8cq7k9s'
 const MAKE_WEBHOOK = import.meta.env.VITE_MAKE_WEBHOOK?.trim() || DEFAULT_MAKE_WEBHOOK
 const MAILTO = import.meta.env.VITE_FORM_ENDPOINT?.trim() === 'mailto'
@@ -61,7 +63,7 @@ export async function submitSignup({ email, source = 'site' }) {
     return { via: 'mailto' }
   }
 
-  await sendToMake({ kind: 'project', email: address, source, page: page() })
+  await sendToMake({ kind: 'project', email: address, source, page: page(), ...personalize({ email: address }) })
   return { via: 'endpoint' }
 }
 
@@ -89,6 +91,6 @@ export async function submitContact(fields, { autoReply = true } = {}) {
     return { via: 'mailto' }
   }
 
-  await sendToMake({ ...fields, email, kind: fields.date ? 'meeting' : 'project', source: 'contact page', page: page() })
+  await sendToMake({ ...fields, email, kind: fields.date ? 'meeting' : 'project', source: 'contact page', page: page(), ...personalize({ email, company: fields.company, website: fields.website }) })
   return { via: 'endpoint' }
 }

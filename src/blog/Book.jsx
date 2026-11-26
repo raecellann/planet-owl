@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { motion } from 'motion/react'
 import BlogLayout from './BlogLayout'
 import { A } from '../lib/assets'
+import { personalize } from '../lib/industry'
 
 /**
  * The booking page, at `/book`: Planet Owl's own page for the studio's
@@ -183,6 +184,7 @@ function Flow({ slots, timezone, email: presetEmail, link }) {
         time: label({ hour: 'numeric', minute: '2-digit' }),
         timezone,
         source: 'booking page',
+        ...personalize({ email: form.email }),
       })
       if (MAKE_WEBHOOK !== 'off') fetch(MAKE_WEBHOOK, { method: 'POST', body, keepalive: true }).catch(() => {})
     } catch {
