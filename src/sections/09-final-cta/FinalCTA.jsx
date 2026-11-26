@@ -116,6 +116,11 @@ export default function FinalCTA() {
       {/* The FAQ, in the dark stretch above the ask — by request. It fills
           what was a long empty run of night between the nest and the
           headline, and the ask below is still what the section ends on. */}
+      {/* Jasper's vine, strung across the night just above the FAQ, by
+          request. Cut out of its white ground (public/assets/vine.webp). */}
+      <div aria-hidden className="pointer-events-none relative left-1/2 mb-10 w-screen -translate-x-1/2 sm:mb-14">
+        <img src="/assets/vine.webp" alt="" loading="lazy" decoding="async" width="1600" height="474" className="block h-auto w-full select-none" />
+      </div>
       <div className="relative mx-auto mb-36 max-w-[1440px] px-5 sm:mb-52 sm:px-[5vw]">
         <Reveal y={40}>
           <Faq tone="dark" />
