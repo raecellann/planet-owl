@@ -5,8 +5,10 @@ import { A } from '../lib/assets'
 
 /**
  * The booking page, at `/book`: Planet Owl's own page around the studio's
- * Calendly calendar, by request (Jasper: a landing page of our own, connected
- * to Calendly, since Calendly's pages cannot be restyled).
+ * Calendly calendar. Visitors land here after leaving their email in the
+ * "Start a Project" popup (`?email=` is passed on to Calendly so they do not
+ * type it twice). The main site's contact form books through api/book.js
+ * instead, without leaving the page.
  *
  * Calendly does the real work, holding the slot, sending the invite with the
  * call link and the reminders. Everything around it is ours. The colour
@@ -21,9 +23,9 @@ import { A } from '../lib/assets'
 const CALENDLY = 'https://calendly.com/planetowlstudio/30min'
 
 const STEPS = [
-  'Pick a day and time that suits you',
+  'Grab a day and time that works for y’all',
   'The invite and call link land in your inbox',
-  'We talk it through, and your free 2-week trial can start',
+  'We chop it up, and your free 2-week trial can start',
 ]
 
 export default function Book() {
@@ -45,7 +47,9 @@ export default function Book() {
     return () => window.removeEventListener('message', onMessage)
   }, [])
 
+  const email = new URLSearchParams(window.location.search).get('email') || ''
   const src = `${CALENDLY}?${new URLSearchParams({
+    ...(email ? { email } : {}),
     embed_domain: window.location.hostname,
     embed_type: 'Inline',
     hide_gdpr_banner: '1',
@@ -63,11 +67,11 @@ export default function Book() {
           <div>
             <p className="font-ui text-sm font-bold uppercase tracking-[0.18em] text-teal-600">30-minute call</p>
             <h1 className="mt-2 font-['Momo_Trust_Display'] text-[clamp(2rem,4.6vw,3.6rem)] font-normal leading-[1.1] text-plum-700">
-              Book a Call With the Flock
+              Hoot hoot! Let’s Chop It Up
             </h1>
             <p className="mt-5 max-w-md font-ui text-lg leading-relaxed text-plum-700">
-              Tell us what is eating your team's time and we will find the right place to start.
-              Pick a slot on the calendar and come as you are, there is nothing to prepare.
+              Sooo, what’s eating up your team’s time? Tell us on a quick 30-min call and we’ll find
+              the best spot to start. We do the legwork, y’all just show up. 🦉
             </p>
             <ol className="mt-7 max-w-md space-y-3">
               {STEPS.map((t, i) => (
@@ -130,10 +134,10 @@ function Booked() {
         </motion.span>
       </motion.div>
       <motion.h2 {...pop} transition={{ duration: 0.5, delay: 0.15 }} className="mt-4 font-['Momo_Trust_Display'] text-3xl font-normal text-plum-700">
-        You're booked!
+        You’re on the calendar!
       </motion.h2>
       <motion.p {...pop} transition={{ duration: 0.5, delay: 0.22 }} className="mx-auto mt-2 max-w-sm font-ui leading-relaxed text-plum-700">
-        The invite with your call link is on its way to your inbox. See you in the nest.
+        Your call is booked. The invite with the call link is on its way to your inbox. See you in the nest! 🦉
       </motion.p>
       <motion.div {...pop} transition={{ duration: 0.5, delay: 0.3 }} className="mt-7 flex flex-wrap justify-center gap-3">
         <a href="/pricing" className="btn-type inline-flex h-11 items-center rounded-full bg-gold-500 px-5 font-ui font-semibold text-plum-700 no-underline shadow-[0_5px_0_-1px_var(--color-plum-900)]">

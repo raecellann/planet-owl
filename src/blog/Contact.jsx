@@ -1,8 +1,10 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { motion } from 'motion/react'
+import { useReducedMotion } from '../lib/motionPref'
 import BlogLayout from './BlogLayout'
 import { CONTACT_EMAIL, submitContact } from '../lib/signup'
 import { A } from '../lib/assets'
+import { DatePicker, TimePicker } from './BookingPickers'
 import cloudImg from '../../assets/section 2/image 35 copy.png'
 
 /**
@@ -12,11 +14,22 @@ import cloudImg from '../../assets/section 2/image 35 copy.png'
  * down the left, the form in a white card on the right, stacked on a phone.
  * The copy, colours and owl are Planet Owl's own.
  *
- * Calls are not booked here any more: the gold card in the form, and "Book a
- * call" on the left, go to `/book`, which embeds the studio's Calendly.
+ * "Book directly" is the second half of the form: a date and a time. They are
+ * a REQUEST — see `submitContact` — and the page says the studio confirms by
+ * email, because nothing behind this form can hold a slot. If a calendar tool
+ * is connected later, that block is the one to swap for its embed.
  *
  * Borrowing `BlogLayout` for the frame, like the privacy page does.
  */
+
+/** Half-hour call slots across the working day. */
+const SLOTS = Array.from({ length: 17 }, (_, i) => {
+  const mins = 9 * 60 + i * 30
+  const h = Math.floor(mins / 60)
+  const m = mins % 60
+  const label = `${((h + 11) % 12) + 1}:${String(m).padStart(2, '0')} ${h < 12 ? 'AM' : 'PM'}`
+  return label
+})
 
 /**
  * The weather behind the page: the studio's own puff, five times over at five
@@ -69,6 +82,11 @@ export default function Contact() {
     document.title = 'Planet Owl'
   }, [])
 
+  // Today, in the visitor's own calendar, as the earliest bookable day.
+  const today = useMemo(() => {
+    const d = new Date()
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  }, [])
   // Sent with the request so "2:00 PM" means something to whoever reads it.
   const timezone = useMemo(() => {
     try {
@@ -80,13 +98,52 @@ export default function Contact() {
 
   const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }))
 
+  // Open times for the chosen day, straight from Calendly (see api/book.js).
+  // `live` is false when Calendly is not connected yet: the form then offers
+  // the fixed half-hour slots and sends a call REQUEST, as before.
+  const [cal, setCal] = useState({ date: '', live: false, loading: false, slots: [] })
+  useEffect(() => {
+    if (!form.date) return undefined
+    let gone = false
+    setCal({ date: form.date, live: false, loading: true, slots: [] })
+    fetch(`/api/book?date=${form.date}&tz=${encodeURIComponent(timezone || 'UTC')}`)
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+      .then((d) => !gone && setCal({ date: form.date, live: true, loading: false, slots: d.slots || [] }))
+      .catch(() => !gone && setCal({ date: form.date, live: false, loading: false, slots: [] }))
+    return () => {
+      gone = true
+    }
+  }, [form.date, timezone])
+
+  const slotLabel = (iso) =>
+    new Date(iso).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: timezone || undefined })
+  const liveSlots = cal.live && cal.date === form.date ? cal.slots : null
+  const timeOptions = liveSlots ? liveSlots.map(slotLabel) : SLOTS
+  const pickedIso = liveSlots ? liveSlots.find((iso) => slotLabel(iso) === form.time) : null
+  // Set once Calendly has taken the booking, so the card can say so.
+  const [confirmed, setConfirmed] = useState(false)
+
   const onSubmit = async (e) => {
     e.preventDefault()
     if (state === 'sending') return
     setState('sending')
     setError('')
     try {
-      await submitContact({ ...form, timezone: form.date ? timezone : '' })
+      if (form.date && pickedIso) {
+        const res = await fetch('/api/book', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ ...form, start_time: pickedIso, timezone }),
+        })
+        const data = await res.json().catch(() => ({}))
+        if (!res.ok) throw new Error(data.error || 'We could not book the call just now. Please try again.')
+        setConfirmed(true)
+        // The studio inbox still hears about it, with everything they typed.
+        submitContact({ ...form, timezone, booked: 'yes, on Calendly' }, { autoReply: false }).catch(() => {})
+      } else {
+        setConfirmed(false)
+        await submitContact({ ...form, timezone: form.date ? timezone : '' })
+      }
       setState('sent')
     } catch (err) {
       setError(err.message)
@@ -95,6 +152,38 @@ export default function Contact() {
   }
 
   const booked = Boolean(form.date)
+
+  // "Book a call" on the left: glide to the block, bring up a soft gold halo
+  // so the eye lands there, and put the cursor in the date field.
+  const bookingRef = useRef(null)
+  const reduceMotion = useReducedMotion()
+  const goToBooking = (e) => {
+    e.preventDefault()
+    const box = bookingRef.current
+    if (!box) return
+    box.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' })
+    setTimeout(() => {
+      box.querySelector('button')?.focus({ preventScroll: true })
+      if (reduceMotion) return
+      // A soft gold halo that rises and settles once, while the fields lift
+      // into place one after another.
+      const ease = 'cubic-bezier(0.22, 1, 0.36, 1)'
+      box.animate(
+        [
+          { boxShadow: '0 0 0 0 rgba(240,185,57,0), 0 0 0 0 rgba(54,14,57,0)' },
+          { boxShadow: '0 0 0 2px rgba(240,185,57,0.9), 0 22px 46px -20px rgba(54,14,57,0.4)', offset: 0.35 },
+          { boxShadow: '0 0 0 0 rgba(240,185,57,0), 0 0 0 0 rgba(54,14,57,0)' },
+        ],
+        { duration: 1900, easing: ease },
+      )
+      box.querySelectorAll('p, label').forEach((el, i) => {
+        el.animate(
+          [{ opacity: 0.35, transform: 'translateY(8px)' }, { opacity: 1, transform: 'translateY(0)' }],
+          { duration: 700, delay: i * 90, easing: ease, fill: 'backwards' },
+        )
+      })
+    }, reduceMotion ? 0 : 520)
+  }
 
   return (
     <BlogLayout onBlog={false} newsletter={false} page={{ label: 'Contact', href: '/contact' }}>
@@ -132,7 +221,7 @@ export default function Contact() {
                     <rect x="3.5" y="5" width="17" height="15" rx="2.5" />
                     <path d="M3.5 9.5h17M8 3v4M16 3v4" />
                   </Icon>
-                  <a href="/book" className="font-semibold text-plum-700 no-underline hover:text-plum-700">
+                  <a href="#book" onClick={goToBooking} className="font-semibold text-plum-700 no-underline hover:text-plum-700">
                     Book a call
                   </a>
                 </li>
@@ -182,7 +271,7 @@ export default function Contact() {
             {/* ------------------------------------------------------ the form -- */}
             <div className="rounded-[1.75rem] bg-white p-6 shadow-[0_30px_60px_-30px_rgba(54,14,57,0.5)] ring-1 ring-plum-900/5 sm:p-8">
               {state === 'sent' ? (
-                <SentCard booked={booked} form={form} onAgain={() => { setForm(EMPTY); setState('idle') }} />
+                <SentCard booked={booked} confirmed={confirmed} form={form} onAgain={() => { setForm(EMPTY); setConfirmed(false); setState('idle') }} />
               ) : (
                 <form onSubmit={onSubmit} noValidate={false}>
                   <div className="grid gap-5 sm:grid-cols-2">
@@ -208,22 +297,25 @@ export default function Contact() {
                     </Field>
                   </div>
 
-                  {/* Calls are booked on /book now, through the studio's
-                      Calendly, so the slot is really held and the invite
-                      with the call link goes out by itself. */}
-                  <a
-                    href="/book"
-                    className="group mt-7 flex items-center gap-4 rounded-2xl bg-gold-200 p-4 no-underline transition-colors hover:bg-gold-400/60 sm:p-5"
-                  >
-                    <span className="grid size-11 shrink-0 place-items-center rounded-full bg-plum-800 text-gold-400">
-                      <svg viewBox="0 0 24 24" aria-hidden className="size-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2.5" /><path d="M3.5 9.5h17M8 3v4M16 3v4" /></svg>
-                    </span>
-                    <span className="font-ui text-plum-700">
-                      <span className="block text-base font-bold">Rather talk it through?</span>
-                      <span className="block text-sm">Book a 30-minute call on our calendar</span>
-                    </span>
-                    <span aria-hidden className="ml-auto font-ui text-xl font-bold text-plum-700 transition-transform group-hover:translate-x-1">&rarr;</span>
-                  </a>
+                  {/* The booking. Optional: leave the date empty and this is
+                      a plain message. */}
+                  <fieldset ref={bookingRef} id="book-a-call" className="mt-7 scroll-mt-32 rounded-2xl bg-gold-200 p-4 sm:p-5">
+                    <legend className="sr-only">Book a call</legend>
+                    <p className="font-ui text-base font-bold text-plum-700">Book a call</p>
+                    <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                      <Field label="Preferred Date">
+                        <DatePicker min={today} value={form.date} onChange={(date) => setForm((f) => ({ ...f, date, time: '' }))} />
+                      </Field>
+                      <Field label="Preferred Time">
+                        <TimePicker value={form.time} options={timeOptions} required={booked} onChange={(time) => setForm((f) => ({ ...f, time }))} />
+                      </Field>
+                    </div>
+                    {booked && cal.date === form.date && (cal.loading || (liveSlots && !liveSlots.length)) && (
+                      <p className="mt-3 font-ui text-sm text-plum-700">
+                        {cal.loading ? 'Checking the open times…' : 'No open times that day. Try another one!'}
+                      </p>
+                    )}
+                  </fieldset>
 
                   <Field label="Message (optional)" className="mt-6">
                     <textarea rows={5} value={form.message} onChange={set('message')} placeholder="Tell us about your project" className={`${FIELD} resize-none`} />
@@ -304,10 +396,12 @@ const prettyDate = (v) => {
  * the booked slot is shown as a little ticket, and the next steps and two
  * ways onward are laid out, so it no longer ends on a line of plain text.
  */
-function SentCard({ booked, form, onAgain }) {
+function SentCard({ booked, confirmed, form, onAgain }) {
   const name = form.firstName || 'friend'
   const pop = { initial: { opacity: 0, y: 16, scale: 0.96 }, animate: { opacity: 1, y: 0, scale: 1 } }
-  const steps = booked
+  const steps = confirmed
+    ? ['The invite and call link are in your inbox', "We chop it up on the call", 'Your free 2-week trial can start']
+    : booked
     ? ['We confirm your slot by email', 'We talk it through on the call', 'Your free 2-week trial can start']
     : ['We read every message ourselves', 'We reply by email', 'Your free 2-week trial can start']
   return (
@@ -336,10 +430,10 @@ function SentCard({ booked, form, onAgain }) {
         </motion.span>
       </motion.div>
       <motion.h3 {...pop} transition={{ duration: 0.5, delay: 0.15 }} className="mt-4 font-['Momo_Trust_Display'] text-3xl font-normal text-plum-700">
-        {booked ? 'Call requested!' : 'Message sent!'}
+        {confirmed ? 'You’re on the calendar!' : booked ? 'Call requested!' : 'Message sent!'}
       </motion.h3>
       <motion.p {...pop} transition={{ duration: 0.5, delay: 0.22 }} className="mx-auto mt-2 max-w-sm font-ui leading-relaxed text-plum-700">
-        Thanks, {name}. {booked ? 'Your call request is in the nest.' : 'Your message is in the nest.'}
+        {confirmed ? `Hoot hoot, ${name}! Your call is booked.` : `Thanks, ${name}. ${booked ? 'Your call request is in the nest.' : 'Your message is in the nest.'}`}
       </motion.p>
 
       {booked && (
@@ -348,7 +442,7 @@ function SentCard({ booked, form, onAgain }) {
             <svg viewBox="0 0 24 24" aria-hidden className="size-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2.5" /><path d="M3.5 9.5h17M8 3v4M16 3v4" /></svg>
           </span>
           <span className="px-4 py-3 font-ui text-plum-700">
-            <span className="block text-xs font-bold uppercase tracking-wide">Requested slot</span>
+            <span className="block text-xs font-bold uppercase tracking-wide">{confirmed ? 'Booked slot' : 'Requested slot'}</span>
             <span className="block font-semibold">{prettyDate(form.date)}</span>
             {form.time && <span className="block text-sm">{form.time}</span>}
           </span>

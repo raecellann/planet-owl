@@ -131,7 +131,7 @@ export async function submitSignup({ email, source = 'site' }) {
  * calendar behind it (Calendly, Cal.com, Google Calendar), and none is
  * connected.
  */
-export async function submitContact(fields) {
+export async function submitContact(fields, { autoReply = true } = {}) {
   const email = String(fields.email || '').trim()
   if (!isValidEmail(email)) throw new Error('That does not look like an email address.')
 
@@ -181,6 +181,8 @@ export async function submitContact(fields) {
     throw new Error(message)
   }
 
-  notifyMake({ kind: payload.date ? 'meeting' : 'project', ...payload })
+  // A call booked straight into Calendly gets Calendly's own confirmation,
+  // so the Make auto-reply ("we'll confirm your slot") is skipped.
+  if (autoReply) notifyMake({ kind: payload.date ? 'meeting' : 'project', ...payload })
   return { via: 'endpoint' }
 }

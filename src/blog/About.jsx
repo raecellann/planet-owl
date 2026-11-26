@@ -313,7 +313,7 @@ function ValuesStack() {
 const PROMISE_CTAS = [
   { label: 'Start a Project', href: '/contact' },
   { label: 'See Pricing', href: '/pricing' },
-  { label: 'Book a Call', href: '/book' },
+  { label: 'Book a Call', href: '/contact' },
   { label: 'See Pricing', href: '/pricing' },
   { label: 'Start Free Trial', href: '/contact' },
 ]
