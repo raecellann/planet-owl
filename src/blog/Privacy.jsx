@@ -37,7 +37,7 @@ const SECTIONS = [
   {
     title: 'Who handles it for us',
     body: [
-      'Form submissions are delivered to our inbox by Formspree, a form-handling service. Resumes are stored privately with Vercel Blob, Vercel’s file storage, where only our team can open them. The website itself is hosted on Vercel, which, like any web host, keeps standard server logs such as IP addresses and browser type in order to deliver the site and keep it secure. Our typefaces are loaded from Google Fonts, so your browser contacts Google’s servers to fetch them.',
+      'Form submissions are handled by Make, an automation service, which delivers them to our inbox and sends you an automatic reply. Bookings for calls are made through Calendly. Resumes are stored privately with Vercel Blob, Vercel’s file storage, where only our team can open them. The website itself is hosted on Vercel, which, like any web host, keeps standard server logs such as IP addresses and browser type in order to deliver the site and keep it secure. Our typefaces are loaded from Google Fonts, so your browser contacts Google’s servers to fetch them.',
       'Each of these providers handles that information under its own privacy policy.',
     ],
   },

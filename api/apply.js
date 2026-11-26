@@ -7,13 +7,12 @@ import { put } from '@vercel/blob'
  * to this project, so `BLOB_READ_WRITE_TOKEN` is set for us). Nothing in it
  * has a public URL: the studio opens the files from the Vercel dashboard,
  * Storage > planet-owl-resumes. Next to each resume sits a small JSON file
- * with what the applicant typed, and the studio inbox gets a note through the
- * same Formspree form the sign-ups use.
+ * with what the applicant typed, and the Make scenario emails the applicant
+ * and sends hello@ a copy (see the hook at the end).
  *
  * A function body is capped at 4.5 MB on Vercel, so resumes are held to 4 MB.
  */
 const MAX_BYTES = 4 * 1024 * 1024
-const FORMSPREE = 'https://formspree.io/f/mgaaqbpv'
 /** Make.com "Planet Owl website forms" webhook; `MAKE_WEBHOOK=off` disables it. */
 const MAKE_WEBHOOK = process.env.MAKE_WEBHOOK?.trim() || 'https://hook.us2.make.com/bcxw8cpn0glfqlnfdzlwfmq7a8cq7k9s'
 const ROLES =['SEO Specialist', 'Motion Designer', 'Full-stack Engineer', 'AI Solutions Lead', 'Other']
@@ -90,35 +89,14 @@ export async function POST(request) {
     return json(500, { error: 'We could not save your resume just now. Please try again in a minute.' })
   }
 
-  // A heads-up in the studio inbox. The application is already saved, so a
-  // failure here is logged and not shown to the applicant.
-  try {
-    await fetch(FORMSPREE, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json', accept: 'application/json' },
-      body: JSON.stringify({
-        email,
-        name,
-        source: 'join-the-flock',
-        role,
-        link,
-        message: note,
-        resume: `${resume.pathname} (Vercel > Storage > planet-owl-resumes)`,
-        _subject: `Join the Flock: ${role} from ${name}`,
-      }),
-    })
-  } catch (err) {
-    console.error('apply: inbox notice failed', err)
-  }
-
-  // The applicant's auto-reply: the same Make scenario that answers the
-  // contact form, with `kind=application` so it sends the "we got your
-  // application" email. Best effort, like the inbox notice.
+  // Make emails the applicant ("your application landed in the nest") and
+  // sends hello@ a copy with every field (`kind=application`). Best effort:
+  // the application is already saved.
   if (MAKE_WEBHOOK !== 'off') {
     try {
       await fetch(MAKE_WEBHOOK, {
         method: 'POST',
-        body: new URLSearchParams({ kind: 'application', email, firstName: name.split(/\s+/)[0], name, role, link, note, source: 'join-the-flock' }),
+        body: new URLSearchParams({ kind: 'application', email, firstName: name.split(/\s+/)[0], name, role, link, note, resume: `${resume.pathname} (Vercel > Storage > planet-owl-resumes)`, source: 'join-the-flock' }),
       })
     } catch (err) {
       console.error('apply: auto-reply hook failed', err)

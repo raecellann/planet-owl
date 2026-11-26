@@ -151,6 +151,12 @@ export async function POST(request) {
           time: label({ hour: 'numeric', minute: '2-digit' }),
           timezone,
           source: String(body.source || 'booking page').slice(0, 60),
+          // The contact form books through here too; hello@'s copy keeps
+          // whatever else the visitor typed.
+          company: String(body.company || '').slice(0, 120),
+          phone: String(body.phone || '').slice(0, 60),
+          website: String(body.website || '').slice(0, 200),
+          message: String(body.message || '').slice(0, 2000),
         }),
       })
     } catch (err) {
