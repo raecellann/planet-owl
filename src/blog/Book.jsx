@@ -14,9 +14,25 @@ import { A } from '../lib/assets'
  * open times and books through `api/book.js`, so Calendly still holds the
  * slot and emails the invite, call link and reminder.
  *
- * Until `CALENDLY_TOKEN` is set the API answers 503, and the page falls back
- * to the Calendly embed so booking keeps working either way.
+ * Until `CALENDLY_TOKEN` is set the API answers 503. The same steps still run
+ * ('link' mode): the times are every half hour round the clock (the studio's
+ * Calendly is open 24 hours, by request), and the last step opens Calendly's
+ * own confirm form for that exact slot, name and email already filled in, so
+ * the visitor only presses "Schedule Event". The welcome email goes out
+ * through Make once Calendly says the booking is made.
  */
+const MAKE_WEBHOOK = import.meta.env.VITE_MAKE_WEBHOOK?.trim() || 'https://hook.us2.make.com/bcxw8cpn0glfqlnfdzlwfmq7a8cq7k9s'
+
+/** Every half hour from an hour from now, for DAYS_AHEAD days. */
+function openSlots() {
+  const t = new Date(Date.now() + 60 * 60 * 1000)
+  t.setSeconds(0, 0)
+  t.setMinutes(t.getMinutes() < 30 ? 30 : 60)
+  const end = Date.now() + DAYS_AHEAD * 24 * 3600 * 1000
+  const out = []
+  for (let x = t.getTime(); x < end; x += 30 * 60 * 1000) out.push(new Date(x).toISOString())
+  return out
+}
 const CALENDLY = 'https://calendly.com/planetowlstudio/30min'
 const DAYS_AHEAD = 28
 
@@ -32,7 +48,8 @@ export default function Book() {
       return 'UTC'
     }
   }, [])
-  // null while we find out whether our own flow can run, then 'native' or 'embed'.
+  // null while we find out whether Calendly's API is connected: 'native' if
+  // it is (book through api/book.js), 'link' if not (confirm on Calendly).
   const [mode, setMode] = useState(null)
   const [slots, setSlots] = useState([]) // ISO start times, next DAYS_AHEAD days
 
@@ -52,7 +69,11 @@ export default function Book() {
         setSlots([...new Set(all.flatMap((w) => w.slots || []))].sort())
         setMode('native')
       })
-      .catch(() => !gone && setMode('embed'))
+      .catch(() => {
+        if (gone) return
+        setSlots(openSlots())
+        setMode('link')
+      })
     return () => {
       gone = true
     }
@@ -100,8 +121,7 @@ export default function Book() {
               </div>
             </div>
             {mode === null && <p className="px-6 py-16 text-center font-ui text-plum-700">Checking the calendar…</p>}
-            {mode === 'native' && <Flow slots={slots} timezone={timezone} email={email} />}
-            {mode === 'embed' && <Embed email={email} />}
+            {mode && <Flow slots={slots} timezone={timezone} email={email} link={mode === 'link'} />}
           </div>
         </div>
       </div>
@@ -121,7 +141,7 @@ const STEP_LABELS = ['Day', 'Time', 'Details']
 const FIELD =
   'mt-1.5 w-full rounded-xl border-2 border-plum-900/15 bg-white px-4 py-3 font-ui text-base text-plum-700 placeholder:text-plum-700/40 focus:border-plum-700 focus:outline-none'
 
-function Flow({ slots, timezone, email: presetEmail }) {
+function Flow({ slots, timezone, email: presetEmail, link }) {
   const [step, setStep] = useState(0)
   const [day, setDay] = useState('')
   const [slot, setSlot] = useState('')
@@ -159,9 +179,49 @@ function Flow({ slots, timezone, email: presetEmail }) {
     return new Date(y, m - 1, d).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
   }
 
+  // The welcome email, once Calendly has the booking ('link' mode; in
+  // 'native' mode api/book.js sends it).
+  const welcome = () => {
+    try {
+      const at = new Date(slot)
+      const label = (o) => at.toLocaleString('en-US', { timeZone: timezone, ...o })
+      const body = new URLSearchParams({
+        kind: 'booked',
+        email: form.email.trim(),
+        firstName: form.firstName.trim(),
+        lastName: form.lastName.trim(),
+        date: label({ weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }),
+        time: label({ hour: 'numeric', minute: '2-digit' }),
+        timezone,
+        source: 'booking page',
+      })
+      if (MAKE_WEBHOOK !== 'off') fetch(MAKE_WEBHOOK, { method: 'POST', body, keepalive: true }).catch(() => {})
+    } catch {
+      /* best effort */
+    }
+  }
+
+  useEffect(() => {
+    if (state !== 'confirm') return undefined
+    const onMessage = (e) => {
+      if (e.origin !== 'https://calendly.com') return
+      if (e.data?.event === 'calendly.event_scheduled') {
+        welcome()
+        setState('done')
+      }
+    }
+    window.addEventListener('message', onMessage)
+    return () => window.removeEventListener('message', onMessage)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state])
+
   const book = async (e) => {
     e.preventDefault()
     if (state === 'sending') return
+    if (link) {
+      setState('confirm')
+      return
+    }
     setState('sending')
     setError('')
     try {
@@ -180,6 +240,16 @@ function Flow({ slots, timezone, email: presetEmail }) {
   }
 
   if (state === 'done') return <Booked when={`${longDay(day)} at ${timeLabel(slot)}`} />
+  if (state === 'confirm')
+    return (
+      <Confirm
+        slot={slot}
+        name={`${form.firstName} ${form.lastName}`.trim()}
+        email={form.email.trim()}
+        when={`${longDay(day)} · ${timeLabel(slot)} · 30 min`}
+        onBack={() => setState('idle')}
+      />
+    )
 
   const anyOpen = Object.keys(byDay).length > 0
 
@@ -338,7 +408,7 @@ function Flow({ slots, timezone, email: presetEmail }) {
                   disabled={state === 'sending'}
                   className="btn-type rounded-full bg-gold-500 px-8 py-3.5 font-ui text-base font-semibold text-plum-700 shadow-[0_6px_0_-2px_var(--color-plum-900)] transition-colors hover:bg-gold-400 disabled:cursor-wait disabled:opacity-70"
                 >
-                  {state === 'sending' ? 'Booking…' : 'Book My Call'}
+                  {state === 'sending' ? 'Booking…' : link ? 'Continue' : 'Book My Call'}
                 </button>
                 <button type="button" onClick={() => setStep(1)} className="font-ui text-sm font-semibold text-teal-600 underline">
                   Change time
@@ -352,30 +422,28 @@ function Flow({ slots, timezone, email: presetEmail }) {
   )
 }
 
-/* -------------------------------------------------- Calendly fallback -- */
+/* ------------------------------------- confirm on Calendly ('link') -- */
 
-function Embed({ email }) {
-  const [booked, setBooked] = useState(false)
-  const [height, setHeight] = useState(680)
-
+/**
+ * Calendly's own confirm form for the one slot picked, with the name and
+ * email already in, so the visitor only presses "Schedule Event". Calendly
+ * then holds the slot and sends the invite, the Google Meet link and the
+ * reminder.
+ */
+function Confirm({ slot, name, email, when, onBack }) {
+  const [height, setHeight] = useState(620)
   useEffect(() => {
     const onMessage = (e) => {
-      if (e.origin !== 'https://calendly.com') return
-      const kind = e.data?.event
-      if (kind === 'calendly.page_height') {
-        const h = parseInt(e.data.payload?.height, 10)
-        if (h > 300) setHeight(h)
-      }
-      if (kind === 'calendly.event_scheduled') setBooked(true)
+      if (e.origin !== 'https://calendly.com' || e.data?.event !== 'calendly.page_height') return
+      const h = parseInt(e.data.payload?.height, 10)
+      if (h > 300) setHeight(h)
     }
     window.addEventListener('message', onMessage)
     return () => window.removeEventListener('message', onMessage)
   }, [])
-
-  if (booked) return <Booked />
-
-  const src = `${CALENDLY}?${new URLSearchParams({
-    ...(email ? { email } : {}),
+  const src = `${CALENDLY}/${new Date(slot).toISOString().replace('.000Z', 'Z')}?${new URLSearchParams({
+    name,
+    email,
     embed_domain: window.location.hostname,
     embed_type: 'Inline',
     hide_gdpr_banner: '1',
@@ -385,7 +453,19 @@ function Embed({ email }) {
     text_color: '562354',
     primary_color: '3f9f94',
   })}`
-  return <iframe title="Pick a time for your call with Planet Owl" src={src} style={{ height }} className="block w-full border-0" />
+  return (
+    <div className="px-5 pt-6 sm:px-8">
+      <p className="text-center font-ui text-xl font-bold text-plum-700">Last step: lock it in</p>
+      <p className="mx-auto mt-3 w-fit rounded-full bg-gold-200 px-4 py-1.5 text-center font-ui text-sm font-semibold text-plum-700">{when}</p>
+      <p className="mt-3 text-center font-ui text-sm text-plum-700">
+        Hit <b>Schedule Event</b> below and you’re on the calendar.{' '}
+        <button type="button" onClick={onBack} className="font-semibold text-teal-600 underline">
+          Change something
+        </button>
+      </p>
+      <iframe title="Confirm your call with Planet Owl" src={src} style={{ height }} className="mt-2 block w-full border-0" />
+    </div>
+  )
 }
 
 /* ------------------------------------------------------------ booked -- */

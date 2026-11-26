@@ -58,6 +58,24 @@ const CLOUDS = [
   { side: 'left', at: 'min(-9vw, calc(50vw - 590px - 17vw))', top: '61rem', w: 'max(9rem,17vw)', o: 0.38, flip: false },
 ]
 
+/**
+ * Calendly's confirm form for one requested slot, name and email filled in.
+ * Used while Calendly's API is not connected: the request still goes in, and
+ * this link (on the card and in the email) puts it on the calendar in one click.
+ * `date` is yyyy-mm-dd and `time` like "2:30 PM", both in the visitor's own zone.
+ */
+const CALENDLY = 'https://calendly.com/planetowlstudio/30min'
+function calendlyLink({ date, time, firstName, lastName, email }) {
+  const m = String(time || '').match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i)
+  if (!date || !m) return ''
+  const h = (Number(m[1]) % 12) + (m[3].toUpperCase() === 'PM' ? 12 : 0)
+  const [y, mo, d] = date.split('-').map(Number)
+  const at = new Date(y, mo - 1, d, h, Number(m[2]))
+  if (Number.isNaN(at.getTime())) return ''
+  const q = new URLSearchParams({ name: `${firstName || ''} ${lastName || ''}`.trim(), email: email || '' })
+  return `${CALENDLY}/${at.toISOString().replace('.000Z', 'Z')}?${q}`
+}
+
 const EMPTY = {
   firstName: '',
   lastName: '',
@@ -142,7 +160,7 @@ export default function Contact() {
         submitContact({ ...form, timezone, booked: 'yes, on Calendly' }, { autoReply: false }).catch(() => {})
       } else {
         setConfirmed(false)
-        await submitContact({ ...form, timezone: form.date ? timezone : '' })
+        await submitContact({ ...form, timezone: form.date ? timezone : '', calendlyLink: form.date ? calendlyLink(form) : '' })
       }
       setState('sent')
     } catch (err) {
@@ -402,7 +420,7 @@ function SentCard({ booked, confirmed, form, onAgain }) {
   const steps = confirmed
     ? ['The invite and call link are in your inbox', "We chop it up on the call", 'Your free 2-week trial can start']
     : booked
-    ? ['We confirm your slot by email', 'We talk it through on the call', 'Your free 2-week trial can start']
+    ? ['Lock it in on Calendly (one click)', 'The invite and call link land in your inbox', 'We chop it up, and your free 2-week trial can start']
     : ['We read every message ourselves', 'We reply by email', 'Your free 2-week trial can start']
   return (
     <div role="status" className="relative overflow-hidden py-4 text-center">
@@ -457,6 +475,20 @@ function SentCard({ booked, confirmed, form, onAgain }) {
           </li>
         ))}
       </motion.ol>
+
+      {booked && !confirmed && calendlyLink(form) && (
+        <motion.div {...pop} transition={{ duration: 0.5, delay: 0.42 }} className="mt-6">
+          <p className="font-ui text-sm text-plum-700">Not on the calendar yet. One click puts it there:</p>
+          <a
+            href={calendlyLink(form)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-type mt-2 inline-flex h-11 items-center rounded-full bg-teal-500 px-6 font-ui font-semibold text-white no-underline shadow-[0_5px_0_-1px_var(--color-plum-900)] hover:bg-teal-400"
+          >
+            Lock it in on Calendly →
+          </a>
+        </motion.div>
+      )}
 
       <motion.div {...pop} transition={{ duration: 0.5, delay: 0.45 }} className="mt-7 flex flex-wrap justify-center gap-3">
         <a href="/pricing" className="btn-type inline-flex h-11 items-center rounded-full bg-gold-500 px-5 font-ui font-semibold text-plum-700 no-underline shadow-[0_5px_0_-1px_var(--color-plum-900)]">
