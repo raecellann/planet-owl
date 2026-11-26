@@ -85,8 +85,8 @@ export default function Book() {
         {/* The earlier two-column layout, by request ("okay na ung design ng
             before"): what the call is on the left, the calendar on the right,
             the two lined up at the top and the card sized to its contents. */}
-        <div className="relative z-10 mx-auto grid max-w-[1120px] items-start gap-10 lg:grid-cols-[minmax(0,0.6fr)_minmax(0,1.4fr)] lg:gap-14">
-          <div className="lg:sticky lg:top-32">
+        <div className="relative z-10 mx-auto grid max-w-[1120px] gap-10 lg:grid-cols-[minmax(0,0.6fr)_minmax(0,1.4fr)] lg:items-stretch lg:gap-14">
+          <div>
             <p className="font-ui text-sm font-bold uppercase tracking-[0.18em] text-teal-600">30-minute call</p>
             <h1 className="mt-2 font-['Momo_Trust_Display'] text-[clamp(1.9rem,2.7vw,2.5rem)] font-normal leading-[1.1] text-plum-700">
               Hoot hoot! Let’s Chop It Up
@@ -112,16 +112,11 @@ export default function Book() {
             />
           </div>
 
-          <div className="overflow-hidden rounded-[1.75rem] bg-white shadow-[0_30px_60px_-30px_rgba(54,14,57,0.5)] ring-1 ring-plum-900/5">
-            <div className="flex items-center gap-3 bg-plum-800 px-6 py-4">
-              <img src={A.owl.digital} alt="" aria-hidden className="h-10 w-auto" />
-              <div className="font-ui text-white">
-                <p className="text-xs font-bold uppercase tracking-wide text-gold-400">Planet Owl Studio</p>
-                <p className="font-semibold">30 min call with the flock</p>
-              </div>
-            </div>
+          {/* No header bar, and as tall as the column beside it so its bottom
+              lines up with the owl, both by request. */}
+          <div className="flex flex-col overflow-hidden rounded-[1.75rem] bg-white shadow-[0_30px_60px_-30px_rgba(54,14,57,0.5)] ring-1 ring-plum-900/5">
             {mode === null && <p className="px-6 py-16 text-center font-ui text-plum-700">Checking the calendar…</p>}
-            {mode && <Flow slots={slots} timezone={timezone} email={email} link={mode === 'link'} />}
+            {mode && <div className="flex flex-1 flex-col">{<Flow slots={slots} timezone={timezone} email={email} link={mode === 'link'} />}</div>}
           </div>
         </div>
       </div>
@@ -253,12 +248,13 @@ function Flow({ slots, timezone, email: presetEmail, link }) {
   // Screen 2, as on Calendly: the details, with a way back to the calendar.
   if (slot)
     return (
-      <form onSubmit={book} className="px-5 py-6 sm:px-8 sm:py-7">
-        <button type="button" onClick={() => setSlot('')} className="flex items-center gap-2 font-ui text-sm font-semibold text-teal-600">
-          <span aria-hidden className="grid size-8 place-items-center rounded-full border-2 border-teal-500/40 text-base">←</span>
-          Change day or time
+      <form onSubmit={book} className="flex flex-1 flex-col px-5 py-6 sm:px-8 sm:py-7">
+        <button type="button" onClick={() => setSlot('')} className="flex w-fit items-center gap-1.5 font-ui text-sm font-semibold text-plum-700">
+          <span aria-hidden className="grid size-9 place-items-center rounded-full bg-teal-500/10 font-ui text-xl font-bold text-teal-700">‹</span>
+          Back
         </button>
-        <p className="mt-5 font-ui text-xl font-bold text-plum-700">Enter your details</p>
+        <div className="my-auto pt-5">
+        <p className="font-ui text-xl font-bold text-plum-700">Enter your details</p>
         <p className="mt-2 w-fit rounded-full bg-gold-200 px-4 py-1.5 font-ui text-sm font-semibold text-plum-700">
           {longDay(activeDay)} · {timeLabel(slot)} · 30 min
         </p>
@@ -288,6 +284,7 @@ function Flow({ slots, timezone, email: presetEmail, link }) {
         >
           {state === 'sending' ? 'Booking…' : link ? 'Continue' : 'Schedule My Call'}
         </button>
+        </div>
       </form>
     )
 
@@ -298,11 +295,11 @@ function Flow({ slots, timezone, email: presetEmail, link }) {
    */
   const times = byDay[activeDay] || []
   return (
-    <div className="grid gap-6 px-5 py-6 sm:px-7 sm:py-7 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] md:gap-7">
-      <div className="order-2 md:order-1">
+    <div className="grid flex-1 gap-6 px-5 py-6 sm:px-7 sm:py-8 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] md:gap-8">
+      <div className="order-2 flex min-h-0 flex-col md:order-1">
         <p className="font-ui text-lg font-bold text-plum-700">Select a time</p>
         <p className="mt-0.5 font-ui text-sm text-plum-700/75">{activeDay ? longDay(activeDay) : ''}</p>
-        <div className="mt-3 max-h-[19.5rem] space-y-2 overflow-y-auto pr-1 [scrollbar-width:thin]">
+        <div className="mt-3 max-h-[19.5rem] space-y-2 overflow-y-auto pr-1 [scrollbar-width:thin] lg:max-h-none lg:min-h-0 lg:flex-1 lg:basis-0">
           {times.map((s) => (
             <button
               key={s}
@@ -316,10 +313,10 @@ function Flow({ slots, timezone, email: presetEmail, link }) {
         </div>
       </div>
 
-      <div className="order-1 md:order-2">
+      <div className="order-1 flex flex-col md:order-2">
         <p className="font-ui text-lg font-bold text-plum-700">Select a day</p>
         <MonthGrid month={month} setMonth={setMonth} activeDay={activeDay} byDay={byDay} onPick={(ymd) => setDay(ymd)} />
-        <p className="mt-3 font-ui text-xs text-plum-700/70">Times shown in your time zone: {timezone.replace(/_/g, ' ')}</p>
+        <p className="mt-3 font-ui lg:mt-auto lg:pt-3 text-xs text-plum-700/70">Times shown in your time zone: {timezone.replace(/_/g, ' ')}</p>
       </div>
     </div>
   )
@@ -358,7 +355,7 @@ function MonthGrid({ month, setMonth, activeDay, byDay, onPick }) {
           <span key={w} className="py-1.5">{w}</span>
         ))}
       </div>
-      <div className="grid grid-cols-7 gap-y-1 text-center">
+      <div className="grid grid-cols-7 gap-y-1.5 text-center lg:gap-y-2.5">
         {cells.map((d, i) => {
           if (!d) return <span key={`e${i}`} />
           const ymd = isoDay(new Date(month.y, month.m, d))
@@ -371,7 +368,7 @@ function MonthGrid({ month, setMonth, activeDay, byDay, onPick }) {
                 disabled={!open}
                 aria-pressed={on}
                 onClick={() => onPick(ymd)}
-                className={`grid size-10 place-items-center rounded-full font-ui text-sm transition-colors sm:size-11 ${
+                className={`grid size-10 place-items-center rounded-full font-ui text-sm transition-colors sm:size-11 lg:size-12 lg:text-base ${
                   on ? 'bg-plum-800 font-bold text-gold-400' : open ? 'bg-teal-500/10 font-bold text-teal-700 hover:bg-teal-500/25' : 'text-plum-700/30'
                 }`}
               >
@@ -418,14 +415,10 @@ function Confirm({ slot, name, email, when, onBack }) {
   })}`
   return (
     <div className="px-5 pt-6 sm:px-8">
-      <p className="text-center font-ui text-xl font-bold text-plum-700">Last step: lock it in</p>
-      <p className="mx-auto mt-3 w-fit rounded-full bg-gold-200 px-4 py-1.5 text-center font-ui text-sm font-semibold text-plum-700">{when}</p>
-      <p className="mt-3 text-center font-ui text-sm text-plum-700">
-        Hit <b>Schedule Event</b> below and you’re on the calendar.{' '}
-        <button type="button" onClick={onBack} className="font-semibold text-teal-600 underline">
-          Change something
-        </button>
-      </p>
+      <button type="button" onClick={onBack} className="flex items-center gap-1.5 font-ui text-sm font-semibold text-plum-700">
+        <span aria-hidden className="grid size-9 place-items-center rounded-full bg-teal-500/10 font-ui text-xl font-bold text-teal-700">‹</span>
+        Back
+      </button>
       <iframe title="Confirm your call with Planet Owl" src={src} style={{ height }} className="mt-2 block w-full border-0" />
     </div>
   )
