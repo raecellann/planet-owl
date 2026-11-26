@@ -147,6 +147,7 @@ function Flow({ slots, timezone, email: presetEmail, link }) {
   const [slot, setSlot] = useState('')
   // One part of the day at a time, so a full day is never one long list.
   const [period, setPeriod] = useState('')
+  const [week, setWeek] = useState(0)
   const [form, setForm] = useState({ firstName: '', lastName: '', email: presetEmail })
   const [state, setState] = useState('idle') // idle | sending | done | error
   const [error, setError] = useState('')
@@ -294,8 +295,35 @@ function Flow({ slots, timezone, email: presetEmail, link }) {
                   we’ll sort a time.
                 </p>
               ) : (
-                <div className="mt-5 grid grid-cols-4 gap-2 sm:grid-cols-7">
-                  {days.map((d) => {
+                // One week at a time (a four-week grid was too much, by
+                // request), with arrows to step through the next four weeks.
+                <div className="mt-4">
+                  <div className="flex items-center justify-between">
+                    <button
+                      type="button"
+                      aria-label="Previous week"
+                      disabled={week === 0}
+                      onClick={() => setWeek((w) => w - 1)}
+                      className="grid size-9 place-items-center rounded-full bg-gold-200 font-ui text-lg font-bold text-plum-700 transition-colors hover:bg-gold-400/60 disabled:cursor-not-allowed disabled:opacity-30"
+                    >
+                      ‹
+                    </button>
+                    <p className="font-ui text-sm font-semibold text-plum-700">
+                      {days[week * 7].toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} –{' '}
+                      {days[week * 7 + 6].toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                    </p>
+                    <button
+                      type="button"
+                      aria-label="Next week"
+                      disabled={week >= DAYS_AHEAD / 7 - 1}
+                      onClick={() => setWeek((w) => w + 1)}
+                      className="grid size-9 place-items-center rounded-full bg-gold-200 font-ui text-lg font-bold text-plum-700 transition-colors hover:bg-gold-400/60 disabled:cursor-not-allowed disabled:opacity-30"
+                    >
+                      ›
+                    </button>
+                  </div>
+                  <div className="mt-3 grid grid-cols-7 gap-1.5 sm:gap-2">
+                  {days.slice(week * 7, week * 7 + 7).map((d) => {
                     const ymd = isoDay(d)
                     const open = (byDay[ymd] || []).length
                     return (
@@ -309,7 +337,7 @@ function Flow({ slots, timezone, email: presetEmail, link }) {
                           setPeriod('')
                           setStep(1)
                         }}
-                        className={`flex flex-col items-center rounded-2xl border-2 px-1 py-2.5 font-ui transition-colors ${
+                        className={`flex flex-col items-center rounded-2xl border-2 px-0.5 py-2.5 font-ui transition-colors ${
                           open
                             ? ymd === day
                               ? 'border-plum-800 bg-plum-800 text-gold-400'
@@ -317,12 +345,12 @@ function Flow({ slots, timezone, email: presetEmail, link }) {
                             : 'cursor-not-allowed border-transparent bg-plum-900/[0.03] text-plum-700/30'
                         }`}
                       >
-                        <span className="text-[0.7rem] font-semibold uppercase">{d.toLocaleDateString('en-US', { weekday: 'short' })}</span>
+                        <span className="text-[0.65rem] font-semibold uppercase sm:text-[0.7rem]">{d.toLocaleDateString('en-US', { weekday: 'short' })}</span>
                         <span className="text-lg font-bold leading-tight">{d.getDate()}</span>
-                        <span className="text-[0.7rem]">{d.toLocaleDateString('en-US', { month: 'short' })}</span>
                       </button>
                     )
                   })}
+                  </div>
                 </div>
               )}
               <p className="mt-4 text-center font-ui text-xs text-plum-700/70">Times shown in your time zone: {timezone.replace(/_/g, ' ')}</p>
