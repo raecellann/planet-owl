@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { motion } from 'motion/react'
 import BlogLayout from './BlogLayout'
 import { A } from '../lib/assets'
@@ -85,10 +85,10 @@ export default function Book() {
         {/* The earlier two-column layout, by request ("okay na ung design ng
             before"): what the call is on the left, the calendar on the right,
             the two lined up at the top and the card sized to its contents. */}
-        <div className="relative z-10 mx-auto grid max-w-[1120px] items-start gap-10 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] lg:gap-14">
+        <div className="relative z-10 mx-auto grid max-w-[1120px] items-start gap-10 lg:grid-cols-[minmax(0,0.6fr)_minmax(0,1.4fr)] lg:gap-14">
           <div className="lg:sticky lg:top-32">
             <p className="font-ui text-sm font-bold uppercase tracking-[0.18em] text-teal-600">30-minute call</p>
-            <h1 className="mt-2 font-['Momo_Trust_Display'] text-[clamp(2rem,3.3vw,2.9rem)] font-normal leading-[1.1] text-plum-700">
+            <h1 className="mt-2 font-['Momo_Trust_Display'] text-[clamp(1.9rem,2.7vw,2.5rem)] font-normal leading-[1.1] text-plum-700">
               Hoot hoot! Let’s Chop It Up
             </h1>
             <p className="mt-4 max-w-md font-ui text-lg leading-relaxed text-plum-700">
@@ -143,9 +143,7 @@ const FIELD =
 function Flow({ slots, timezone, email: presetEmail, link }) {
   const [day, setDay] = useState('')
   const [slot, setSlot] = useState('')
-  // One part of the day at a time, so a full day is never one long list.
-  const [period, setPeriod] = useState('')
-  const [week, setWeek] = useState(0)
+  const [month, setMonth] = useState(() => ({ y: new Date().getFullYear(), m: new Date().getMonth() }))
   const [form, setForm] = useState({ firstName: '', lastName: '', email: presetEmail })
   const [state, setState] = useState('idle') // idle | sending | done | error
   const [error, setError] = useState('')
@@ -164,17 +162,6 @@ function Flow({ slots, timezone, email: presetEmail, link }) {
   // The first day with open times is picked for you, so times show at once.
   const activeDay = day || days.map(isoDay).find((d) => (byDay[d] || []).length) || ''
   const timeLabel = (iso) => new Date(iso).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: timezone })
-  const detailsRef = useRef(null)
-  const groups = useMemo(() => {
-    const hourOf = (iso) => Number(new Date(iso).toLocaleString('en-US', { hour: 'numeric', hour12: false, timeZone: timezone })) % 24
-    const list = byDay[activeDay] || []
-    return [
-      ['Morning', list.filter((s) => hourOf(s) >= 6 && hourOf(s) < 12)],
-      ['Afternoon', list.filter((s) => hourOf(s) >= 12 && hourOf(s) < 17)],
-      ['Evening', list.filter((s) => hourOf(s) >= 17 && hourOf(s) < 22)],
-      ['Night', list.filter((s) => hourOf(s) >= 22 || hourOf(s) < 6)],
-    ].filter(([, l]) => l.length)
-  }, [byDay, activeDay, timezone])
 
   const longDay = (ymd) => {
     const [y, m, d] = ymd.split('-').map(Number)
@@ -263,168 +250,138 @@ function Flow({ slots, timezone, email: presetEmail, link }) {
       </p>
     )
 
-  const shown = groups.find(([n]) => n === period) || groups[0]
-  const pickSlot = (s) => {
-    setSlot(s)
-    setTimeout(() => detailsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 60)
-  }
+  // Screen 2, as on Calendly: the details, with a way back to the calendar.
+  if (slot)
+    return (
+      <form onSubmit={book} className="px-5 py-6 sm:px-8 sm:py-7">
+        <button type="button" onClick={() => setSlot('')} className="flex items-center gap-2 font-ui text-sm font-semibold text-teal-600">
+          <span aria-hidden className="grid size-8 place-items-center rounded-full border-2 border-teal-500/40 text-base">←</span>
+          Change day or time
+        </button>
+        <p className="mt-5 font-ui text-xl font-bold text-plum-700">Enter your details</p>
+        <p className="mt-2 w-fit rounded-full bg-gold-200 px-4 py-1.5 font-ui text-sm font-semibold text-plum-700">
+          {longDay(activeDay)} · {timeLabel(slot)} · 30 min
+        </p>
+        <div className="mt-5 grid gap-4 sm:grid-cols-2">
+          <label className="block font-ui text-sm font-semibold text-plum-700">
+            First name
+            <input required autoFocus autoComplete="given-name" value={form.firstName} onChange={(e) => setForm({ ...form, firstName: e.target.value })} className={FIELD} />
+          </label>
+          <label className="block font-ui text-sm font-semibold text-plum-700">
+            Last name
+            <input autoComplete="family-name" value={form.lastName} onChange={(e) => setForm({ ...form, lastName: e.target.value })} className={FIELD} />
+          </label>
+        </div>
+        <label className="mt-4 block font-ui text-sm font-semibold text-plum-700">
+          Email
+          <input required type="email" autoComplete="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className={FIELD} />
+        </label>
+        {state === 'error' && (
+          <p role="alert" className="mt-4 font-ui text-sm font-semibold text-red-700">
+            {error}
+          </p>
+        )}
+        <button
+          type="submit"
+          disabled={state === 'sending'}
+          className="btn-type mt-6 w-full rounded-full bg-gold-500 px-8 py-3.5 font-ui text-base font-semibold text-plum-700 shadow-[0_6px_0_-2px_var(--color-plum-900)] transition-colors hover:bg-gold-400 disabled:cursor-wait disabled:opacity-70"
+        >
+          {state === 'sending' ? 'Booking…' : link ? 'Continue' : 'Schedule My Call'}
+        </button>
+      </form>
+    )
 
   /*
-   * Everything on one screen, by request ("hirap padin neto igets"): the
-   * week, then that day's times right under it, then the details once a time
-   * is picked. Numbered headings say what to do next.
+   * Screen 1, laid out like Calendly's own flow but the other way round, by
+   * request: the month calendar on the right, that day's times on the left.
+   * On a phone the calendar comes first and the times follow under it.
    */
+  const times = byDay[activeDay] || []
   return (
-    <div className="space-y-7 px-5 py-6 sm:px-8 sm:py-7">
-      <Part n={1} title="Pick a day">
-        <div className="flex items-center justify-between">
-          <button
-            type="button"
-            aria-label="Previous week"
-            disabled={week === 0}
-            onClick={() => setWeek((w) => w - 1)}
-            className="grid size-9 place-items-center rounded-full bg-gold-200 font-ui text-lg font-bold text-plum-700 transition-colors hover:bg-gold-400/60 disabled:cursor-not-allowed disabled:opacity-30"
-          >
-            ‹
-          </button>
-          <p className="font-ui text-sm font-semibold text-plum-700">
-            {days[week * 7].toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} –{' '}
-            {days[week * 7 + 6].toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-          </p>
-          <button
-            type="button"
-            aria-label="Next week"
-            disabled={week >= DAYS_AHEAD / 7 - 1}
-            onClick={() => setWeek((w) => w + 1)}
-            className="grid size-9 place-items-center rounded-full bg-gold-200 font-ui text-lg font-bold text-plum-700 transition-colors hover:bg-gold-400/60 disabled:cursor-not-allowed disabled:opacity-30"
-          >
-            ›
-          </button>
+    <div className="grid gap-6 px-5 py-6 sm:px-7 sm:py-7 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] md:gap-7">
+      <div className="order-2 md:order-1">
+        <p className="font-ui text-lg font-bold text-plum-700">Select a time</p>
+        <p className="mt-0.5 font-ui text-sm text-plum-700/75">{activeDay ? longDay(activeDay) : ''}</p>
+        <div className="mt-3 max-h-[19.5rem] space-y-2 overflow-y-auto pr-1 [scrollbar-width:thin]">
+          {times.map((s) => (
+            <button
+              key={s}
+              type="button"
+              onClick={() => setSlot(s)}
+              className="w-full rounded-xl border-2 border-teal-500/50 py-2.5 font-ui text-sm font-bold text-teal-700 transition-colors hover:border-teal-500 hover:bg-teal-500 hover:text-white"
+            >
+              {timeLabel(s)}
+            </button>
+          ))}
         </div>
-        <div className="mt-3 grid grid-cols-7 gap-1.5 sm:gap-2">
-          {days.slice(week * 7, week * 7 + 7).map((d) => {
-            const ymd = isoDay(d)
-            const open = (byDay[ymd] || []).length
-            return (
-              <button
-                key={ymd}
-                type="button"
-                disabled={!open}
-                aria-pressed={ymd === activeDay}
-                onClick={() => {
-                  setDay(ymd)
-                  setSlot('')
-                  setPeriod('')
-                }}
-                className={`flex flex-col items-center rounded-2xl border-2 px-0.5 py-2.5 font-ui transition-colors ${
-                  open
-                    ? ymd === activeDay
-                      ? 'border-plum-800 bg-plum-800 text-gold-400'
-                      : 'border-teal-500/40 bg-white text-plum-700 hover:border-teal-500 hover:bg-teal-500/10'
-                    : 'cursor-not-allowed border-transparent bg-plum-900/[0.03] text-plum-700/30'
-                }`}
-              >
-                <span className="text-[0.65rem] font-semibold uppercase sm:text-[0.7rem]">{d.toLocaleDateString('en-US', { weekday: 'short' })}</span>
-                <span className="text-lg font-bold leading-tight">{d.getDate()}</span>
-              </button>
-            )
-          })}
-        </div>
-      </Part>
+      </div>
 
-      <Part n={2} title="Pick a time" note={activeDay ? longDay(activeDay) : ''}>
-        {shown && (
-          <>
-            <div role="tablist" className="flex flex-wrap gap-2">
-              {groups.map(([name, list]) => (
-                <button
-                  key={name}
-                  type="button"
-                  role="tab"
-                  aria-selected={name === shown[0]}
-                  onClick={() => setPeriod(name)}
-                  className={`rounded-full px-4 py-1.5 font-ui text-sm font-semibold transition-colors ${
-                    name === shown[0] ? 'bg-plum-800 text-gold-400' : 'bg-gold-200 text-plum-700 hover:bg-gold-400/60'
-                  }`}
-                >
-                  {name} <span className="font-normal opacity-70">· {list.length}</span>
-                </button>
-              ))}
-            </div>
-            <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4">
-              {shown[1].map((s) => (
-                <button
-                  key={s}
-                  type="button"
-                  aria-pressed={s === slot}
-                  onClick={() => pickSlot(s)}
-                  className={`rounded-xl border-2 py-2.5 font-ui text-sm font-semibold transition-colors ${
-                    s === slot ? 'border-plum-800 bg-plum-800 text-gold-400' : 'border-teal-500/40 text-plum-700 hover:border-teal-500 hover:bg-teal-500/10'
-                  }`}
-                >
-                  {timeLabel(s)}
-                </button>
-              ))}
-            </div>
-          </>
-        )}
+      <div className="order-1 md:order-2">
+        <p className="font-ui text-lg font-bold text-plum-700">Select a day</p>
+        <MonthGrid month={month} setMonth={setMonth} activeDay={activeDay} byDay={byDay} onPick={(ymd) => setDay(ymd)} />
         <p className="mt-3 font-ui text-xs text-plum-700/70">Times shown in your time zone: {timezone.replace(/_/g, ' ')}</p>
-      </Part>
-
-      <div ref={detailsRef} className="scroll-mt-32">
-        <Part n={3} title="Your details" muted={!slot}>
-          {!slot ? (
-            <p className="font-ui text-sm text-plum-700/70">Pick a time above and this part opens up.</p>
-          ) : (
-            <form onSubmit={book}>
-              <p className="w-fit rounded-full bg-gold-200 px-4 py-1.5 font-ui text-sm font-semibold text-plum-700">
-                {longDay(activeDay)} · {timeLabel(slot)} · 30 min
-              </p>
-              <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                <label className="block font-ui text-sm font-semibold text-plum-700">
-                  First name
-                  <input required autoComplete="given-name" value={form.firstName} onChange={(e) => setForm({ ...form, firstName: e.target.value })} className={FIELD} />
-                </label>
-                <label className="block font-ui text-sm font-semibold text-plum-700">
-                  Last name
-                  <input autoComplete="family-name" value={form.lastName} onChange={(e) => setForm({ ...form, lastName: e.target.value })} className={FIELD} />
-                </label>
-              </div>
-              <label className="mt-4 block font-ui text-sm font-semibold text-plum-700">
-                Email
-                <input required type="email" autoComplete="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className={FIELD} />
-              </label>
-              {state === 'error' && (
-                <p role="alert" className="mt-4 font-ui text-sm font-semibold text-red-700">
-                  {error}
-                </p>
-              )}
-              <button
-                type="submit"
-                disabled={state === 'sending'}
-                className="btn-type mt-5 w-full rounded-full bg-gold-500 px-8 py-3.5 font-ui text-base font-semibold text-plum-700 shadow-[0_6px_0_-2px_var(--color-plum-900)] transition-colors hover:bg-gold-400 disabled:cursor-wait disabled:opacity-70 sm:w-auto"
-              >
-                {state === 'sending' ? 'Booking…' : link ? 'Continue' : 'Book My Call'}
-              </button>
-            </form>
-          )}
-        </Part>
       </div>
     </div>
   )
 }
 
-/** A numbered part of the booking card. */
-function Part({ n, title, note, muted = false, children }) {
+const WEEKDAYS = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
+
+/** A month at a time, open days marked like Calendly's: a soft teal circle. */
+function MonthGrid({ month, setMonth, activeDay, byDay, onPick }) {
+  const first = new Date(month.y, month.m, 1)
+  const lead = first.getDay()
+  const count = new Date(month.y, month.m + 1, 0).getDate()
+  const cells = [...Array(lead).fill(null), ...Array.from({ length: count }, (_, i) => i + 1)]
+  const now = new Date()
+  const last = new Date(now.getFullYear(), now.getMonth(), now.getDate() + DAYS_AHEAD)
+  const canBack = month.y > now.getFullYear() || (month.y === now.getFullYear() && month.m > now.getMonth())
+  const canNext = new Date(month.y, month.m + 1, 1) <= last
+  const step = (by) =>
+    setMonth(({ y, m }) => {
+      const d = new Date(y, m + by, 1)
+      return { y: d.getFullYear(), m: d.getMonth() }
+    })
   return (
-    <section className={muted ? 'opacity-60' : ''}>
-      <h2 className="flex items-baseline gap-2.5 font-ui text-lg font-bold text-plum-700">
-        <span className="grid size-7 shrink-0 translate-y-0.5 place-items-center rounded-full bg-plum-800 text-sm text-gold-400">{n}</span>
-        {title}
-        {note && <span className="text-sm font-normal text-plum-700/70">· {note}</span>}
-      </h2>
-      <div className="mt-3">{children}</div>
-    </section>
+    <div className="mt-3">
+      <div className="flex items-center justify-between">
+        <button type="button" aria-label="Previous month" disabled={!canBack} onClick={() => step(-1)} className="grid size-9 place-items-center rounded-full font-ui text-xl font-bold text-plum-700 transition-colors hover:bg-gold-200 disabled:opacity-25">
+          ‹
+        </button>
+        <p className="font-ui font-semibold text-plum-700">{first.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</p>
+        <button type="button" aria-label="Next month" disabled={!canNext} onClick={() => step(1)} className="grid size-9 place-items-center rounded-full bg-teal-500/10 font-ui text-xl font-bold text-teal-700 transition-colors hover:bg-teal-500/20 disabled:bg-transparent disabled:opacity-25">
+          ›
+        </button>
+      </div>
+      <div className="mt-2 grid grid-cols-7 text-center font-ui text-[0.65rem] font-semibold text-plum-700/60">
+        {WEEKDAYS.map((w) => (
+          <span key={w} className="py-1.5">{w}</span>
+        ))}
+      </div>
+      <div className="grid grid-cols-7 gap-y-1 text-center">
+        {cells.map((d, i) => {
+          if (!d) return <span key={`e${i}`} />
+          const ymd = isoDay(new Date(month.y, month.m, d))
+          const open = (byDay[ymd] || []).length > 0
+          const on = ymd === activeDay
+          return (
+            <span key={ymd} className="grid place-items-center">
+              <button
+                type="button"
+                disabled={!open}
+                aria-pressed={on}
+                onClick={() => onPick(ymd)}
+                className={`grid size-10 place-items-center rounded-full font-ui text-sm transition-colors sm:size-11 ${
+                  on ? 'bg-plum-800 font-bold text-gold-400' : open ? 'bg-teal-500/10 font-bold text-teal-700 hover:bg-teal-500/25' : 'text-plum-700/30'
+                }`}
+              >
+                {d}
+              </button>
+            </span>
+          )
+        })}
+      </div>
+    </div>
   )
 }
 
